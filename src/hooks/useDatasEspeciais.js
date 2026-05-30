@@ -5,16 +5,22 @@ import {
   atualizarData,
   excluirData
 } from '../services/datasEspeciaisService'
+import { DATAS_DEMO } from '../services/demoData'
+
+const DEMO = import.meta.env.VITE_DEMO_MODE === 'true'
+
+function idDemo() {
+  return 'demo-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7)
+}
 
 // Hook para gerenciar datas especiais do usuário
 export function useDatasEspeciais(userId) {
-  const [datas, setDatas] = useState([])
+  const [datas, setDatas] = useState(DEMO ? DATAS_DEMO : [])
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState(null)
 
-  // Carrega datas do servidor
   const recarregar = useCallback(async () => {
-    if (!userId) return
+    if (DEMO || !userId) return
 
     setCarregando(true)
     setErro(null)
@@ -29,13 +35,16 @@ export function useDatasEspeciais(userId) {
     }
   }, [userId])
 
-  // Carrega datas ao montar ou quando userId muda
   useEffect(() => {
     recarregar()
   }, [recarregar])
 
-  // Cria nova data especial
   async function criar(dadosData) {
+    if (DEMO) {
+      const nova = { ...dadosData, id: idDemo(), user_id: userId, criado_em: new Date().toISOString() }
+      setDatas(prev => [...prev, nova])
+      return nova
+    }
     const novaData = {
       ...dadosData,
       user_id: userId,
@@ -47,15 +56,18 @@ export function useDatasEspeciais(userId) {
     return criada
   }
 
-  // Atualiza uma data especial existente
   async function atualizar(id, updates) {
+    if (DEMO) {
+      setDatas(prev => prev.map(d => d.id === id ? { ...d, ...updates } : d))
+      return
+    }
     const atualizada = await atualizarData(id, updates)
     setDatas(prev => prev.map(d => d.id === id ? atualizada : d))
     return atualizada
   }
 
-  // Exclui uma data especial
   async function excluir(id) {
+    if (DEMO) { setDatas(prev => prev.filter(d => d.id !== id)); return }
     await excluirData(id)
     setDatas(prev => prev.filter(d => d.id !== id))
   }

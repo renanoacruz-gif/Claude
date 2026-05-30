@@ -6,16 +6,23 @@ import {
   excluirTarefa,
   concluirTarefa
 } from '../services/tarefasService'
+import { TAREFAS_DEMO } from '../services/demoData'
+
+const DEMO = import.meta.env.VITE_DEMO_MODE === 'true'
+
+// Gera ID único simples para o modo demo
+function idDemo() {
+  return 'demo-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7)
+}
 
 // Hook para gerenciar tarefas do usuário
 export function useTarefas(userId) {
-  const [tarefas, setTarefas] = useState([])
+  const [tarefas, setTarefas] = useState(DEMO ? TAREFAS_DEMO : [])
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState(null)
 
-  // Carrega tarefas do servidor
   const recarregar = useCallback(async () => {
-    if (!userId) return
+    if (DEMO || !userId) return
 
     setCarregando(true)
     setErro(null)
@@ -30,13 +37,16 @@ export function useTarefas(userId) {
     }
   }, [userId])
 
-  // Carrega tarefas ao montar ou quando userId muda
   useEffect(() => {
     recarregar()
   }, [recarregar])
 
-  // Cria nova tarefa
   async function criar(dadosTarefa) {
+    if (DEMO) {
+      const nova = { ...dadosTarefa, id: idDemo(), user_id: userId, concluida: false, criado_em: new Date().toISOString() }
+      setTarefas(prev => [...prev, nova])
+      return nova
+    }
     const novaTarefa = {
       ...dadosTarefa,
       user_id: userId,
@@ -49,21 +59,27 @@ export function useTarefas(userId) {
     return criada
   }
 
-  // Atualiza uma tarefa existente
   async function atualizar(id, updates) {
+    if (DEMO) {
+      setTarefas(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t))
+      return
+    }
     const atualizada = await atualizarTarefa(id, updates)
     setTarefas(prev => prev.map(t => t.id === id ? atualizada : t))
     return atualizada
   }
 
-  // Exclui uma tarefa
   async function excluir(id) {
+    if (DEMO) { setTarefas(prev => prev.filter(t => t.id !== id)); return }
     await excluirTarefa(id)
     setTarefas(prev => prev.filter(t => t.id !== id))
   }
 
-  // Alterna conclusão de tarefa
   async function concluir(id, concluida) {
+    if (DEMO) {
+      setTarefas(prev => prev.map(t => t.id === id ? { ...t, concluida } : t))
+      return
+    }
     const atualizada = await concluirTarefa(id, concluida)
     setTarefas(prev => prev.map(t => t.id === id ? atualizada : t))
     return atualizada
