@@ -2,149 +2,195 @@ import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { useDatasEspeciais } from '../hooks/useDatasEspeciais'
 import Header from '../components/Header'
+import BottomNav from '../components/BottomNav'
 import DatasEspeciaisCard from '../components/DatasEspeciaisCard'
 import Modal from '../components/Modal'
+import { diasAteProximaOcorrencia } from '../utils/formatarData'
 
-const camposVazios = { nome: '', data: '', tipo: 'aniversario', recorrente: true }
-
-export default function DatasEspeciais() {
-  const { usuario } = useAuth()
-  const { datas, carregando, criar, atualizar, excluir } = useDatasEspeciais(usuario?.id)
-  const [modalAberto, setModalAberto] = useState(false)
-  const [form, setForm] = useState(camposVazios)
-  const [editandoId, setEditandoId] = useState(null)
+// Formulário de criação/edição de data especial
+function FormData({ data, onSalvar, onFechar }) {
+  const [nome, setNome] = useState(data?.nome || '')
+  const [dataValor, setDataValor] = useState(data?.data?.slice(0, 10) || '')
+  const [tipo, setTipo] = useState(data?.tipo || 'aniversario')
+  const [recorrente, setRecorrente] = useState(data?.recorrente ?? true)
   const [salvando, setSalvando] = useState(false)
 
-  function abrirNova() {
-    setForm(camposVazios)
-    setEditandoId(null)
-    setModalAberto(true)
-  }
-
-  function abrirEditar(data) {
-    setForm({
-      nome: data.nome,
-      data: data.data ? data.data.slice(0, 10) : '',
-      tipo: data.tipo,
-      recorrente: data.recorrente ?? true,
-    })
-    setEditandoId(data.id)
-    setModalAberto(true)
-  }
-
-  async function salvar(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    if (!form.nome.trim() || !form.data) return
+    if (!nome.trim() || !dataValor) return
     setSalvando(true)
     try {
-      const dados = {
-        nome: form.nome.trim(),
-        data: form.data,
-        tipo: form.tipo,
-        recorrente: form.recorrente,
-      }
-      if (editandoId) {
-        await atualizar(editandoId, dados)
-      } else {
-        await criar({ ...dados, user_id: usuario.id })
-      }
-      setModalAberto(false)
+      await onSalvar({
+        nome: nome.trim(),
+        data: dataValor,
+        tipo,
+        recorrente,
+      })
+      onFechar()
     } finally {
       setSalvando(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 pb-20">
-      <Header titulo="Datas especiais" />
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="rotulo">Nome *</label>
+        <input
+          type="text"
+          value={nome}
+          onChange={e => setNome(e.target.value)}
+          placeholder="Ex: Aniversário da Mamãe"
+          className="campo-texto"
+          autoFocus
+          required
+        />
+      </div>
 
-      <div className="px-4 pt-4 space-y-2">
+      <div>
+        <label className="rotulo">Data *</label>
+        <input
+          type="date"
+          value={dataValor}
+          onChange={e => setDataValor(e.target.value)}
+          className="campo-texto"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="rotulo">Tipo</label>
+        <select
+          value={tipo}
+          onChange={e => setTipo(e.target.value)}
+          className="campo-texto"
+        >
+          <option value="aniversario">🎂 Aniversário</option>
+          <option value="evento">📅 Evento</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="flex items-center gap-3 cursor-pointer">
+          <div
+            onClick={() => setRecorrente(!recorrente)}
+            className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
+              recorrente ? 'bg-indigo-600' : 'bg-slate-600'
+            }`}
+          >
+            <div
+              className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${
+                recorrente ? 'translate-x-7' : 'translate-x-1'
+              }`}
+            />
+          </div>
+          <span className="text-sm text-slate-300">Repetir todo ano</span>
+        </label>
+      </div>
+
+      <div className="flex gap-3 pt-2">
+        <button type="button" onClick={onFechar} className="botao-secundario flex-1">
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          className="botao-primario flex-1"
+          disabled={!nome.trim() || !dataValor || salvando}
+        >
+          {salvando ? 'Salvando...' : data ? 'Salvar' : 'Criar'}
+        </button>
+      </div>
+    </form>
+  )
+}
+
+export default function DatasEspeciais() {
+  const { usuario } = useAuth()
+  const { datas, carregando, criar, atualizar, excluir } = useDatasEspeciais(usuario?.id)
+  const [modalAberto, setModalAberto] = useState(false)
+  const [dataEditando, setDataEditando] = useState(null)
+
+  // Ordena por proximidade da próxima ocorrência
+  const datasOrdenadas = [...datas].sort((a, b) => {
+    const diasA = diasAteProximaOcorrencia(a.data, a.recorrente) ?? Infinity
+    const diasB = diasAteProximaOcorrencia(b.data, b.recorrente) ?? Infinity
+    return diasA - diasB
+  })
+
+  function abrirEdicao(data) {
+    setDataEditando(data)
+    setModalAberto(true)
+  }
+
+  function fecharModal() {
+    setModalAberto(false)
+    setDataEditando(null)
+  }
+
+  async function handleSalvar(dados) {
+    if (dataEditando) {
+      await atualizar(dataEditando.id, dados)
+    } else {
+      await criar(dados)
+    }
+  }
+
+  async function handleExcluir(id) {
+    if (confirm('Excluir esta data especial?')) {
+      await excluir(id)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-900">
+      <Header titulo="Datas Especiais" />
+
+      <main className="px-4 pt-4 pb-24 space-y-2 area-segura-inferior">
         {carregando ? (
-          <p className="text-slate-500 text-sm text-center py-8">Carregando...</p>
-        ) : datas.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="flex justify-center py-12">
+            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : datasOrdenadas.length === 0 ? (
+          <div className="text-center py-16">
             <p className="text-4xl mb-3">🎂</p>
-            <p className="text-slate-400 text-sm">Nenhuma data cadastrada.</p>
-            <p className="text-slate-500 text-xs mt-1">Adicione aniversários e eventos.</p>
+            <p className="text-slate-300 font-medium">Nenhuma data especial</p>
+            <p className="text-slate-500 text-sm mt-1">
+              Adicione aniversários e eventos importantes
+            </p>
           </div>
         ) : (
-          datas.map(d => (
+          datasOrdenadas.map(d => (
             <DatasEspeciaisCard
               key={d.id}
               data={d}
-              onEditar={abrirEditar}
-              onExcluir={excluir}
+              onEditar={abrirEdicao}
+              onExcluir={handleExcluir}
             />
           ))
         )}
-      </div>
+      </main>
 
       {/* FAB */}
       <button
-        onClick={abrirNova}
-        className="fixed bottom-20 right-4 w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-2xl shadow-lg shadow-indigo-900/50 flex items-center justify-center transition-colors z-30"
+        onClick={() => setModalAberto(true)}
+        className="fab"
+        aria-label="Adicionar data especial"
       >
         +
       </button>
 
+      <BottomNav />
+
       <Modal
         aberto={modalAberto}
-        fechar={() => setModalAberto(false)}
-        titulo={editandoId ? 'Editar data' : 'Nova data especial'}
+        fechar={fecharModal}
+        titulo={dataEditando ? 'Editar data' : 'Nova data especial'}
       >
-        <form onSubmit={salvar} className="space-y-4">
-          <div>
-            <label className="text-xs text-slate-400 mb-1 block">Nome *</label>
-            <input
-              type="text"
-              value={form.nome}
-              onChange={e => setForm(f => ({ ...f, nome: e.target.value }))}
-              placeholder="Ex: Aniversário da Mãe"
-              autoFocus
-              className="w-full bg-slate-700 text-white rounded-xl px-4 py-3 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label className="text-xs text-slate-400 mb-1 block">Data *</label>
-            <input
-              type="date"
-              value={form.data}
-              onChange={e => setForm(f => ({ ...f, data: e.target.value }))}
-              className="w-full bg-slate-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label className="text-xs text-slate-400 mb-1 block">Tipo</label>
-            <select
-              value={form.tipo}
-              onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))}
-              className="w-full bg-slate-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="aniversario">🎂 Aniversário</option>
-              <option value="evento">📅 Evento</option>
-            </select>
-          </div>
-          <div className="flex items-center justify-between py-1">
-            <div>
-              <p className="text-sm text-slate-200">Repetir todo ano</p>
-              <p className="text-xs text-slate-500">Recorrência anual automática</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setForm(f => ({ ...f, recorrente: !f.recorrente }))}
-              className={`w-12 h-6 rounded-full transition-colors ${form.recorrente ? 'bg-indigo-600' : 'bg-slate-600'}`}
-            >
-              <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform mx-0.5 ${form.recorrente ? 'translate-x-6' : 'translate-x-0'}`} />
-            </button>
-          </div>
-          <button
-            type="submit"
-            disabled={salvando || !form.nome.trim() || !form.data}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors"
-          >
-            {salvando ? 'Salvando...' : editandoId ? 'Salvar alterações' : 'Adicionar data'}
-          </button>
-        </form>
+        <FormData
+          data={dataEditando}
+          onSalvar={handleSalvar}
+          onFechar={fecharModal}
+        />
       </Modal>
     </div>
   )
