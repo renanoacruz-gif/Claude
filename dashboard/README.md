@@ -31,6 +31,35 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project uses PostgreSQL. Follow these steps to deploy:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Fork or clone** this repository to your GitHub account.
+
+2. **Create a free PostgreSQL database** using one of these services:
+   - [Neon](https://neon.tech) — serverless PostgreSQL with a generous free tier
+   - [Supabase](https://supabase.com) — open-source Firebase alternative with PostgreSQL
+
+3. **Copy your connection string** from your database provider. It will look like:
+   ```
+   postgresql://user:password@host:5432/dbname?sslmode=require
+   ```
+
+4. **Deploy to Vercel:**
+   - Go to [vercel.com/new](https://vercel.com/new) and import your repository.
+   - In the **Environment Variables** section, add:
+     ```
+     DATABASE_URL=postgresql://user:password@host:5432/dbname?sslmode=require
+     ```
+   - Click **Deploy**.
+
+5. **Run database migrations** after the first deploy:
+   ```bash
+   npx prisma migrate deploy
+   ```
+
+6. **(Optional) Seed the database:**
+   ```bash
+   npx prisma db seed
+   ```
+
+The `postinstall` script automatically runs `prisma generate` during each Vercel build.
