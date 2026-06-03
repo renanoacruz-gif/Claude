@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Mario Bros</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="canvas" width="800" height="480"></canvas>
+    <div id="mobile-controls">
+      <div class="left-controls">
+        <button class="ctrl-btn" data-key="ArrowLeft">◀</button>
+        <button class="ctrl-btn" data-key="ArrowRight">▶</button>
+      </div>
+      <div class="right-controls">
+        <button class="ctrl-btn" data-key="ShiftLeft">B</button>
+        <button class="ctrl-btn action" data-key="Space">A</button>
+        <button class="ctrl-btn" data-key="KeyZ">🔥</button>
+      </div>
+    </div>
+  </div>
+  <div id="instructions">
+    ← → : Mover &nbsp;|&nbsp; Space/↑ : Pular &nbsp;|&nbsp; Shift : Correr &nbsp;|&nbsp; Z : Fogo &nbsp;|&nbsp; P : Pausar
+  </div>
+  <script src="js/config.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/level.js"></script>
+  <script src="js/hud.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
