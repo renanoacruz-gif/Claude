@@ -1,9 +1,8 @@
 import prisma from "@/lib/prisma";
-import { addDays } from "date-fns";
 
 export async function GET() {
   const now = new Date();
-  const thirtyDaysLater = addDays(now, 30);
+  const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
   const [totalClients, totalProducts, activeAssociations, expiringSoon] =
     await Promise.all([
@@ -13,9 +12,15 @@ export async function GET() {
       prisma.clientProduct.findMany({
         where: {
           status: "active",
-          expiresAt: { gte: now, lte: thirtyDaysLater },
+          expiresAt: {
+            gte: now,
+            lte: thirtyDaysFromNow,
+          },
         },
-        include: { client: true, product: true },
+        include: {
+          client: true,
+          product: true,
+        },
         orderBy: { expiresAt: "asc" },
       }),
     ]);

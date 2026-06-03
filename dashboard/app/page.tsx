@@ -1,65 +1,149 @@
-import Image from "next/image";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Users, Package, Activity, AlertTriangle } from "lucide-react";
+import prisma from "@/lib/prisma";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-export default function Home() {
+async function getStats() {
+  const now = new Date();
+  const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+  const [totalClients, totalProducts, activeAssociations, expiringSoon] =
+    await Promise.all([
+      prisma.client.count(),
+      prisma.product.count(),
+      prisma.clientProduct.count({ where: { status: "active" } }),
+      prisma.clientProduct.findMany({
+        where: {
+          status: "active",
+          expiresAt: { gte: now, lte: thirtyDaysFromNow },
+        },
+        include: { client: true, product: true },
+        orderBy: { expiresAt: "asc" },
+      }),
+    ]);
+
+  return { totalClients, totalProducts, activeAssociations, expiringSoon };
+}
+
+export default async function OverviewPage() {
+  const { totalClients, totalProducts, activeAssociations, expiringSoon } =
+    await getStats();
+
+  const statCards = [
+    {
+      title: "Total de Clientes",
+      value: totalClients,
+      icon: Users,
+      color: "text-blue-600",
+      bg: "bg-blue-50",
+    },
+    {
+      title: "Total de Produtos",
+      value: totalProducts,
+      icon: Package,
+      color: "text-purple-600",
+      bg: "bg-purple-50",
+    },
+    {
+      title: "Associações Ativas",
+      value: activeAssociations,
+      icon: Activity,
+      color: "text-green-600",
+      bg: "bg-green-50",
+    },
+    {
+      title: "Expirando em 30 dias",
+      value: expiringSoon.length,
+      icon: AlertTriangle,
+      color: "text-yellow-600",
+      bg: "bg-yellow-50",
+    },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="p-8">
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900">Visão Geral</h2>
+        <p className="text-gray-500 mt-1">Resumo do sistema de gestão de produtos</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {statCards.map(({ title, value, icon: Icon, color, bg }) => (
+          <Card key={title}>
+            <CardContent className="flex items-center gap-4 py-6">
+              <div className={`${bg} p-3 rounded-lg`}>
+                <Icon className={`${color}`} size={24} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">{title}</p>
+                <p className="text-2xl font-bold text-gray-900">{value}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {expiringSoon.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-yellow-700">
+              <AlertTriangle size={20} />
+              Produtos Expirando em 30 Dias
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="text-left px-6 py-3 font-medium text-gray-600">Cliente</th>
+                  <th className="text-left px-6 py-3 font-medium text-gray-600">Produto</th>
+                  <th className="text-left px-6 py-3 font-medium text-gray-600">Expiração</th>
+                  <th className="text-left px-6 py-3 font-medium text-gray-600">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {expiringSoon.map((assoc) => {
+                  const daysLeft = assoc.expiresAt
+                    ? Math.ceil(
+                        (assoc.expiresAt.getTime() - Date.now()) /
+                          (1000 * 60 * 60 * 24)
+                      )
+                    : null;
+                  return (
+                    <tr key={assoc.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-6 py-3 font-medium text-gray-900">
+                        {assoc.client.name}
+                      </td>
+                      <td className="px-6 py-3 text-gray-700">{assoc.product.name}</td>
+                      <td className="px-6 py-3 text-gray-600">
+                        {assoc.expiresAt
+                          ? format(assoc.expiresAt, "dd/MM/yyyy", { locale: ptBR })
+                          : "-"}
+                      </td>
+                      <td className="px-6 py-3">
+                        <Badge variant="expiring">
+                          {daysLeft !== null ? `${daysLeft} dias` : "—"}
+                        </Badge>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      )}
+
+      {expiringSoon.length === 0 && (
+        <Card>
+          <CardContent className="py-12 text-center text-gray-400">
+            <AlertTriangle size={40} className="mx-auto mb-3 opacity-30" />
+            <p>Nenhum produto expirando nos próximos 30 dias.</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
