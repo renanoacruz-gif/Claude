@@ -2,28 +2,50 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#1a1a2e">
   <title>Super Mario Bros</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="game-container">
-    <canvas id="canvas" width="800" height="480"></canvas>
-    <div id="mobile-controls">
-      <div class="left-controls">
-        <button class="ctrl-btn" data-key="ArrowLeft">◀</button>
-        <button class="ctrl-btn" data-key="ArrowRight">▶</button>
-      </div>
-      <div class="right-controls">
-        <button class="ctrl-btn" data-key="ShiftLeft">B</button>
-        <button class="ctrl-btn action" data-key="Space">A</button>
-        <button class="ctrl-btn" data-key="KeyZ">🔥</button>
+  <div id="wrapper">
+    <div id="game-container">
+      <canvas id="canvas" width="800" height="480"></canvas>
+
+      <!-- Controles sobrepostos ao canvas -->
+      <div id="controls">
+        <!-- D-pad esquerdo -->
+        <div id="dpad">
+          <button class="ctrl-btn dpad-btn" data-key="ArrowLeft" aria-label="Esquerda">◀</button>
+          <button class="ctrl-btn dpad-btn" data-key="ArrowRight" aria-label="Direita">▶</button>
+        </div>
+
+        <!-- Botões de ação -->
+        <div id="action-btns">
+          <button class="ctrl-btn run-btn" data-key="ShiftLeft" aria-label="Correr">B</button>
+          <button class="ctrl-btn jump-btn" data-key="Space" aria-label="Pular">A</button>
+          <button class="ctrl-btn fire-btn" data-key="KeyZ" aria-label="Fogo">🔥</button>
+        </div>
+
+        <!-- Pausar -->
+        <button class="ctrl-btn pause-btn" data-key="KeyP" aria-label="Pausar">⏸</button>
       </div>
     </div>
+
+    <!-- Aviso de rotação (portrait) -->
+    <div id="portrait-msg">
+      <div class="rotate-icon">📱</div>
+      <p>Gire o dispositivo para<br><strong>modo paisagem</strong></p>
+    </div>
   </div>
+
   <div id="instructions">
-    ← → : Mover &nbsp;|&nbsp; Space/↑ : Pular &nbsp;|&nbsp; Shift : Correr &nbsp;|&nbsp; Z : Fogo &nbsp;|&nbsp; P : Pausar
+    ← → Mover &nbsp;|&nbsp; Space/↑ Pular &nbsp;|&nbsp; Shift Correr &nbsp;|&nbsp; Z Fogo &nbsp;|&nbsp; P Pausar
   </div>
+
   <script src="js/config.js"></script>
   <script src="js/input.js"></script>
   <script src="js/audio.js"></script>

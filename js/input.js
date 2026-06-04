@@ -11,14 +11,46 @@ const Input = (() => {
     });
     window.addEventListener('keyup', e => { cur[e.code] = false; });
 
+    // Release all keys when window loses focus
+    window.addEventListener('blur', () => {
+      Object.keys(cur).forEach(k => { cur[k] = false; });
+    });
+
+    // Wire up touch/mouse buttons
     document.querySelectorAll('[data-key]').forEach(btn => {
       const k = btn.dataset.key;
-      const down = e => { e.preventDefault(); cur[k] = true; };
-      const up   = e => { e.preventDefault(); cur[k] = false; };
-      btn.addEventListener('touchstart', down, {passive:false});
-      btn.addEventListener('touchend',   up,   {passive:false});
-      btn.addEventListener('mousedown',  down);
-      btn.addEventListener('mouseup',    up);
+
+      const press = e => {
+        e.preventDefault();
+        cur[k] = true;
+        btn.classList.add('pressed');
+      };
+      const release = e => {
+        e.preventDefault();
+        cur[k] = false;
+        btn.classList.remove('pressed');
+      };
+      const releaseOnLeave = e => {
+        e.preventDefault();
+        // Only release if no touches remain on this button
+        const rect = btn.getBoundingClientRect();
+        let stillOn = false;
+        for (const t of e.touches) {
+          if (t.clientX >= rect.left && t.clientX <= rect.right &&
+              t.clientY >= rect.top  && t.clientY <= rect.bottom) {
+            stillOn = true; break;
+          }
+        }
+        if (!stillOn) { cur[k] = false; btn.classList.remove('pressed'); }
+      };
+
+      btn.addEventListener('touchstart',  press,          {passive:false});
+      btn.addEventListener('touchend',    release,        {passive:false});
+      btn.addEventListener('touchcancel', release,        {passive:false});
+      btn.addEventListener('touchmove',   releaseOnLeave, {passive:false});
+      btn.addEventListener('mousedown',   press);
+      btn.addEventListener('mouseup',     release);
+      btn.addEventListener('mouseleave',  release);
     });
   }
 
@@ -28,14 +60,14 @@ const Input = (() => {
 
   return {
     init, tick,
-    left:  () => dn('ArrowLeft')  || dn('KeyA'),
-    right: () => dn('ArrowRight') || dn('KeyD'),
-    jump:  () => dn('Space') || dn('ArrowUp') || dn('KeyW'),
+    left:    () => dn('ArrowLeft')  || dn('KeyA'),
+    right:   () => dn('ArrowRight') || dn('KeyD'),
+    jump:    () => dn('Space') || dn('ArrowUp') || dn('KeyW'),
     jumpHit: () => hit('Space') || hit('ArrowUp') || hit('KeyW'),
-    run:   () => dn('ShiftLeft') || dn('ShiftRight') || dn('KeyX'),
-    fire:  () => hit('KeyZ') || hit('KeyC'),
-    pause: () => hit('KeyP') || hit('Escape'),
-    enter: () => hit('Enter') || hit('Space'),
+    run:     () => dn('ShiftLeft') || dn('ShiftRight') || dn('KeyX'),
+    fire:    () => hit('KeyZ') || hit('KeyC'),
+    pause:   () => hit('KeyP') || hit('Escape'),
+    enter:   () => hit('Enter') || hit('Space'),
     dn, hit,
   };
 })();
