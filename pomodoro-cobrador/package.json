@@ -1,0 +1,12 @@
+{
+  "name": "cobrador-pomodoro",
+  "version": "1.0.0",
+  "description": "Cobrador de Pomodoro - app desktop local que forca interacao",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^31.0.0"
+  }
+}
