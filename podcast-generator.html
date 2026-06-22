@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PodScript — Gerador de Roteiros de Podcast com IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0D0D0D;
+    --bg-side:#0A0A0A;
+    --bg-elev:#151515;
+    --bg-elev-2:#1d1d1d;
+    --accent:#C8F135;
+    --accent-dim:rgba(200,241,53,.14);
+    --accent-soft:rgba(200,241,53,.30);
+    --text:#F4F4F2;
+    --text-dim:#9b9b97;
+    --text-faint:#6a6a66;
+    --border:rgba(255,255,255,.08);
+    --border-strong:rgba(255,255,255,.16);
+    --radius:14px;
+    --danger:#ff6b6b;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    display:flex;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* scrollbars */
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.10);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.20);background-clip:padding-box}
+
+  /* ===================== SIDEBAR ===================== */
+  .sidebar{
+    width:380px;
+    flex:0 0 380px;
+    height:100vh;
+    background:var(--bg-side);
+    border-right:1px solid var(--border);
+    overflow-y:auto;
+    padding:24px 22px 32px;
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+  }
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand .dot{
+    width:34px;height:34px;border-radius:10px;
+    background:var(--accent);
+    display:grid;place-items:center;
+    font-size:18px;
+    box-shadow:0 0 22px rgba(200,241,53,.35);
+  }
+  .brand h1{font-family:'Instrument Serif',serif;font-size:25px;font-weight:400;letter-spacing:.3px;line-height:1}
+  .brand p{font-size:11px;color:var(--text-faint);letter-spacing:.5px;margin-top:2px}
+
+  .field{display:flex;flex-direction:column;gap:11px}
+  .field > label.lbl{
+    font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;
+    color:var(--text-dim);display:flex;align-items:center;gap:8px;
+  }
+  .field .hint{font-size:11px;color:var(--text-faint);font-weight:400;letter-spacing:.2px;text-transform:none}
+
+  textarea,input[type="text"],input[type="password"],select{
+    width:100%;
+    background:var(--bg-elev);
+    border:1px solid var(--border);
+    border-radius:12px;
+    color:var(--text);
+    font-family:inherit;
+    font-size:14px;
+    padding:12px 14px;
+    transition:border-color .15s,background .15s;
+    outline:none;
+  }
+  textarea{resize:vertical;min-height:84px;line-height:1.5}
+  textarea:focus,input:focus,select:focus{border-color:var(--accent-soft);background:var(--bg-elev-2)}
+  textarea::placeholder,input::placeholder{color:var(--text-faint)}
+  select{appearance:none;cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239b9b97' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    padding:8px 14px;border-radius:999px;
+    border:1px solid var(--border);
+    background:transparent;color:var(--text-dim);
+    cursor:pointer;font-size:13px;font-weight:500;
+    transition:all .14s;user-select:none;
+  }
+  .chip:hover{border-color:var(--border-strong);color:var(--text)}
+  .chip.active{background:var(--accent);color:#0D0D0D;border-color:var(--accent);font-weight:600}
+
+  /* guests */
+  .guest-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .guest{
+    display:flex;align-items:center;gap:9px;
+    padding:9px 10px;border:1px solid var(--border);border-radius:12px;
+    cursor:pointer;transition:all .14s;background:var(--bg-elev);position:relative;
+  }
+  .guest:hover{border-color:var(--border-strong)}
+  .guest.active{border-color:var(--accent);background:var(--accent-dim)}
+  .guest .av{
+    width:30px;height:30px;border-radius:50%;flex:0 0 auto;
+    display:grid;place-items:center;font-size:11px;font-weight:700;color:#0D0D0D;
+  }
+  .guest .nm{font-size:12.5px;font-weight:500;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .guest .rm{
+    position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;
+    background:var(--bg-elev-2);border:1px solid var(--border-strong);color:var(--text-dim);
+    display:none;place-items:center;font-size:12px;line-height:1;cursor:pointer;
+  }
+  .guest.custom:hover .rm{display:grid}
+  .guest .check{margin-left:auto;color:var(--accent);font-size:13px;font-weight:700;display:none}
+  .guest.active .check{display:block}
+
+  .add-row{display:flex;gap:8px}
+  .add-row input{flex:1}
+  .add-row button{
+    flex:0 0 auto;width:44px;border:1px solid var(--border);background:var(--bg-elev);
+    border-radius:12px;color:var(--accent);font-size:20px;cursor:pointer;transition:all .14s;
+  }
+  .add-row button:hover{border-color:var(--accent);background:var(--accent-dim)}
+
+  .count-tag{margin-left:auto;font-size:11px;color:var(--text-faint);font-weight:500;letter-spacing:.3px}
+  .count-tag.full{color:var(--accent)}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+  .btn-generate{
+    width:100%;padding:15px;background:var(--accent);color:#0D0D0D;
+    border:none;border-radius:13px;font-family:inherit;font-weight:700;font-size:15px;
+    cursor:pointer;transition:transform .1s,box-shadow .2s,opacity .2s;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    box-shadow:0 8px 30px -8px rgba(200,241,53,.5);
+  }
+  .btn-generate:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 12px 36px -8px rgba(200,241,53,.6)}
+  .btn-generate:active:not(:disabled){transform:translateY(0)}
+  .btn-generate:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+
+  .divider{height:1px;background:var(--border);margin:2px 0}
+
+  .api-box{display:flex;flex-direction:column;gap:9px}
+  .api-note{font-size:11px;color:var(--text-faint);line-height:1.5}
+  .api-note a{color:var(--accent);text-decoration:none}
+  .api-note a:hover{text-decoration:underline}
+
+  /* ===================== MAIN ===================== */
+  .main{flex:1;height:100vh;overflow-y:auto;position:relative}
+  .main-glow{
+    position:absolute;top:-180px;left:50%;transform:translateX(-50%);
+    width:600px;height:360px;pointer-events:none;
+    background:radial-gradient(ellipse at center,rgba(200,241,53,.10),transparent 70%);
+    filter:blur(20px);z-index:0;
+  }
+  .toolbar{
+    position:sticky;top:0;z-index:5;
+    display:flex;align-items:center;gap:12px;
+    padding:16px 32px;
+    background:rgba(13,13,13,.78);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+  }
+  .toolbar .status{font-size:13px;color:var(--text-dim);display:flex;align-items:center;gap:9px}
+  .toolbar .actions{margin-left:auto;display:flex;gap:9px}
+  .tbtn{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:8px 14px;border-radius:10px;border:1px solid var(--border);
+    background:var(--bg-elev);color:var(--text);font-size:13px;font-weight:500;
+    font-family:inherit;cursor:pointer;transition:all .14s;
+  }
+  .tbtn:hover{border-color:var(--border-strong);background:var(--bg-elev-2)}
+  .tbtn svg{width:15px;height:15px}
+  .tbtn.hidden{display:none}
+
+  .spinner{
+    width:15px;height:15px;border-radius:50%;
+    border:2px solid var(--accent-dim);border-top-color:var(--accent);
+    animation:spin .7s linear infinite;
+  }
+  .spinner.dark{border-color:rgba(13,13,13,.28);border-top-color:#0D0D0D;width:14px;height:14px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .canvas{max-width:780px;margin:0 auto;padding:40px 32px 120px;position:relative;z-index:1}
+
+  /* empty state */
+  .empty{
+    min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;gap:14px;color:var(--text-faint);
+  }
+  .empty .ico{font-size:54px;filter:grayscale(.2)}
+  .empty h2{font-family:'Instrument Serif',serif;font-size:30px;font-weight:400;color:var(--text-dim)}
+  .empty p{font-size:14px;max-width:340px;line-height:1.6}
+
+  /* script render */
+  .script-title{font-family:'Instrument Serif',serif;font-size:46px;font-weight:400;line-height:1.08;letter-spacing:.3px;margin-bottom:10px}
+  .script-desc{color:var(--text-dim);font-size:16px;font-style:italic;line-height:1.6;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:14px}
+
+  .section{margin:36px 0}
+  .section h2{
+    font-family:'Instrument Serif',serif;font-size:27px;font-weight:400;color:var(--accent);
+    margin-bottom:18px;display:flex;align-items:center;gap:12px;letter-spacing:.3px;
+  }
+  .section h2::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+
+  .dialogue{display:flex;gap:13px;margin:16px 0;animation:rise .28s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .dialogue .avatar{
+    width:44px;height:44px;border-radius:50%;flex:0 0 auto;
+    display:grid;place-items:center;font-size:14px;font-weight:700;color:#0D0D0D;
+    box-shadow:0 2px 12px rgba(0,0,0,.4);
+  }
+  .dialogue .bubble{padding-top:1px;min-width:0}
+  .dialogue .speaker{font-size:13px;font-weight:600;letter-spacing:.3px;margin-bottom:3px}
+  .dialogue .text{color:var(--text);line-height:1.65;font-size:15.5px}
+  .dialogue .text em{color:var(--text-dim)}
+
+  .narration{
+    color:var(--text-dim);font-size:14px;font-style:italic;line-height:1.6;
+    margin:14px 0 14px 57px;padding-left:14px;border-left:2px solid var(--border-strong);
+  }
+
+  .cursor{display:inline-block;width:9px;height:18px;background:var(--accent);margin-left:2px;vertical-align:text-bottom;animation:blink 1s steps(2) infinite;border-radius:1px}
+  @keyframes blink{50%{opacity:0}}
+
+  .streaming-raw{white-space:pre-wrap;font-size:15px;line-height:1.7;color:var(--text-dim)}
+
+  .error-card{
+    background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);
+    border-radius:14px;padding:22px;display:flex;gap:14px;align-items:flex-start;margin-top:20px;
+  }
+  .error-card .ic{font-size:22px}
+  .error-card h3{font-size:15px;margin-bottom:5px;color:var(--danger)}
+  .error-card p{font-size:13.5px;color:var(--text-dim);line-height:1.6;word-break:break-word}
+
+  /* toast */
+  .toast{
+    position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--bg-elev-2);border:1px solid var(--border-strong);
+    color:var(--text);padding:12px 20px;border-radius:12px;font-size:13.5px;font-weight:500;
+    box-shadow:0 12px 40px rgba(0,0,0,.5);opacity:0;pointer-events:none;
+    transition:opacity .2s,transform .2s;z-index:50;display:flex;align-items:center;gap:9px;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast .em{color:var(--accent)}
+
+  /* responsive */
+  @media (max-width:860px){
+    body{flex-direction:column;overflow:auto;height:auto}
+    .sidebar{width:100%;flex:none;height:auto;border-right:none;border-bottom:1px solid var(--border)}
+    .main{height:auto;min-height:60vh}
+    .canvas{padding:28px 20px 90px}
+    .script-title{font-size:34px}
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="dot">🎙️</div>
+      <div>
+        <h1>PodScript</h1>
+        <p>GERADOR DE ROTEIROS · IA</p>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl" for="theme">Tema do episódio</label>
+      <textarea id="theme" placeholder="Ex.: O futuro da inteligência artificial e seu impacto no mercado de trabalho..."></textarea>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Formato</label>
+      <div class="chips" id="formatChips"></div>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Tom</label>
+      <div class="chips" id="toneChips"></div>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Convidados <span class="count-tag" id="guestCount">0/3</span></label>
+      <div class="guest-grid" id="guestGrid"></div>
+      <div class="add-row">
+        <input type="text" id="customGuest" placeholder="Adicionar convidado..." maxlength="40">
+        <button id="addGuestBtn" title="Adicionar">+</button>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label class="lbl" for="duration">Duração</label>
+        <select id="duration">
+          <option value="5 min">5 min</option>
+          <option value="15 min" selected>15 min</option>
+          <option value="30 min">30 min</option>
+          <option value="1 hora">1 hora</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="lbl" for="language">Idioma</label>
+        <select id="language">
+          <option>Português</option>
+          <option>English</option>
+          <option>Español</option>
+          <option>Français</option>
+          <option>Italiano</option>
+          <option>Deutsch</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-generate" id="generateBtn">
+      <span id="genIcon">✦</span>
+      <span id="genLabel">Gerar roteiro</span>
+    </button>
+
+    <div class="divider"></div>
+
+    <div class="field api-box">
+      <label class="lbl" for="apiKey">Configuração da API</label>
+      <input type="password" id="apiKey" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+      <p class="api-note">🔒 Sua chave fica apenas neste navegador (localStorage) e é enviada direto à Anthropic. <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Obter uma chave →</a></p>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main" id="main">
+    <div class="main-glow"></div>
+    <div class="toolbar">
+      <div class="status" id="status">Pronto para gerar</div>
+      <div class="actions">
+        <button class="tbtn hidden" id="copyBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar
+        </button>
+        <button class="tbtn hidden" id="downloadBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          Baixar .txt
+        </button>
+      </div>
+    </div>
+
+    <div class="canvas" id="canvas">
+      <div class="empty" id="empty">
+        <div class="ico">🎧</div>
+        <h2>Seu roteiro aparecerá aqui</h2>
+        <p>Preencha o tema, escolha o formato, o tom e os convidados, e clique em <strong>Gerar roteiro</strong>.</p>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- data ---------- */
+  const FORMATS   = ["Entrevista","Debate","Monólogo","Investigativo","Mesa redonda"];
+  const TONES     = ["Informativo","Descontraído","Provocador","Filosófico","Jornalístico"];
+  const DURATIONS = { "5 min":4096, "15 min":8192, "30 min":16384, "1 hora":32000 };
+  const PRESET_GUESTS = [
+    "Albert Einstein","Cleópatra","Leonardo da Vinci","Frida Kahlo",
+    "Steve Jobs","Marie Curie","Nikola Tesla","Sócrates",
+    "Ada Lovelace","Carl Sagan","Machado de Assis","Clarice Lispector"
+  ];
+  const ACCENT = "#C8F135";
+  const API_URL = "https://api.anthropic.com/v1/messages";
+  const MODEL   = "claude-sonnet-4-6";
+
+  /* ---------- state ---------- */
+  const state = {
+    format:   "Entrevista",
+    tone:     "Informativo",
+    guests:   [],           // selected names (max 3)
+    custom:   [],           // user-added guest names
+    rawText:  ""
+  };
+
+  /* ---------- el refs ---------- */
+  const $ = (id) => document.getElementById(id);
+  const themeEl   = $("theme");
+  const guestGrid = $("guestGrid");
+  const guestCount= $("guestCount");
+  const customIn  = $("customGuest");
+  const durationEl= $("duration");
+  const languageEl= $("language");
+  const apiKeyEl  = $("apiKey");
+  const genBtn    = $("generateBtn");
+  const genLabel  = $("genLabel");
+  const genIcon   = $("genIcon");
+  const statusEl  = $("status");
+  const canvas    = $("canvas");
+  const mainEl    = $("main");
+  const copyBtn   = $("copyBtn");
+  const dlBtn     = $("downloadBtn");
+  const toastEl   = $("toast");
+
+  /* ---------- helpers ---------- */
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+  }
+  function fmt(s){
+    let t = esc(s);
+    t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    t = t.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    t = t.replace(/_([^_]+)_/g, "<em>$1</em>");
+    return t;
+  }
+  function initials(name){
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if(!parts.length) return "?";
+    if(parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+    return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+  }
+  function isHost(name){
+    return /apresentad|âncora|ancora|moderad|host|present|narrad/i.test(name);
+  }
+  function colorFor(name){
+    if(isHost(name)) return ACCENT;
+    let h = 0;
+    for(let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) % 360;
+    return "hsl(" + h + ", 62%, 64%)";
+  }
+  let toastTimer = null;
+  function toast(msg){
+    toastEl.innerHTML = '<span class="em">●</span> ' + esc(msg);
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>toastEl.classList.remove("show"), 2600);
+  }
+
+  /* ---------- chips ---------- */
+  function buildChips(containerId, items, key){
+    const c = $(containerId);
+    c.innerHTML = "";
+    items.forEach(item => {
+      const b = document.createElement("button");
+      b.className = "chip" + (state[key] === item ? " active" : "");
+      b.textContent = item;
+      b.addEventListener("click", () => {
+        state[key] = item;
+        c.querySelectorAll(".chip").forEach(x => x.classList.remove("active"));
+        b.classList.add("active");
+      });
+      c.appendChild(b);
+    });
+  }
+
+  /* ---------- guests ---------- */
+  function allGuests(){ return PRESET_GUESTS.concat(state.custom); }
+
+  function renderGuests(){
+    guestGrid.innerHTML = "";
+    allGuests().forEach(name => {
+      const active = state.guests.includes(name);
+      const isCustom = state.custom.includes(name);
+      const el = document.createElement("div");
+      el.className = "guest" + (active ? " active" : "") + (isCustom ? " custom" : "");
+      el.innerHTML =
+        '<div class="av" style="background:' + colorFor(name) + '">' + esc(initials(name)) + '</div>' +
+        '<div class="nm">' + esc(name) + '</div>' +
+        '<div class="check">✓</div>' +
+        (isCustom ? '<div class="rm" title="Remover">×</div>' : '');
+      el.addEventListener("click", (e) => {
+        if(e.target.classList.contains("rm")){ removeCustom(name); return; }
+        toggleGuest(name);
+      });
+      guestGrid.appendChild(el);
+    });
+    updateCount();
+  }
+  function toggleGuest(name){
+    const i = state.guests.indexOf(name);
+    if(i >= 0){ state.guests.splice(i,1); }
+    else {
+      if(state.guests.length >= 3){ toast("Máximo de 3 convidados"); return; }
+      state.guests.push(name);
+    }
+    renderGuests();
+  }
+  function addCustom(){
+    const v = customIn.value.trim().replace(/\s+/g," ");
+    if(!v) return;
+    if(!allGuests().some(g => g.toLowerCase() === v.toLowerCase())){
+      state.custom.push(v);
+      if(state.guests.length < 3) state.guests.push(v);
+      else toast("Convidado adicionado (limite de 3 selecionados)");
+    } else {
+      toast("Esse convidado já está na lista");
+    }
+    customIn.value = "";
+    renderGuests();
+  }
+  function removeCustom(name){
+    state.custom = state.custom.filter(g => g !== name);
+    state.guests = state.guests.filter(g => g !== name);
+    renderGuests();
+  }
+  function updateCount(){
+    guestCount.textContent = state.guests.length + "/3";
+    guestCount.classList.toggle("full", state.guests.length >= 3);
+  }
+
+  /* ---------- prompt ---------- */
+  function buildPrompt(theme){
+    const lang = languageEl.value;
+    const duration = durationEl.value;
+    const guests = state.guests.length
+      ? state.guests.join(", ")
+      : "Nenhum convidado — apenas o(a) apresentador(a) conduzindo o episódio";
+
+    return [
+      "Você é um roteirista profissional de podcasts premiados. Crie um roteiro completo, fluido e envolvente com base nas especificações abaixo.",
+      "",
+      "ESPECIFICAÇÕES:",
+      "- Tema do episódio: " + theme,
+      "- Formato: " + state.format,
+      "- Tom: " + state.tone,
+      "- Convidados (personagens falantes): " + guests,
+      "- Duração alvo: " + duration,
+      "- Idioma de saída: " + lang,
+      "",
+      "INSTRUÇÕES DE FORMATAÇÃO (siga EXATAMENTE):",
+      "1. Comece com uma linha exatamente neste formato: \"TÍTULO: <um título cativante para o episódio>\".",
+      "2. Logo depois, uma linha: \"DESCRIÇÃO: <descrição de 1 a 2 frases, estilo sinopse de divulgação>\".",
+      "3. Organize o conteúdo em seções, cada uma começando com \"## <Nome da Seção>\" (ex.: ## Abertura, ## Bloco 1, ## Encerramento).",
+      "4. Escreva os diálogos no formato \"NOME: fala\" — uma fala por linha, com o nome do personagem seguido de dois-pontos e a fala.",
+      "5. Use um(a) apresentador(a) chamado(a) \"APRESENTADOR\" conduzindo o episódio. Inclua TODOS os convidados especificados como personagens que falam ativamente.",
+      "6. Pode usar rubricas/indicações de cena em uma linha própria entre parênteses, ex.: (vinheta de abertura) ou (risos).",
+      "7. Ajuste a profundidade, o número de blocos e o tamanho das falas à duração alvo de " + duration + ".",
+      "8. Mantenha os rótulos estruturais \"TÍTULO:\", \"DESCRIÇÃO:\" e \"##\" como marcadores, mas escreva TODO o restante do conteúdo (título, descrição, nomes de seções e falas) em " + lang + ".",
+      "9. Responda APENAS com o roteiro no formato especificado — sem comentários extras, sem blocos de código, sem explicações antes ou depois.",
+      "",
+      "Crie o roteiro agora."
+    ].join("\n");
+  }
+
+  /* ---------- parser ---------- */
+  function parseScript(raw){
+    const lines = raw.replace(/\r/g,"").split("\n");
+    let title = "", description = "";
+    const sections = [];
+    let cur = null;
+    const ensure = () => { if(!cur){ cur = {name:"", items:[]}; sections.push(cur); } return cur; };
+
+    for(const rawLine of lines){
+      const t = rawLine.trim();
+      if(!t) continue;
+      if(/^```/.test(t)) continue;                 // strip stray code fences
+
+      let m;
+      if(!title && (m = t.match(/^(?:T[IÍ]TULO|TITLE|T[IÍ]TULO DO EPIS[OÓ]DIO|TITRE|T[IÍ]TULO DEL EPISODIO)\s*:\s*(.+)$/i))){
+        title = m[1].trim(); continue;
+      }
+      if(!description && (m = t.match(/^(?:DESCRI[ÇC][AÃ]O|DESCRIPTION|DESCRIPCI[OÓ]N|BESCHREIBUNG|DESCRIZIONE)\s*:\s*(.+)$/i))){
+        description = m[1].trim(); continue;
+      }
+      if((m = t.match(/^#{1,6}\s+(.+)$/))){
+        cur = {name: m[1].replace(/[#*]/g,"").trim(), items:[]};
+        sections.push(cur); continue;
+      }
+      // stage direction: a whole line wrapped in ( ) or [ ]
+      if(/^[\(\[].*[\)\]]$/.test(t)){
+        ensure().items.push({type:"narration", text:t}); continue;
+      }
+      // dialogue: NAME: text
+      if((m = t.match(/^([^:]{1,40}):\s+(.+)$/)) && looksLikeName(m[1])){
+        ensure().items.push({type:"dialogue", speaker:m[1].trim(), text:m[2].trim()}); continue;
+      }
+      ensure().items.push({type:"narration", text:t});
+    }
+    return {title, description, sections};
+  }
+  function looksLikeName(s){
+    s = s.trim();
+    if(s.length < 1 || s.length > 40) return false;
+    if(/[.!?]/.test(s)) return false;
+    if(!/[A-Za-zÀ-ÿ]/.test(s)) return false;
+    return true;
+  }
+
+  /* ---------- render ---------- */
+  function renderScript(raw, streaming){
+    const data = parseScript(raw);
+
+    // before any structure is recognised, show streaming raw text
+    if(!data.title && !data.description && data.sections.length === 0){
+      canvas.innerHTML = '<div class="streaming-raw">' + fmt(raw) +
+        (streaming ? '<span class="cursor"></span>' : '') + '</div>';
+      return;
+    }
+
+    let html = "";
+    if(data.title)       html += '<h1 class="script-title">' + fmt(data.title) + '</h1>';
+    if(data.description) html += '<p class="script-desc">' + fmt(data.description) + '</p>';
+
+    data.sections.forEach((sec, si) => {
+      html += '<div class="section">';
+      if(sec.name) html += '<h2>' + fmt(sec.name) + '</h2>';
+      sec.items.forEach(it => {
+        if(it.type === "dialogue"){
+          const col = colorFor(it.speaker);
+          html +=
+            '<div class="dialogue">' +
+              '<div class="avatar" style="background:' + col + '">' + esc(initials(it.speaker)) + '</div>' +
+              '<div class="bubble">' +
+                '<div class="speaker" style="color:' + col + '">' + esc(it.speaker) + '</div>' +
+                '<div class="text">' + fmt(it.text) + '</div>' +
+              '</div>' +
+            '</div>';
+        } else {
+          html += '<div class="narration">' + fmt(it.text) + '</div>';
+        }
+      });
+      const last = si === data.sections.length - 1;
+      if(streaming && last) html += '<span class="cursor"></span>';
+      html += '</div>';
+    });
+
+    canvas.innerHTML = html;
+  }
+
+  /* ---------- streaming render throttle ---------- */
+  let renderTimer = null;
+  function scheduleRender(){
+    if(renderTimer) return;
+    renderTimer = setTimeout(() => {
+      renderTimer = null;
+      const stickToBottom = (mainEl.scrollHeight - mainEl.scrollTop - mainEl.clientHeight) < 160;
+      renderScript(state.rawText, true);
+      if(stickToBottom) mainEl.scrollTop = mainEl.scrollHeight;
+    }, 90);
+  }
+
+  /* ---------- generation ---------- */
+  let generating = false;
+
+  function setGenerating(on){
+    generating = on;
+    genBtn.disabled = on;
+    genLabel.textContent = on ? "Gerando..." : "Gerar roteiro";
+    genIcon.innerHTML = on ? '<span class="spinner dark"></span>' : "✦";
+    if(on){
+      statusEl.innerHTML = '<span class="spinner"></span> Gerando roteiro...';
+      copyBtn.classList.add("hidden");
+      dlBtn.classList.add("hidden");
+    }
+  }
+
+  function showError(msg){
+    canvas.innerHTML =
+      '<div class="error-card">' +
+        '<div class="ic">⚠️</div>' +
+        '<div><h3>Não foi possível gerar o roteiro</h3><p>' + esc(msg) + '</p></div>' +
+      '</div>';
+    statusEl.textContent = "Erro na geração";
+  }
+
+  async function generate(){
+    if(generating) return;
+
+    const apiKey = apiKeyEl.value.trim();
+    if(!apiKey){ toast("Insira sua chave de API da Anthropic"); apiKeyEl.focus(); return; }
+
+    const theme = themeEl.value.trim();
+    if(!theme){ toast("Descreva o tema do episódio"); themeEl.focus(); return; }
+
+    localStorage.setItem("podscript_key", apiKey);
+
+    setGenerating(true);
+    state.rawText = "";
+    canvas.innerHTML = '<div class="streaming-raw"><span class="cursor"></span></div>';
+
+    const maxTokens = DURATIONS[durationEl.value] || 8192;
+    const body = {
+      model: MODEL,
+      max_tokens: maxTokens,
+      stream: true,
+      messages: [{ role: "user", content: buildPrompt(theme) }]
+    };
+
+    try {
+      const resp = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify(body)
+      });
+
+      if(!resp.ok){
+        let msg = "Erro " + resp.status;
+        try {
+          const j = await resp.json();
+          if(j && j.error && j.error.message) msg = j.error.message;
+        } catch(_){
+          if(resp.status === 401) msg = "Chave de API inválida (401).";
+        }
+        throw new Error(msg);
+      }
+
+      await readStream(resp);
+
+      // final clean render
+      renderScript(state.rawText, false);
+      finishGeneration();
+
+    } catch(err){
+      setGenerating(false);
+      const m = (err && err.message) ? err.message : String(err);
+      if(/Failed to fetch|NetworkError|load failed/i.test(m)){
+        showError("Falha de conexão com a API da Anthropic. Verifique sua internet e se a chave permite acesso direto pelo navegador.");
+      } else {
+        showError(m);
+      }
+    }
+  }
+
+  async function readStream(resp){
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while(true){
+      const { done, value } = await reader.read();
+      if(done) break;
+      buffer += decoder.decode(value, { stream:true });
+
+      let nl;
+      while((nl = buffer.indexOf("\n")) >= 0){
+        const line = buffer.slice(0, nl).trim();
+        buffer = buffer.slice(nl + 1);
+        if(!line || line.startsWith("event:")) continue;
+        if(!line.startsWith("data:")) continue;
+
+        const payload = line.slice(5).trim();
+        if(payload === "[DONE]") continue;
+
+        let evt;
+        try { evt = JSON.parse(payload); } catch(_) { continue; }
+
+        if(evt.type === "content_block_delta" && evt.delta && evt.delta.type === "text_delta"){
+          state.rawText += evt.delta.text;
+          scheduleRender();
+        } else if(evt.type === "error"){
+          throw new Error((evt.error && evt.error.message) || "Erro durante o streaming.");
+        }
+      }
+    }
+  }
+
+  function finishGeneration(){
+    setGenerating(false);
+    if(state.rawText.trim()){
+      statusEl.textContent = "Roteiro pronto ✓";
+      copyBtn.classList.remove("hidden");
+      dlBtn.classList.remove("hidden");
+    } else {
+      showError("A resposta veio vazia. Tente novamente.");
+    }
+  }
+
+  /* ---------- copy / download ---------- */
+  function cleanText(){
+    // remove the structural labels for a cleaner export while keeping content
+    return state.rawText.trim();
+  }
+  function scriptFilename(){
+    const data = parseScript(state.rawText);
+    let base = (data.title || "roteiro-podcast").toLowerCase();
+    base = base.normalize("NFD").replace(/[̀-ͯ]/g,"")
+               .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60);
+    return (base || "roteiro-podcast") + ".txt";
+  }
+  async function copyScript(){
+    try {
+      await navigator.clipboard.writeText(cleanText());
+      toast("Roteiro copiado!");
+    } catch(_){
+      // fallback
+      const ta = document.createElement("textarea");
+      ta.value = cleanText(); document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); toast("Roteiro copiado!"); }
+      catch(e){ toast("Não foi possível copiar"); }
+      document.body.removeChild(ta);
+    }
+  }
+  function downloadScript(){
+    const blob = new Blob([cleanText()], { type:"text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = scriptFilename();
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast("Download iniciado");
+  }
+
+  /* ---------- init ---------- */
+  function init(){
+    buildChips("formatChips", FORMATS, "format");
+    buildChips("toneChips",  TONES,   "tone");
+    renderGuests();
+
+    const savedKey = localStorage.getItem("podscript_key");
+    if(savedKey) apiKeyEl.value = savedKey;
+
+    genBtn.addEventListener("click", generate);
+    $("addGuestBtn").addEventListener("click", addCustom);
+    customIn.addEventListener("keydown", (e) => { if(e.key === "Enter"){ e.preventDefault(); addCustom(); } });
+    themeEl.addEventListener("keydown", (e) => {
+      if((e.metaKey || e.ctrlKey) && e.key === "Enter"){ e.preventDefault(); generate(); }
+    });
+    copyBtn.addEventListener("click", copyScript);
+    dlBtn.addEventListener("click", downloadScript);
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
