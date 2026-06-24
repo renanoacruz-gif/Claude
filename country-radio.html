@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nashville Country Radio 🤠</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Oswald:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080503;
+      --bg2: #0f0a06;
+      --card: #181008;
+      --card2: #201510;
+      --border: #3a2510;
+      --gold: #c8920e;
+      --gold2: #e8b030;
+      --gold-glow: rgba(200,146,14,0.35);
+      --red: #a82820;
+      --red-glow: rgba(168,40,32,0.35);
+      --green: #1a9640;
+      --teal: #0e8070;
+      --text: #eeddb8;
+      --text2: #c0a880;
+      --muted: #806848;
+      --player: #060402;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Open Sans', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      text-align: center;
+      padding: 36px 20px 24px;
+      background: linear-gradient(180deg, #130c04 0%, transparent 100%);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .site-header::before {
+      content:'';
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,146,14,.12) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .hdr-stars { font-size:1.1rem; letter-spacing:10px; color:var(--gold); opacity:.5; margin-bottom:6px; }
+    .hdr-logo {
+      font-family:'Playfair Display',serif; font-weight:900;
+      font-size: clamp(2rem,7vw,4.2rem);
+      color:var(--gold2);
+      text-shadow: 0 0 24px var(--gold-glow), 0 0 48px rgba(200,146,14,.2), 2px 2px 0 rgba(0,0,0,.9);
+      letter-spacing:4px; line-height:1.1;
+    }
+    .hdr-sub {
+      font-family:'Oswald',sans-serif; font-weight:300;
+      font-size: clamp(.8rem,2vw,1rem);
+      color:var(--text2); letter-spacing:6px; text-transform:uppercase; margin-top:8px;
+    }
+    .hdr-line { width:220px; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:14px auto 0; }
+    .hdr-wave {
+      display:flex; justify-content:center; align-items:flex-end;
+      gap:3px; height:26px; margin-top:14px; opacity:.35;
+    }
+    .wv { width:3px; background:var(--gold); border-radius:2px 2px 0 0; animation:wvanim 1.6s ease-in-out infinite; }
+    .wv:nth-child(1){height:8px;animation-delay:0s}
+    .wv:nth-child(2){height:18px;animation-delay:.1s}
+    .wv:nth-child(3){height:26px;animation-delay:.2s}
+    .wv:nth-child(4){height:14px;animation-delay:.12s}
+    .wv:nth-child(5){height:22px;animation-delay:.06s}
+    .wv:nth-child(6){height:10px;animation-delay:.22s}
+    .wv:nth-child(7){height:20px;animation-delay:.08s}
+    .wv:nth-child(8){height:26px;animation-delay:.28s}
+    .wv:nth-child(9){height:16px;animation-delay:.04s}
+    .wv:nth-child(10){height:6px;animation-delay:.18s}
+    @keyframes wvanim { 0%,100%{transform:scaleY(.4)} 50%{transform:scaleY(1)} }
+
+    /* ── TABS ── */
+    .nav-tabs {
+      display:flex; justify-content:center; gap:4px;
+      padding:16px; background:var(--bg2);
+      border-bottom:1px solid var(--border); flex-wrap:wrap;
+    }
+    .tab-btn {
+      font-family:'Oswald',sans-serif; font-size:.9rem; font-weight:600;
+      letter-spacing:1px; padding:9px 18px;
+      border:1px solid var(--border); border-radius:4px;
+      background:var(--card); color:var(--muted);
+      cursor:pointer; transition:all .2s; text-transform:uppercase;
+    }
+    .tab-btn:hover { background:var(--card2); color:var(--text); border-color:var(--gold); }
+    .tab-btn.active {
+      background:linear-gradient(135deg,#281800,#3a2208);
+      color:var(--gold2); border-color:var(--gold);
+      text-shadow:0 0 10px var(--gold-glow);
+      box-shadow:0 0 12px var(--gold-glow);
+    }
+
+    /* ── PANELS ── */
+    .tab-panel { display:none; padding:28px 20px; max-width:1200px; margin:0 auto; animation:fadeUp .3s ease; }
+    .tab-panel.active { display:block; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── SECTION TITLES ── */
+    .sec-title {
+      font-family:'Playfair Display',serif; font-weight:700;
+      font-size:clamp(1.4rem,3.5vw,2rem); color:var(--gold2);
+      text-shadow:0 0 16px var(--gold-glow); margin-bottom:4px;
+    }
+    .sec-sub { font-size:.85rem; color:var(--muted); margin-bottom:20px; font-weight:300; }
+    .sec-divider { width:100%; height:1px; background:linear-gradient(90deg,var(--gold),transparent); margin:28px 0; }
+
+    /* ── STATION GRID ── */
+    .station-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px; margin-bottom:24px; }
+
+    .station-card {
+      background:var(--card); border:1px solid var(--border); border-radius:8px;
+      padding:16px; cursor:pointer; transition:all .22s;
+      display:flex; align-items:center; gap:14px; position:relative; overflow:hidden;
+    }
+    .station-card::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,transparent 55%,rgba(200,146,14,.04));
+      pointer-events:none;
+    }
+    .station-card:hover {
+      background:var(--card2); border-color:var(--gold);
+      transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 14px var(--gold-glow);
+    }
+    .station-card.playing {
+      border-color:var(--gold2);
+      background:linear-gradient(135deg,#241500,#180e00);
+      box-shadow:0 0 22px var(--gold-glow);
+    }
+    .station-card.playing::after {
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold));
+      animation:gbar 2s linear infinite;
+    }
+    @keyframes gbar { 0%{opacity:1}50%{opacity:.4}100%{opacity:1} }
+
+    .station-card.christian .station-icon { background:linear-gradient(135deg,#081825,#040c18); border-color:#14305a; }
+
+    .station-icon {
+      width:54px; height:54px; border-radius:8px; flex-shrink:0;
+      background:linear-gradient(135deg,#2a1800,#180e00); border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .stn-logo {
+      font-family:'Oswald',sans-serif; font-weight:700; font-size:.68rem;
+      color:var(--gold); text-align:center; line-height:1.2; letter-spacing:.5px;
+      white-space:pre-line;
+    }
+    .station-card.christian .stn-logo { color:#4a9fd8; }
+
+    .station-info { flex:1; min-width:0; }
+    .stn-name { font-family:'Oswald',sans-serif; font-size:1rem; font-weight:600; color:var(--text); letter-spacing:.3px; }
+    .stn-freq { font-size:.78rem; color:var(--gold); font-weight:600; margin-top:2px; }
+    .stn-desc { font-size:.76rem; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .stn-badges { display:flex; gap:5px; margin-top:7px; flex-wrap:wrap; }
+    .badge {
+      font-size:.6rem; font-weight:700; letter-spacing:.4px;
+      padding:2px 7px; border-radius:3px; text-transform:uppercase;
+    }
+    .b-live { background:rgba(26,150,64,.18); color:#22cc55; border:1px solid rgba(26,150,64,.4); }
+    .b-live::before { content:'● '; animation:blink 1.3s infinite; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:.25} }
+    .b-country { background:rgba(200,146,14,.12); color:var(--gold); border:1px solid rgba(200,146,14,.28); }
+    .b-christian { background:rgba(14,128,112,.14); color:#18c0a8; border:1px solid rgba(14,128,112,.3); }
+    .b-nashville { background:rgba(168,40,32,.15); color:#e06060; border:1px solid rgba(168,40,32,.3); }
+    .b-texas { background:rgba(200,50,14,.15); color:#e08060; border:1px solid rgba(200,50,14,.3); }
+
+    .play-ind {
+      width:34px; height:34px; border-radius:50%; flex-shrink:0;
+      background:var(--card); border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      color:var(--muted); font-size:.85rem; transition:all .2s;
+    }
+    .station-card:hover .play-ind,
+    .station-card.playing .play-ind { background:var(--gold2); border-color:var(--gold2); color:var(--bg); }
+
+    /* ── ARTIST LAYOUT ── */
+    .artist-layout { display:grid; grid-template-columns:1fr 360px; gap:22px; align-items:start; }
+    @media(max-width:860px){.artist-layout{grid-template-columns:1fr}}
+
+    .artist-hdr { display:flex; align-items:center; gap:16px; margin-bottom:18px; }
+    .artist-avatar {
+      width:76px; height:76px; border-radius:50%; flex-shrink:0;
+      background:linear-gradient(135deg,var(--gold),var(--red));
+      display:flex; align-items:center; justify-content:center;
+      font-size:2.2rem; box-shadow:0 0 22px var(--gold-glow);
+    }
+    .artist-avatar.blue { background:linear-gradient(135deg,#1a4a8a,#0a2050); box-shadow:0 0 22px rgba(26,74,138,.4); }
+    .artist-meta h2 {
+      font-family:'Playfair Display',serif; font-weight:900; font-style:italic;
+      font-size:clamp(1.6rem,4vw,2.3rem); color:var(--gold2);
+      text-shadow:0 0 18px var(--gold-glow);
+    }
+    .artist-meta p { font-size:.85rem; color:var(--muted); margin-top:4px; }
+
+    .artist-bio {
+      background:linear-gradient(135deg,rgba(200,146,14,.05),transparent);
+      border:1px solid rgba(200,146,14,.18); border-radius:8px; padding:18px; margin-bottom:22px;
+    }
+    .artist-bio p { font-size:.88rem; line-height:1.75; color:var(--text2); }
+    .bio-quote {
+      font-family:'Playfair Display',serif; font-style:italic; font-size:1rem;
+      color:var(--gold); border-left:3px solid var(--gold);
+      padding-left:14px; margin-top:12px;
+    }
+    .awards { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+    .award {
+      background:rgba(200,146,14,.1); border:1px solid rgba(200,146,14,.25);
+      border-radius:20px; padding:3px 12px; font-size:.7rem; color:var(--gold); font-weight:700;
+    }
+
+    .yt-wrap {
+      position:relative; padding-bottom:56.25%; border-radius:8px; overflow:hidden;
+      border:1px solid var(--border); background:#000;
+    }
+    .yt-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; }
+
+    .tracklist { background:var(--card); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+    .tl-header {
+      background:linear-gradient(135deg,#281800,#181000);
+      padding:12px 16px; font-family:'Oswald',sans-serif; font-size:.82rem;
+      letter-spacing:2px; color:var(--gold); border-bottom:1px solid var(--border); text-transform:uppercase;
+    }
+    .track-item {
+      display:flex; align-items:center; gap:11px; padding:11px 16px;
+      border-bottom:1px solid rgba(58,37,16,.5); cursor:pointer; transition:all .18s;
+    }
+    .track-item:last-child { border-bottom:none; }
+    .track-item:hover { background:var(--card2); }
+    .track-item.active {
+      background:linear-gradient(90deg,rgba(200,146,14,.1),transparent);
+      border-left:3px solid var(--gold2);
+    }
+    .trk-num { width:22px; font-size:.8rem; color:var(--muted); text-align:center; flex-shrink:0; }
+    .track-item.active .trk-num { color:var(--gold2); }
+    .trk-info { flex:1; min-width:0; }
+    .trk-name { font-size:.88rem; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .track-item.active .trk-name { color:var(--gold2); }
+    .trk-album { font-size:.72rem; color:var(--muted); margin-top:2px; }
+    .trk-year { font-size:.72rem; color:var(--muted); flex-shrink:0; }
+
+    /* ── CHRISTIAN SECTION ── */
+    .christian-banner {
+      background:linear-gradient(135deg,rgba(14,128,112,.1),rgba(26,74,138,.08));
+      border:1px solid rgba(14,128,112,.22); border-radius:8px;
+      padding:18px; margin-bottom:22px; display:flex; align-items:center; gap:14px;
+    }
+    .cross-big { font-size:2.2rem; color:#18c0a8; text-shadow:0 0 14px rgba(24,192,168,.4); flex-shrink:0; }
+    .ch-banner-text h3 { font-family:'Playfair Display',serif; font-size:1.3rem; color:#18c0a8; }
+    .ch-banner-text p { font-size:.84rem; color:var(--muted); margin-top:4px; }
+
+    /* ── PLAYER BAR ── */
+    .player-bar {
+      position:fixed; bottom:0; left:0; right:0; height:88px;
+      background:var(--player); border-top:1px solid var(--border);
+      display:flex; align-items:center; gap:14px; padding:0 18px;
+      z-index:1000; box-shadow:0 -4px 24px rgba(0,0,0,.7);
+    }
+    .eq-bars { display:flex; align-items:flex-end; gap:2px; height:22px; flex-shrink:0; }
+    .eq-b { width:4px; background:var(--gold); border-radius:2px 2px 0 0; animation:eqanim .85s ease infinite; }
+    .eq-b:nth-child(1){animation-delay:0s}
+    .eq-b:nth-child(2){animation-delay:.1s}
+    .eq-b:nth-child(3){animation-delay:.2s}
+    .eq-b:nth-child(4){animation-delay:.15s}
+    .eq-b:nth-child(5){animation-delay:.05s}
+    @keyframes eqanim { 0%,100%{height:5px}50%{height:20px} }
+    .eq-bars.paused .eq-b { animation:none; height:5px; }
+
+    .plr-info { flex:1; min-width:0; }
+    .plr-name { font-family:'Oswald',sans-serif; font-size:.95rem; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .plr-freq { font-size:.76rem; color:var(--gold); margin-top:2px; }
+    .plr-status { font-size:.72rem; color:var(--muted); margin-top:2px; }
+
+    .plr-play {
+      width:50px; height:50px; border-radius:50%; border:none;
+      background:var(--gold2); color:var(--bg); font-size:1.1rem;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:all .18s; box-shadow:0 0 16px var(--gold-glow); flex-shrink:0;
+    }
+    .plr-play:hover { background:var(--gold); transform:scale(1.06); }
+    .plr-play:active { transform:scale(.96); }
+
+    .plr-vol { display:flex; align-items:center; gap:7px; flex-shrink:0; }
+    .plr-vol-icon { font-size:.9rem; color:var(--muted); }
+    .vol-range {
+      width:80px; height:4px; border-radius:2px; background:var(--border);
+      -webkit-appearance:none; appearance:none; outline:none; cursor:pointer;
+    }
+    .vol-range::-webkit-slider-thumb {
+      -webkit-appearance:none; width:13px; height:13px;
+      border-radius:50%; background:var(--gold2); cursor:pointer;
+    }
+    .vol-range::-moz-range-thumb {
+      width:13px; height:13px; border-radius:50%;
+      background:var(--gold2); border:none; cursor:pointer;
+    }
+
+    @media(max-width:580px){
+      .player-bar{padding:0 10px;gap:10px}
+      .plr-vol{display:none}
+      .plr-play{width:42px;height:42px}
+      .station-grid{grid-template-columns:1fr}
+    }
+
+    /* link fallback inside status */
+    .plr-status a { color:var(--gold); text-decoration:none; }
+    .plr-status a:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="hdr-stars">★ ★ ★ ★ ★</div>
+  <div class="hdr-logo">NASHVILLE COUNTRY RADIO</div>
+  <div class="hdr-sub">American Country &amp; Christian Gold · Est. 2025</div>
+  <div class="hdr-line"></div>
+  <div class="hdr-wave">
+    <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+    <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+    <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+    <div class="wv"></div>
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="nav-tabs">
+  <button class="tab-btn active" data-tab="radio">🎙 Live Radio</button>
+  <button class="tab-btn" data-tab="stapleton">🎸 Chris Stapleton</button>
+  <button class="tab-btn" data-tab="jackson">🤠 Alan Jackson</button>
+  <button class="tab-btn" data-tab="christian">✝️ Christian Country</button>
+</nav>
+
+<!-- ══ TAB: LIVE RADIO ══ -->
+<div id="tab-radio" class="tab-panel active">
+  <div class="sec-title">🇺🇸 American Country Radio</div>
+  <div class="sec-sub">Live streaming country radio stations from coast to coast — click any station to play</div>
+  <div class="station-grid" id="grid-american"></div>
+
+  <div class="sec-divider"></div>
+
+  <div class="sec-title">✝️ Christian Country Radio</div>
+  <div class="sec-sub">Faith-filled country music 24 hours a day</div>
+  <div class="station-grid" id="grid-christian-radio"></div>
+</div>
+
+<!-- ══ TAB: CHRIS STAPLETON ══ -->
+<div id="tab-stapleton" class="tab-panel">
+  <div class="artist-hdr">
+    <div class="artist-avatar">🎸</div>
+    <div class="artist-meta">
+      <h2>Chris Stapleton</h2>
+      <p>Lexington, KY · Soul · Country · Blues · Americana</p>
+    </div>
+  </div>
+
+  <div class="artist-bio">
+    <p>Chris Stapleton is one of the most celebrated voices in modern country and Americana music. His raw, soulful baritone and masterful guitar work have redefined what country music can be. From the platinum-selling debut <em>Traveller</em> (2015) to the sweeping <em>Starting Over</em> (2020), every record stands as a landmark of American roots music. A former staff songwriter in Nashville who co-wrote hits for dozens of artists before stepping into the spotlight.</p>
+    <div class="bio-quote">"Music is the most powerful thing in the world, and it's so underutilized as a force for good."</div>
+    <div class="awards">
+      <span class="award">🏆 7× Grammy Winner</span>
+      <span class="award">🎵 CMA Entertainer of the Year</span>
+      <span class="award">📀 Traveller 3× Platinum</span>
+      <span class="award">🎸 ACM Artist of the Year</span>
+      <span class="award">🎤 Starting Over — Billboard #1</span>
+    </div>
+  </div>
+
+  <div class="artist-layout">
+    <div>
+      <div class="yt-wrap">
+        <iframe id="yt-stapleton"
+          src="https://www.youtube-nocookie.com/embed/JXd7TFnLZng?rel=0&modestbranding=1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+    <div class="tracklist">
+      <div class="tl-header">🎵 Special Selection — 15 Essential Songs</div>
+      <div id="tl-stapleton"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: ALAN JACKSON ══ -->
+<div id="tab-jackson" class="tab-panel">
+  <div class="artist-hdr">
+    <div class="artist-avatar">🤠</div>
+    <div class="artist-meta">
+      <h2>Alan Jackson</h2>
+      <p>Newnan, GA · Traditional Country · Honky-Tonk · Country Gospel</p>
+    </div>
+  </div>
+
+  <div class="artist-bio">
+    <p>Alan Jackson is the undisputed king of traditional country music. Born in Newnan, Georgia, his authentic honky-tonk style, powerful baritone, and incredible knack for melody have made him one of the best-selling country artists of all time — over 80 million records sold worldwide. From dance-floor anthems to deeply moving gospel hymns, Alan Jackson's music is the heartbeat of American country. He was inducted into the <strong>Country Music Hall of Fame</strong> in 2017.</p>
+    <div class="bio-quote">"I like to think that I'm just trying to be what I am, not trying to be what everybody wants me to be."</div>
+    <div class="awards">
+      <span class="award">🏆 2× Grammy Winner</span>
+      <span class="award">🎵 CMA Entertainer of the Year</span>
+      <span class="award">💿 80M+ Records Sold</span>
+      <span class="award">🏛️ Country Music Hall of Fame</span>
+      <span class="award">⭐ 35+ #1 Singles</span>
+    </div>
+  </div>
+
+  <div class="artist-layout">
+    <div>
+      <div class="yt-wrap">
+        <iframe id="yt-jackson"
+          src="https://www.youtube-nocookie.com/embed/BzBQpMGPF3E?rel=0&modestbranding=1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+    <div class="tracklist">
+      <div class="tl-header">🤠 Special Selection — 15 Essential Songs</div>
+      <div id="tl-jackson"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: CHRISTIAN COUNTRY ══ -->
+<div id="tab-christian" class="tab-panel">
+  <div class="christian-banner">
+    <div class="cross-big">✝️</div>
+    <div class="ch-banner-text">
+      <h3>Christian Country Music</h3>
+      <p>Songs of faith, hope, and grace — where country music meets the Gospel. Featuring Alan Jackson's iconic Precious Memories albums, Zach Williams, Josh Turner, and more.</p>
+    </div>
+  </div>
+
+  <div class="artist-hdr" style="margin-bottom:16px">
+    <div class="artist-avatar blue">🙏</div>
+    <div class="artist-meta">
+      <h2 style="color:#4ac0b0;text-shadow:0 0 18px rgba(74,192,176,.4)">Alan Jackson — Gospel</h2>
+      <p>Precious Memories · Hymns of the South · Country Gospel</p>
+    </div>
+  </div>
+
+  <div class="artist-bio" style="border-color:rgba(14,128,112,.25);background:linear-gradient(135deg,rgba(14,128,112,.06),transparent)">
+    <p>Alan Jackson's <em>Precious Memories</em> (2006) and <em>Precious Memories Vol. II</em> (2013) are among the most beloved gospel recordings in country music history. Backed only by acoustic guitar and voice, these albums capture the raw, reverent beauty of classic American hymns. Jackson has said these are some of the most meaningful recordings of his career, a tribute to his Southern Baptist upbringing and his mother's love of gospel music.</p>
+    <div class="bio-quote" style="border-color:#18c0a8;color:#18c0a8">"These songs have always been in my heart since I was a little boy sitting in church with my mama."</div>
+  </div>
+
+  <div class="artist-layout" style="margin-bottom:30px">
+    <div>
+      <div class="yt-wrap">
+        <iframe id="yt-christian"
+          src="https://www.youtube-nocookie.com/embed/j0w2iBZj43s?rel=0&modestbranding=1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+    <div class="tracklist">
+      <div class="tl-header" style="color:#18c0a8">✝️ Precious Memories — Gospel Selection</div>
+      <div id="tl-christian"></div>
+    </div>
+  </div>
+
+  <div class="sec-divider"></div>
+  <div class="sec-title">✝️ Live Christian Country Radio</div>
+  <div class="sec-sub">24/7 faith-filled music on the air</div>
+  <div class="station-grid" id="grid-christian2"></div>
+</div>
+
+<!-- FIXED PLAYER BAR -->
+<div class="player-bar">
+  <div class="eq-bars paused" id="eq-bars">
+    <div class="eq-b"></div><div class="eq-b"></div><div class="eq-b"></div>
+    <div class="eq-b"></div><div class="eq-b"></div>
+  </div>
+  <div class="plr-info">
+    <div class="plr-name" id="plr-name">Select a station to start</div>
+    <div class="plr-freq" id="plr-freq"></div>
+    <div class="plr-status" id="plr-status">Ready to play</div>
+  </div>
+  <button class="plr-play" id="plr-play-btn" onclick="togglePlay()">▶</button>
+  <div class="plr-vol">
+    <span class="plr-vol-icon">🔊</span>
+    <input type="range" class="vol-range" id="vol-range" min="0" max="100" value="80" oninput="setVolume(this.value)">
+  </div>
+</div>
+
+<audio id="radio-audio" preload="none"></audio>
+
+<script>
+// ═══════════════════════════════
+//  DATA
+// ═══════════════════════════════
+
+const AMERICAN = [
+  {
+    id:'wsix', name:'WSIX Hot Country 98.7', freq:'98.7 FM · Nashville, TN',
+    desc:"Nashville's #1 Country — The Home of Country Music",
+    logo:'HOT\n98.7', badges:['live','country','nashville'],
+    stream:'https://21163.live.streamtheworld.com/WSIXFM_SC',
+    site:'https://www.wsix.com'
+  },
+  {
+    id:'kplx', name:'The Wolf 99.5 KPLX', freq:'99.5 FM · Dallas/Fort Worth, TX',
+    desc:'Texas Big Country Hits All Day Long',
+    logo:'THE\nWOLF\n99.5', badges:['live','country','texas'],
+    stream:'https://15353.live.streamtheworld.com/KPLXFM_SC',
+    site:'https://wolfcountry995.iheart.com'
+  },
+  {
+    id:'kkbq', name:'The Bull 100.3 KKBQ', freq:'100.3 FM · Houston, TX',
+    desc:"Houston's Hottest Country Station",
+    logo:'THE\nBULL\n100.3', badges:['live','country','texas'],
+    stream:'https://19353.live.streamtheworld.com/KKBQFM_SC',
+    site:'https://www.bull1003.com'
+  },
+  {
+    id:'977c', name:'977 The Country Channel', freq:'Internet Radio · United States',
+    desc:'Pure Country 24/7 · 128kbps No Commercials',
+    logo:'977\nCOUNTRY', badges:['live','country'],
+    stream:'https://19273.live.streamtheworld.com/977COUNTRY_SC',
+    site:'https://977music.com/country/'
+  },
+  {
+    id:'wkdf', name:'WKDF 103.3 The Wolf', freq:'103.3 FM · Nashville, TN',
+    desc:"Nashville's More Music Country Station",
+    logo:'WKDF\n103.3', badges:['live','country','nashville'],
+    stream:'https://21623.live.streamtheworld.com/WKDFFM_SC',
+    site:'https://www.wkdf.com'
+  },
+  {
+    id:'wklb', name:'Country 102.5 WKLB', freq:'102.5 FM · Boston, MA',
+    desc:"New England's #1 Country Station",
+    logo:'WKLB\n102.5', badges:['live','country'],
+    stream:'https://18213.live.streamtheworld.com/WKLBFM_SC',
+    site:'https://country1025.com'
+  },
+  {
+    id:'bigr', name:'Big R Radio — 100% Country', freq:'Internet Radio · Global',
+    desc:'Crystal-clear country stream · All eras, all styles',
+    logo:'BIG R\nCOUNTRY', badges:['live','country'],
+    stream:'https://bigrradio.cdnstream1.com/5104_128',
+    site:'http://www.bigrradio.com'
+  },
+  {
+    id:'wube', name:'B-105 WUBE Cincinnati', freq:'105.1 FM · Cincinnati, OH',
+    desc:"Ohio's Biggest Country Station",
+    logo:'B-105\nWUBE', badges:['live','country'],
+    stream:'https://16963.live.streamtheworld.com/WUBEFM_SC',
+    site:'https://b105.com'
+  },
+];
+
+const CHRISTIAN = [
+  {
+    id:'klove', name:'K-LOVE Radio', freq:'National · Christian Contemporary',
+    desc:'Positive & Encouraging — America\'s #1 Christian Station',
+    logo:'K-LOVE', badges:['live','christian'],
+    stream:'https://maestro.emfcdn.com/stream_for/k-love/web/aac',
+    site:'https://www.klove.com', christian:true
+  },
+  {
+    id:'air1', name:'Air1 Radio', freq:'National · Christian Alternative',
+    desc:'Fresh Christian Music for the Next Generation',
+    logo:'AIR 1', badges:['live','christian'],
+    stream:'https://maestro.emfcdn.com/stream_for/air1/web/aac',
+    site:'https://www.air1.com', christian:true
+  },
+  {
+    id:'181sgc', name:'181.fm Southern Gospel Country', freq:'Internet · Christian Country',
+    desc:'Authentic Southern Gospel & Christian Country',
+    logo:'181FM\nSGC', badges:['live','christian','country'],
+    stream:'https://listen.181fm.com/181-sgcountry_128k.mp3',
+    site:'https://www.181.fm', christian:true
+  },
+  {
+    id:'181c', name:'181.fm Pure Country', freq:'Internet · Country',
+    desc:'Pure Country Internet Radio — Classic & New',
+    logo:'181FM\nCOUNTRY', badges:['live','country'],
+    stream:'https://listen.181fm.com/181-country_128k.mp3',
+    site:'https://www.181.fm', christian:true
+  },
+  {
+    id:'thefish', name:'The Fish 95.9 WFSH', freq:'95.9 FM · Atlanta, GA',
+    desc:"Atlanta's Uplifting Christian Music Station",
+    logo:'THE\nFISH\n95.9', badges:['live','christian'],
+    stream:'https://19263.live.streamtheworld.com/WFSHFM_SC',
+    site:'https://www.959thefish.com', christian:true
+  },
+  {
+    id:'wayfm', name:'WAY-FM', freq:'National · Christian',
+    desc:'Positive Christian Music · National Network',
+    logo:'WAY\nFM', badges:['live','christian'],
+    stream:'https://wayfm.streamguys1.com/wayfm',
+    site:'https://www.wayfm.com', christian:true
+  },
+];
+
+const ALL_STATIONS = [...AMERICAN, ...CHRISTIAN];
+
+const STAPLETON_TRACKS = [
+  {t:'Tennessee Whiskey',     a:'Traveller',               y:'2015', v:'JXd7TFnLZng'},
+  {t:'Broken Halos',          a:'From A Room: Vol. 1',     y:'2017', v:'E_Q8lTTm1oU'},
+  {t:'Millionaire',           a:'From A Room: Vol. 2',     y:'2017', v:'lY_fk8IZHvU'},
+  {t:'Starting Over',         a:'Starting Over',           y:'2020', v:'_IS_-HcXaJM'},
+  {t:'Fire Away',             a:'Traveller',               y:'2015', v:'J0sWr_9DRGY'},
+  {t:'Traveller',             a:'Traveller',               y:'2015', v:'mj8Ry5V0UT0'},
+  {t:'Parachute',             a:'Traveller',               y:'2015', v:'_ViKlE-OT1E'},
+  {t:'Either Way',            a:'From A Room: Vol. 1',     y:'2017', v:'Q1dSBvvN2mc'},
+  {t:'You Should Probably Leave',a:'Starting Over',        y:'2020', v:'nRgljdB-W0Q'},
+  {t:'Cold',                  a:'Starting Over',           y:'2020', v:'Qzn3VNcFHvE'},
+  {t:'Joy of My Life',        a:'From A Room: Vol. 2',     y:'2017', v:'FHT-pOaelRY'},
+  {t:'Hard Livin\'',          a:'Traveller',               y:'2015', v:'hITD4v3fZHY'},
+  {t:'What Are You Listening To?',a:'Starting Over',       y:'2020', v:'Ysf1-N91czM'},
+  {t:'Arkansas',              a:'Starting Over',           y:'2020', v:'sxLNdTm4Mg8'},
+  {t:'You\'ll Never Leave Harlan Alive',a:'Live',          y:'2019', v:'5Pu-MJXSEpY'},
+];
+
+const JACKSON_TRACKS = [
+  {t:'Remember When',              a:'Drive',                  y:'2003', v:'BzBQpMGPF3E'},
+  {t:'Chattahoochee',              a:'A Lot About Livin\'',    y:'1992', v:'Lq52fo3WFpo'},
+  {t:'Where Were You (When the World Stopped Turning)',a:'Drive',y:'2002',v:'3Dgl0UupPwY'},
+  {t:'Drive (For Daddy Gene)',     a:'Drive',                  y:'2002', v:'yJF0PGRBlJE'},
+  {t:'It\'s Five O\'Clock Somewhere',a:'Greatest Hits Vol. II',y:'2003',v:'k4jPaTLQg9A'},
+  {t:'Gone Country',               a:'Who I Am',               y:'1994', v:'pPuZ5LpHRmA'},
+  {t:'Livin\' on Love',            a:'Who I Am',               y:'1994', v:'AEHJV0nBL9A'},
+  {t:'Don\'t Rock the Jukebox',    a:'Don\'t Rock the Jukebox',y:'1991', v:'qMQ7Q2M_zRI'},
+  {t:'Here in the Real World',     a:'Here in the Real World', y:'1990', v:'JQOe3gBBKXc'},
+  {t:'Midnight in Montgomery',     a:'Don\'t Rock the Jukebox',y:'1992', v:'0h0P4Mf3Y8M'},
+  {t:'Little Bitty',               a:'Everything I Love',      y:'1996', v:'iqBV8TdJo-Y'},
+  {t:'Good Time',                  a:'Good Time',              y:'2008', v:'H-EguYgaeLM'},
+  {t:'As She\'s Walking Away',     a:'Freight Train',          y:'2010', v:'jKTazIc_2mA'},
+  {t:'I\'ll Go on Loving You',     a:'Under the Influence',    y:'1999', v:'c0B1Z7H9PEA'},
+  {t:'Like Red on a Rose',         a:'Like Red on a Rose',     y:'2006', v:'DLFJt0m8Gw0'},
+];
+
+const CHRISTIAN_TRACKS = [
+  {t:'Blessed Assurance',          a:'Precious Memories',      y:'2006', v:'j0w2iBZj43s'},
+  {t:'In the Garden',              a:'Precious Memories',      y:'2006', v:'VVB3Lh5jTXE'},
+  {t:'I\'ll Fly Away',             a:'Precious Memories Vol. II',y:'2013',v:'Mk5gTif9lzc'},
+  {t:'How Great Thou Art',         a:'Precious Memories Vol. II',y:'2013',v:'0l-UGFd47E0'},
+  {t:'Amazing Grace',              a:'Precious Memories Vol. II',y:'2013',v:'X2Mq89VJbRM'},
+  {t:'What A Friend We Have in Jesus',a:'Precious Memories',   y:'2006', v:'sbIXB-TpFMI'},
+  {t:'Long Black Train — Josh Turner',a:'Long Black Train',    y:'2003', v:'1vgzxHFM0_8'},
+  {t:'Would You Go With Me — Josh Turner',a:'Everything Is Fine',y:'2007',v:'6nNOfp-dHPE'},
+  {t:'Chain Breaker — Zach Williams',a:'Chain Breaker',        y:'2016', v:'oIVeXcl27Mo'},
+  {t:'Fear Is a Liar — Zach Williams',a:'Chain Breaker',       y:'2016', v:'bHSzpCpSFuU'},
+  {t:'Old Church Choir — Zach Williams',a:'Chain Breaker',     y:'2016', v:'gRJFaBUhczw'},
+  {t:'Jesus, I Come — Zach Williams',a:'Rescue Story',        y:'2019', v:'0qz9DaWdY5M'},
+  {t:'What A Beautiful Name — Hillsong',a:'Let There Be Light', y:'2016', v:'nQWFzMaX5k0'},
+  {t:'God\'s Country — Blake Shelton',a:'Fully Loaded',        y:'2019', v:'Sj7A9LX4MmQ'},
+  {t:'Humble and Kind — Tim McGraw',a:'Damn Country Music',    y:'2016', v:'awzNHuGqoMc'},
+];
+
+// ═══════════════════════════════
+//  RENDER
+// ═══════════════════════════════
+
+function badgeHTML(list) {
+  return list.map(b => {
+    const cls = {live:'b-live',country:'b-country',christian:'b-christian',nashville:'b-nashville',texas:'b-texas'}[b] || '';
+    const lbl = {live:'LIVE',country:'COUNTRY',christian:'CHRISTIAN',nashville:'NASHVILLE',texas:'TEXAS'}[b] || b;
+    return `<span class="badge ${cls}">${lbl}</span>`;
+  }).join('');
+}
+
+function stationCard(s) {
+  const cc = s.christian ? 'station-card christian' : 'station-card';
+  return `
+    <div class="${cc}" id="card-${s.id}" onclick="playStation('${s.id}')">
+      <div class="station-icon"><div class="stn-logo">${s.logo}</div></div>
+      <div class="station-info">
+        <div class="stn-name">${s.name}</div>
+        <div class="stn-freq">${s.freq}</div>
+        <div class="stn-desc">${s.desc}</div>
+        <div class="stn-badges">${badgeHTML(s.badges)}</div>
+      </div>
+      <div class="play-ind" id="pi-${s.id}">▶</div>
+    </div>`;
+}
+
+document.getElementById('grid-american').innerHTML       = AMERICAN.map(stationCard).join('');
+document.getElementById('grid-christian-radio').innerHTML = CHRISTIAN.map(stationCard).join('');
+document.getElementById('grid-christian2').innerHTML     = CHRISTIAN.map(stationCard).join('');
+
+function trackHTML(trk, idx, active, artist) {
+  const cls = idx === active ? 'track-item active' : 'track-item';
+  const num = idx === active ? '♪' : idx + 1;
+  return `
+    <div class="${cls}" id="trk-${artist}-${idx}" onclick="playTrack('${artist}',${idx})">
+      <div class="trk-num">${num}</div>
+      <div class="trk-info">
+        <div class="trk-name">${trk.t}</div>
+        <div class="trk-album">${trk.a}</div>
+      </div>
+      <div class="trk-year">${trk.y}</div>
+    </div>`;
+}
+
+function renderTracklist(tracks, containerId, artist) {
+  document.getElementById(containerId).innerHTML =
+    tracks.map((trk, i) => trackHTML(trk, i, 0, artist)).join('');
+}
+
+renderTracklist(STAPLETON_TRACKS, 'tl-stapleton', 'stapleton');
+renderTracklist(JACKSON_TRACKS,   'tl-jackson',   'jackson');
+renderTracklist(CHRISTIAN_TRACKS, 'tl-christian', 'christian');
+
+// ═══════════════════════════════
+//  TRACK PLAYBACK (YouTube)
+// ═══════════════════════════════
+
+const TRACK_MAPS = { stapleton: STAPLETON_TRACKS, jackson: JACKSON_TRACKS, christian: CHRISTIAN_TRACKS };
+const IFRAME_MAP  = { stapleton: 'yt-stapleton', jackson: 'yt-jackson', christian: 'yt-christian' };
+let activeTrack = { stapleton: 0, jackson: 0, christian: 0 };
+
+function playTrack(artist, idx) {
+  const tracks = TRACK_MAPS[artist];
+  const prev = activeTrack[artist];
+  activeTrack[artist] = idx;
+
+  const prevEl = document.getElementById(`trk-${artist}-${prev}`);
+  if (prevEl) {
+    prevEl.className = 'track-item';
+    prevEl.querySelector('.trk-num').textContent = prev + 1;
+  }
+  const el = document.getElementById(`trk-${artist}-${idx}`);
+  if (el) {
+    el.className = 'track-item active';
+    el.querySelector('.trk-num').textContent = '♪';
+  }
+
+  const iframe = document.getElementById(IFRAME_MAP[artist]);
+  if (iframe) {
+    iframe.src = `https://www.youtube-nocookie.com/embed/${tracks[idx].v}?autoplay=1&rel=0&modestbranding=1`;
+  }
+
+  // Pause radio while watching video
+  if (isPlaying) pauseRadio();
+}
+
+// ═══════════════════════════════
+//  RADIO PLAYBACK
+// ═══════════════════════════════
+
+const audio = document.getElementById('radio-audio');
+let currentStation = null;
+let isPlaying = false;
+
+function setPlayerUI(name, freq, status, playing) {
+  document.getElementById('plr-name').textContent = name;
+  document.getElementById('plr-freq').textContent = freq;
+  document.getElementById('plr-status').innerHTML = status;
+  document.getElementById('plr-play-btn').textContent = playing ? '⏸' : '▶';
+  document.getElementById('eq-bars').classList.toggle('paused', !playing);
+}
+
+function clearCardStates() {
+  document.querySelectorAll('.station-card').forEach(el => {
+    el.classList.remove('playing');
+    const pi = el.querySelector('.play-ind');
+    if (pi) pi.textContent = '▶';
+  });
+}
+
+function setCardPlaying(id) {
+  const card = document.querySelectorAll(`[id="card-${id}"]`);
+  card.forEach(c => {
+    c.classList.add('playing');
+    const pi = c.querySelector('.play-ind');
+    if (pi) pi.textContent = '⏸';
+  });
+}
+
+function playStation(id) {
+  const st = ALL_STATIONS.find(s => s.id === id);
+  if (!st) return;
+
+  if (currentStation && currentStation.id === id && isPlaying) {
+    pauseRadio();
+    return;
+  }
+
+  audio.pause();
+  clearCardStates();
+  currentStation = st;
+
+  setPlayerUI(st.name, st.freq, 'Connecting…', false);
+
+  audio.src = st.stream;
+  audio.load();
+
+  const p = audio.play();
+  if (p) {
+    p.then(() => {
+      isPlaying = true;
+      setPlayerUI(st.name, st.freq, '● ON AIR — LIVE', true);
+      setCardPlaying(id);
+    }).catch(() => streamError(st));
+  }
+
+  audio.onerror = () => streamError(st);
+}
+
+function streamError(st) {
+  isPlaying = false;
+  document.getElementById('plr-play-btn').textContent = '▶';
+  document.getElementById('eq-bars').classList.add('paused');
+  document.getElementById('plr-status').innerHTML =
+    `⚠ Stream unavailable — <a href="${st.site}" target="_blank">Open Station Website →</a>`;
+}
+
+function pauseRadio() {
+  audio.pause();
+  isPlaying = false;
+  document.getElementById('plr-play-btn').textContent = '▶';
+  document.getElementById('eq-bars').classList.add('paused');
+  document.getElementById('plr-status').textContent = 'Paused';
+  clearCardStates();
+}
+
+function togglePlay() {
+  if (!currentStation) return;
+  if (isPlaying) { pauseRadio(); } else { playStation(currentStation.id); }
+}
+
+function setVolume(v) { audio.volume = v / 100; }
+audio.volume = 0.8;
+
+// ═══════════════════════════════
+//  TAB SWITCHING
+// ═══════════════════════════════
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const tab = this.dataset.tab;
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
