@@ -1,0 +1,16 @@
+{
+  "name": "Projeto 66 | Gestão à Vista",
+  "short_name": "Projeto 66",
+  "description": "Sistema operacional de execução pessoal: 66 dias para consolidar hábitos com disciplina, gamificação e melhoria contínua.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b0c0f",
+  "theme_color": "#0b0c0f",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

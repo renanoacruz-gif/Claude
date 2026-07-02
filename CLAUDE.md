@@ -42,6 +42,10 @@ Each level is an object with:
 ### Game state machine (`GS`)
 `MENU → PLAY ↔ PAUSE`, `PLAY → LVLEND → TRANS → PLAY` (next level) or `WIN`, `PLAY → DYING → TRANS → PLAY` (respawn) or `GAMEOVER`
 
+## Subprojeto: projeto-66/
+
+`projeto-66/` contém o **Projeto 66 | Gestão à Vista** — PWA de execução pessoal (ciclos de 66 dias), independente do jogo. Mesmo padrão do repo: vanilla JS sem build step, namespace global `P66`, scripts carregados em ordem de dependência em `projeto-66/index.html` (`config → quotes → audio → store → charts → claudi → views → app`). Estado persistido em `localStorage` (`p66_state_v1`); service worker em `projeto-66/sw.js` exige servidor HTTP (não funciona via `file://`).
+
 ## Branch conventions
 
 Develop on `claude/<description>-<id>` feature branches; push with `git push -u origin <branch>`.
