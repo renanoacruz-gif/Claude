@@ -1,0 +1,3304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b0c0f">
+<title>Projeto 66 | Gestão à Vista</title>
+<style>
+/* =============================================================
+   PROJETO 66 | Gestão à Vista — design system
+   Dark premium: grafite profundo + âmbar tático.
+   Inspiração: Linear, Tesla UI, Garmin, Apple Fitness.
+   ============================================================= */
+
+:root {
+  --bg: #0b0c0f;
+  --surface: #14161a;
+  --surface-2: #1a1d23;
+  --surface-3: #21252c;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.13);
+  --ink: #f2f3f5;
+  --ink-2: #9ba1ab;
+  --ink-3: #5f6670;
+  --accent: #f0b445;        /* âmbar claro: texto/realce */
+  --accent-deep: #c9821f;   /* âmbar marca: séries/preenchimentos */
+  --accent-dim: rgba(240, 180, 69, 0.12);
+  --good: #199e70;
+  --good-text: #3ddc97;
+  --good-dim: rgba(25, 158, 112, 0.12);
+  --bad: #e5484d;
+  --bad-text: #f2555a;
+  --bad-dim: rgba(229, 72, 77, 0.12);
+  --info: #3987e5;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --sidebar-w: 252px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+img { max-width: 100%; }
+a { color: var(--accent); text-decoration: none; }
+button { font-family: inherit; }
+::selection { background: var(--accent-deep); color: #0b0c0f; }
+
+kbd {
+  background: var(--surface-3);
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--ink-2);
+}
+
+/* ícones inline */
+.i, [data-icon] { display: inline-flex; }
+.i svg, [data-icon] svg { width: 16px; height: 16px; }
+
+/* ================= layout ================= */
+.app { display: flex; min-height: 100dvh; }
+
+.sidebar {
+  width: var(--sidebar-w);
+  background: #0e1013;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 14px;
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow-y: auto;
+  flex-shrink: 0;
+  z-index: 40;
+}
+
+.sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 2px 6px 8px; }
+.brand-mark {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  background: linear-gradient(145deg, var(--accent-deep), #8a5512);
+  color: #0b0c0f;
+  font-weight: 800; font-size: 17px;
+  border-radius: 10px;
+  letter-spacing: -0.5px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-text strong { font-size: 14px; letter-spacing: 2px; }
+.brand-text span { font-size: 11px; color: var(--ink-3); letter-spacing: 0.5px; }
+
+.btn-war {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: linear-gradient(160deg, #2a1d0c, #1c1409);
+  border: 1px solid rgba(240, 180, 69, 0.35);
+  color: var(--accent);
+  font-weight: 700; font-size: 12.5px; letter-spacing: 2.5px;
+  padding: 11px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-war:hover { background: #2e2110; border-color: var(--accent); box-shadow: 0 0 18px rgba(240, 180, 69, 0.15); }
+.btn-war-icon svg { width: 15px; height: 15px; }
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+.nav-group { display: flex; flex-direction: column; gap: 1px; }
+.nav-group-label {
+  font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--ink-3); padding: 0 10px 6px;
+}
+.sidebar-nav a, .nav-config {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--ink-2);
+  font-size: 13.5px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s, color 0.15s;
+}
+.sidebar-nav a kbd { margin-left: auto; opacity: 0; transition: opacity 0.15s; }
+.sidebar-nav a:hover kbd { opacity: 1; }
+.sidebar-nav a:hover, .nav-config:hover { background: var(--surface-2); color: var(--ink); }
+.sidebar-nav a.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+.sidebar-nav a.active svg { stroke: var(--accent); }
+
+.sidebar-foot { display: flex; flex-direction: column; gap: 12px; }
+.sidebar-level { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
+.lvl-head { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+.lvl-head span { color: var(--ink-3); }
+.lvl-bar { height: 5px; background: var(--surface-3); border-radius: 4px; overflow: hidden; }
+.lvl-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); border-radius: 4px; transition: width 0.5s ease; }
+.lvl-next { font-size: 10.5px; color: var(--ink-3); margin-top: 5px; display: block; }
+
+.sidebar-scrim { display: none; }
+
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+.topbar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 26px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(11, 12, 15, 0.85);
+  backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 30;
+  min-height: 54px;
+}
+.menu-btn { display: none; }
+.topbar-quote { flex: 1; font-size: 13px; color: var(--ink-2); cursor: pointer; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.topbar-quote:hover { color: var(--ink); }
+.q-author { color: var(--ink-3); margin-left: 8px; font-size: 12px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.topbar-clock { font-size: 13px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+.icon-btn {
+  background: none; border: none; color: var(--ink-3);
+  cursor: pointer; padding: 6px; border-radius: 7px;
+  display: inline-flex;
+}
+.icon-btn:hover { background: var(--surface-2); color: var(--ink); }
+.icon-btn svg { width: 17px; height: 17px; }
+
+.view { padding: 28px 26px 60px; max-width: 1180px; width: 100%; margin: 0 auto; }
+
+/* ================= tipografia / seções ================= */
+.section-head { margin: 30px 0 16px; }
+.section-head:first-child { margin-top: 0; }
+.section-head h2 { font-size: 19px; font-weight: 700; letter-spacing: -0.2px; }
+.section-head p { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+
+/* ================= hero (dashboard) ================= */
+.hero { margin-bottom: 22px; }
+.hero-kicker { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+.hero h1 { font-size: clamp(26px, 4vw, 38px); font-weight: 800; letter-spacing: -1px; }
+.hero-line { font-size: 16px; color: var(--ink-2); margin-top: 2px; }
+.hero-line strong { color: var(--accent); font-weight: 700; }
+
+/* ================= missão do dia (barra enorme) ================= */
+.mission-bar-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+.mission-bar-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.mission-bar-title { font-size: 13px; font-weight: 800; letter-spacing: 3.5px; color: var(--ink-2); }
+.mission-bar-pct { font-size: 34px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.mission-bar {
+  height: 26px;
+  background: var(--surface-3);
+  border-radius: 13px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+.mission-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+  border-radius: 13px;
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  min-width: 0;
+}
+.mission-bar-fill::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  background-size: 220% 100%;
+  animation: shimmer 2.8s infinite;
+  border-radius: 13px;
+}
+@keyframes shimmer { 0% { background-position: 130% 0; } 100% { background-position: -90% 0; } }
+.mission-bar-wrap.complete { border-color: rgba(25, 158, 112, 0.45); }
+.mission-bar-wrap.complete .mission-bar-fill { background: linear-gradient(90deg, #0f7a54, var(--good-text)); }
+.mission-bar-wrap.complete .mission-bar-pct { color: var(--good-text); }
+.mission-bar-note { margin-top: 10px; font-size: 13px; color: var(--ink-2); }
+
+/* ================= tiles (KPIs) ================= */
+.quick-tiles, .kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.tile-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-3); }
+.tile-value { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+.tile-value small { font-size: 13px; font-weight: 600; color: var(--ink-3); }
+.tile-sub { font-size: 12px; color: var(--ink-3); }
+.tile-good .tile-value { color: var(--good-text); }
+.tile-bad .tile-value { color: var(--bad-text); }
+
+/* ================= cards genéricos ================= */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+.card-title { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
+.card-sub { font-size: 12.5px; color: var(--ink-3); margin-bottom: 12px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-2 .card { margin-bottom: 16px; }
+.callout { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; color: var(--ink-2); }
+.callout svg { width: 20px; height: 20px; stroke: var(--accent); flex-shrink: 0; margin-top: 2px; }
+.callout strong { color: var(--ink); }
+.empty { color: var(--ink-3); font-size: 13.5px; padding: 14px 4px; }
+
+/* ================= hábitos (cartões) ================= */
+.habit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 14px;
+}
+.habit-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: transform 0.18s, border-color 0.18s, background 0.3s;
+  position: relative;
+}
+.habit-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.habit-top { display: flex; justify-content: space-between; align-items: center; }
+.habit-icon { display: inline-flex; padding: 9px; background: var(--surface-3); border-radius: 9px; }
+.habit-icon svg { width: 19px; height: 19px; stroke: var(--accent); }
+.prio { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
+.prio-alta { background: var(--bad-dim); color: var(--bad-text); }
+.prio-media { background: var(--accent-dim); color: var(--accent); }
+.prio-baixa { background: var(--surface-3); color: var(--ink-3); }
+.habit-name { font-size: 14.5px; font-weight: 700; letter-spacing: -0.1px; }
+.habit-goal { font-size: 12.5px; color: var(--ink-3); flex: 1; }
+.habit-meta { display: flex; gap: 12px; font-size: 12px; color: var(--ink-2); align-items: center; }
+.habit-meta .i svg { width: 13px; height: 13px; margin-right: 3px; }
+.habit-meta span { display: inline-flex; align-items: center; }
+.habit-foot { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 2px; }
+.habit-streak { display: inline-flex; align-items: center; gap: 3px; font-size: 13px; font-weight: 700; color: var(--ink-2); }
+.habit-streak svg { width: 14px; height: 14px; stroke: var(--accent); }
+.habit-status { font-size: 11.5px; flex: 1; }
+.st-done { color: var(--good-text); }
+.st-late { color: var(--bad-text); font-weight: 600; }
+.st-pending { color: var(--ink-3); }
+
+.habit-card.done {
+  background: linear-gradient(160deg, rgba(25, 158, 112, 0.10), var(--surface) 55%);
+  border-color: rgba(25, 158, 112, 0.35);
+  animation: winPop 0.45s cubic-bezier(0.22, 1.61, 0.36, 1);
+}
+.habit-card.done .habit-icon svg { stroke: var(--good-text); }
+.habit-card.late { border-color: rgba(229, 72, 77, 0.3); }
+@keyframes winPop {
+  0% { transform: scale(0.97); }
+  55% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* ================= botões ================= */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: 13.5px; font-weight: 600;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--ink);
+  background: var(--surface-3);
+}
+.btn svg { width: 15px; height: 15px; }
+.btn-sm { padding: 6px 12px; font-size: 12.5px; }
+.btn-primary {
+  background: linear-gradient(160deg, var(--accent), var(--accent-deep));
+  color: #14100a;
+  font-weight: 700;
+}
+.btn-primary:hover { filter: brightness(1.1); box-shadow: 0 2px 14px rgba(240, 180, 69, 0.25); }
+.btn-secondary { background: var(--surface-3); border-color: var(--border-strong); }
+.btn-secondary:hover { background: #262b33; }
+.btn-ghost { background: transparent; border-color: var(--border-strong); color: var(--ink-2); }
+.btn-ghost:hover { color: var(--ink); border-color: var(--ink-3); }
+.btn-danger { background: var(--bad-dim); border-color: rgba(229, 72, 77, 0.4); color: var(--bad-text); }
+.btn-danger:hover { background: rgba(229, 72, 77, 0.2); }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-file { position: relative; overflow: hidden; }
+
+/* ================= timeline (Hoje) ================= */
+.timeline { position: relative; padding-left: 6px; }
+.tl-item { display: flex; align-items: stretch; gap: 14px; position: relative; }
+.tl-item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 74px; top: 30px; bottom: -6px;
+  width: 2px;
+  background: var(--surface-3);
+}
+.tl-item.done:not(:last-child)::before { background: rgba(25, 158, 112, 0.4); }
+.tl-time { width: 52px; font-size: 13px; font-weight: 700; color: var(--ink-2); padding-top: 16px; font-variant-numeric: tabular-nums; text-align: right; flex-shrink: 0; }
+.tl-node {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  border: 2px solid var(--ink-3);
+  margin-top: 19px;
+  flex-shrink: 0;
+  z-index: 1;
+}
+.tl-item.done .tl-node { background: var(--good); border-color: var(--good); }
+.tl-item.late .tl-node { border-color: var(--bad); }
+.tl-item.next .tl-node { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-dim); }
+.tl-card {
+  flex: 1;
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin: 5px 0;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.tl-card[role="button"] { cursor: pointer; }
+.tl-card[role="button"]:hover { border-color: var(--accent-deep); transform: translateX(2px); }
+.tl-item.next .tl-card { border-color: rgba(240, 180, 69, 0.4); }
+.tl-icon { display: inline-flex; }
+.tl-icon svg { width: 18px; height: 18px; stroke: var(--ink-2); }
+.tl-item.done .tl-icon svg { stroke: var(--good-text); }
+.tl-body { flex: 1; display: flex; flex-direction: column; }
+.tl-name { font-size: 14px; font-weight: 600; }
+.tl-item.done .tl-name { text-decoration: line-through; color: var(--ink-3); }
+.tl-meta { font-size: 11.5px; color: var(--ink-3); }
+.tl-meta strong { color: var(--accent); letter-spacing: 1px; }
+.tl-status { font-size: 12px; display: inline-flex; align-items: center; gap: 5px; }
+.tl-status svg { width: 13px; height: 13px; }
+
+/* ================= missões ================= */
+.mission-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.mission-item {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 16px;
+  transition: border-color 0.2s, background 0.3s;
+}
+.mission-item.done { background: linear-gradient(160deg, rgba(25, 158, 112, 0.08), var(--surface) 60%); border-color: rgba(25, 158, 112, 0.3); }
+.mission-icon { display: inline-flex; padding: 8px; background: var(--surface-3); border-radius: 8px; }
+.mission-icon svg { width: 17px; height: 17px; stroke: var(--accent); }
+.mission-item.done .mission-icon svg { stroke: var(--good-text); }
+.mission-body { flex: 1; display: flex; flex-direction: column; }
+.mission-name { font-weight: 600; font-size: 14px; }
+.mission-item.done .mission-name { text-decoration: line-through; color: var(--ink-3); }
+.mission-meta { font-size: 12px; color: var(--ink-3); }
+
+.form-inline { display: flex; gap: 10px; align-items: center; }
+.form-inline input { flex: 1; }
+.form-inline > .i svg { width: 16px; height: 16px; stroke: var(--ink-3); }
+
+/* ================= gráficos ================= */
+.chart { width: 100%; min-height: 60px; }
+.chart-heat { padding: 6px 0; }
+.chart svg { display: block; }
+.heat-legend { display: flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 11px; color: var(--ink-3); }
+.heat-legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+.chart-tip {
+  position: fixed;
+  z-index: 200;
+  background: #22262d;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 8px 11px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  pointer-events: none;
+  max-width: 260px;
+  line-height: 1.45;
+}
+.chart-tip strong { color: var(--ink); }
+
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.cal-head { text-align: center; font-size: 10.5px; color: var(--ink-3); padding: 3px 0; letter-spacing: 1px; }
+.cal-cell {
+  aspect-ratio: 1;
+  display: grid; place-items: center;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.cal-cell.cal-dark-ink { color: #14161a; }
+.cal-cell.cal-today { outline: 1.5px solid var(--ink); outline-offset: 1px; }
+.cal-cell.cal-future { color: var(--ink-3); border: 1px dashed var(--border-strong); }
+
+.hbar-row { display: grid; grid-template-columns: minmax(120px, 220px) 1fr 44px; gap: 12px; align-items: center; padding: 7px 0; }
+.hbar-label { font-size: 13px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hbar-track { height: 10px; background: var(--surface-3); border-radius: 6px; overflow: hidden; }
+.hbar-fill { display: block; height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+.hbar-val { font-size: 12.5px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+
+.ring-value { transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* ================= homem integral ================= */
+.area-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.area-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 12px 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.area-name { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.area-name svg { width: 14px; height: 14px; stroke: var(--ink-3); }
+
+/* ================= claudi ================= */
+.claudi-head { display: flex; gap: 14px; align-items: center; margin-bottom: 20px; }
+.claudi-avatar {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(150deg, #1c2b45, #16202f);
+  border: 1px solid rgba(57, 135, 229, 0.4);
+  display: grid; place-items: center;
+}
+.claudi-avatar svg { width: 24px; height: 24px; stroke: #6aa9f0; }
+.claudi-head h2 { font-size: 20px; }
+.claudi-head p { color: var(--ink-2); font-size: 13.5px; }
+.claudi-list { display: flex; flex-direction: column; gap: 10px; }
+.claudi-item {
+  display: flex; gap: 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--ink-3);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.claudi-item.tone-good { border-left-color: var(--good); }
+.claudi-item.tone-warn { border-left-color: var(--accent-deep); }
+.claudi-item.tone-bad { border-left-color: var(--bad); }
+.claudi-item.tone-info { border-left-color: var(--info); }
+.claudi-item-icon { display: inline-flex; margin-top: 2px; }
+.claudi-item-icon svg { width: 17px; height: 17px; stroke: var(--ink-2); }
+.claudi-item strong { font-size: 14px; }
+.claudi-item p { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+.claudi-foot { margin-top: 16px; font-size: 12px; color: var(--ink-3); }
+
+/* ================= conquistas ================= */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 13px;
+}
+.badge {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 15px;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px;
+}
+.badge-icon { display: inline-flex; padding: 13px; border-radius: 50%; background: var(--surface-3); margin-bottom: 4px; }
+.badge-icon svg { width: 21px; height: 21px; }
+.badge.got { border-color: rgba(240, 180, 69, 0.35); }
+.badge.got .badge-icon { background: var(--accent-dim); }
+.badge.got .badge-icon svg { stroke: var(--accent); }
+.badge.locked { opacity: 0.45; filter: grayscale(0.4); }
+.badge strong { font-size: 13.5px; }
+.badge p { font-size: 12px; color: var(--ink-3); flex: 1; }
+.badge-date { font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-3); }
+.badge.got .badge-date { color: var(--accent); }
+
+/* ================= formulários ================= */
+input[type="text"], input[type="search"], textarea, select {
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13.5px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--accent-deep); }
+textarea { resize: vertical; }
+.field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 13px; }
+.field span { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.form-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.form-grid select { width: auto; }
+.form-grid input[type="text"] { flex: 1; min-width: 180px; }
+.saved-hint { font-size: 12px; color: var(--ink-3); margin-left: 10px; }
+.switch-row { display: flex; align-items: center; gap: 10px; font-size: 14px; margin-top: 12px; cursor: pointer; }
+.switch-row input { width: auto; accent-color: var(--accent-deep); transform: scale(1.2); }
+
+/* ================= diário ================= */
+.journal-list { display: flex; flex-direction: column; gap: 12px; }
+.journal-entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 15px 18px;
+}
+.journal-entry header { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 8px; text-transform: capitalize; }
+.journal-entry p { font-size: 13.5px; color: var(--ink-2); margin-bottom: 5px; }
+.journal-entry strong { color: var(--ink); font-size: 12.5px; display: block; }
+
+/* ================= por que continuo ================= */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 13px;
+}
+.why-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+.why-card img { width: 100%; height: 130px; object-fit: cover; }
+.why-type {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--accent); font-weight: 700;
+  padding: 12px 15px 0;
+}
+.why-card p { padding: 4px 15px 14px; font-size: 14px; flex: 1; }
+.why-del { position: absolute; top: 8px; right: 8px; background: rgba(11, 12, 15, 0.6); opacity: 0; transition: opacity 0.15s; }
+.why-card:hover .why-del { opacity: 1; }
+.why-remind { display: flex; gap: 12px; align-items: center; background: var(--surface-2); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 10px; }
+.why-remind img { width: 54px; height: 54px; border-radius: 8px; object-fit: cover; }
+.why-remind p { font-size: 14.5px; font-weight: 600; }
+
+/* ================= overlays ================= */
+.overlay {
+  position: fixed; inset: 0;
+  z-index: 100;
+  display: grid; place-items: center;
+  padding: 20px;
+}
+.overlay[hidden] { display: none; }
+
+.modal-overlay { background: rgba(5, 6, 8, 0.75); backdrop-filter: blur(6px); }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 28px;
+  max-width: 470px;
+  width: 100%;
+  max-height: 86dvh;
+  overflow-y: auto;
+  animation: modalIn 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes modalIn { from { opacity: 0; transform: translateY(14px) scale(0.98); } }
+.modal-title { font-size: 20px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 6px; }
+.modal-sub { font-size: 13.5px; color: var(--ink-2); margin-bottom: 18px; }
+.onboard-mark {
+  width: 58px; height: 58px;
+  display: grid; place-items: center;
+  background: linear-gradient(145deg, var(--accent-deep), #8a5512);
+  color: #0b0c0f; font-weight: 800; font-size: 24px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+.help-grid { display: grid; grid-template-columns: auto 1fr; gap: 7px 16px; margin-bottom: 20px; font-size: 13.5px; color: var(--ink-2); }
+
+/* ---- modo guerra ---- */
+.war-overlay { background: #050608; }
+.war { text-align: center; max-width: 640px; width: 100%; position: relative; padding: 20px; }
+.war-kicker { font-size: 12px; letter-spacing: 5px; color: var(--accent); font-weight: 700; margin-bottom: 18px; }
+.war-title { font-size: clamp(28px, 5vw, 46px); font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+.war-goal { color: var(--ink-2); font-size: 15px; margin-bottom: 30px; }
+.war-clock {
+  font-size: clamp(64px, 14vw, 120px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -3px;
+  line-height: 1;
+  margin-bottom: 30px;
+  text-shadow: 0 0 60px rgba(240, 180, 69, 0.18);
+}
+.war-controls { justify-content: center; margin-bottom: 26px; }
+.war-next { color: var(--ink-3); font-size: 14px; }
+.war-next strong { color: var(--ink-2); }
+.war-exit { position: fixed; top: 18px; right: 18px; background: none; border: 1px solid var(--border-strong); border-radius: 50%; padding: 10px; color: var(--ink-3); cursor: pointer; }
+.war-exit:hover { color: var(--ink); border-color: var(--ink-3); }
+.war-exit svg { width: 16px; height: 16px; display: block; }
+
+/* ---- celebração ---- */
+.celebrate-overlay { background: rgba(5, 6, 8, 0.88); backdrop-filter: blur(8px); }
+.celebrate { text-align: center; position: relative; z-index: 2; animation: modalIn 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+.celebrate-ring {
+  width: 96px; height: 96px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  border: 3px solid var(--good);
+  display: grid; place-items: center;
+  box-shadow: 0 0 50px rgba(25, 158, 112, 0.35), inset 0 0 24px rgba(25, 158, 112, 0.12);
+  animation: ringPulse 1.6s ease infinite;
+}
+.celebrate-ring svg { width: 44px; height: 44px; stroke: var(--good-text); }
+@keyframes ringPulse {
+  0%, 100% { box-shadow: 0 0 40px rgba(25, 158, 112, 0.3), inset 0 0 20px rgba(25, 158, 112, 0.1); }
+  50% { box-shadow: 0 0 70px rgba(25, 158, 112, 0.5), inset 0 0 30px rgba(25, 158, 112, 0.2); }
+}
+.celebrate h1 { font-size: clamp(30px, 6vw, 48px); font-weight: 800; letter-spacing: 4px; }
+.celebrate p { color: var(--ink-2); font-size: 17px; margin: 8px 0 26px; }
+.rank-name { font-size: 24px; color: var(--accent); font-weight: 800; letter-spacing: 2px; margin-bottom: 26px; }
+.confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.confetti i {
+  position: absolute;
+  top: -12px;
+  left: calc(4% + var(--i) * 4%);
+  width: 7px; height: 11px;
+  background: var(--accent);
+  opacity: 0.85;
+  border-radius: 2px;
+  animation: confettiFall 2.8s linear infinite;
+  animation-delay: calc(var(--i) * 0.17s);
+}
+.confetti i:nth-child(3n) { background: var(--good-text); width: 5px; height: 9px; }
+.confetti i:nth-child(4n) { background: #e8e6df; }
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+  8% { opacity: 0.9; }
+  100% { transform: translateY(105vh) rotate(560deg); opacity: 0.5; }
+}
+
+/* ================= toasts ================= */
+.toasts {
+  position: fixed;
+  bottom: 22px; right: 22px;
+  display: flex; flex-direction: column; gap: 9px;
+  z-index: 150;
+  max-width: min(360px, calc(100vw - 44px));
+}
+.toast {
+  display: flex; align-items: center; gap: 9px;
+  background: #22262d;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 11px 15px;
+  font-size: 13.5px;
+  transform: translateX(30px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.toast.show { transform: none; opacity: 1; }
+.toast svg { width: 16px; height: 16px; flex-shrink: 0; }
+.toast.good { border-color: rgba(25, 158, 112, 0.45); }
+.toast.good svg { stroke: var(--good-text); }
+.toast.bad { border-color: rgba(229, 72, 77, 0.5); }
+.toast.bad svg { stroke: var(--bad-text); }
+.toast.warn svg { stroke: var(--accent); }
+.toast.info svg { stroke: var(--info); }
+
+/* ================= impressão (relatório PDF) ================= */
+#print-report { display: none; }
+@media print {
+  body > *:not(#print-report) { display: none !important; }
+  body { background: #fff; color: #111; }
+  #print-report { display: block; padding: 24px; font-family: var(--font); }
+  #print-report h1 { font-size: 22px; margin-bottom: 4px; }
+  #print-report h2 { font-size: 15px; margin: 18px 0 8px; }
+  #print-report p { font-size: 12px; color: #444; }
+  #print-report table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  #print-report td { border: 1px solid #ddd; padding: 7px 10px; font-size: 12px; }
+}
+
+/* ================= responsivo ================= */
+@media (max-width: 900px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: var(--shadow);
+  }
+  body.sidebar-open .sidebar { transform: none; }
+  body.sidebar-open .sidebar-scrim {
+    display: block;
+    position: fixed; inset: 0;
+    background: rgba(5, 6, 8, 0.6);
+    z-index: 35;
+  }
+  .menu-btn { display: inline-flex; }
+  .view { padding: 20px 16px 70px; }
+  .topbar { padding: 10px 16px; }
+  .mission-bar-pct { font-size: 26px; }
+  .tl-time { width: 44px; }
+  .tl-item:not(:last-child)::before { left: 66px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+</style>
+</head>
+<body>
+
+
+  <div id="app" class="app">
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark" aria-hidden="true">66</div>
+        <div class="brand-text">
+          <strong>PROJETO 66</strong>
+          <span>Gestão à Vista</span>
+        </div>
+      </div>
+
+      <button class="btn-war" data-action="war-mode" title="Modo Guerra (G)">
+        <span class="btn-war-icon" data-icon="sword"></span> MODO GUERRA
+      </button>
+
+      <nav class="sidebar-nav" id="nav">
+        <div class="nav-group">
+          <span class="nav-group-label">Execução</span>
+          <a href="#/dashboard" data-route="dashboard"><span data-icon="target"></span>Início<kbd>1</kbd></a>
+          <a href="#/hoje" data-route="hoje"><span data-icon="clock"></span>Hoje<kbd>2</kbd></a>
+          <a href="#/missoes" data-route="missoes"><span data-icon="flag"></span>Missões<kbd>3</kbd></a>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Inteligência</span>
+          <a href="#/guerra" data-route="guerra"><span data-icon="radar"></span>Sala de Guerra<kbd>4</kbd></a>
+          <a href="#/evolucao" data-route="evolucao"><span data-icon="chart"></span>Evolução<kbd>5</kbd></a>
+          <a href="#/integral" data-route="integral"><span data-icon="compass"></span>Homem Integral<kbd>6</kbd></a>
+          <a href="#/claudi" data-route="claudi"><span data-icon="spark"></span>Claudi<kbd>7</kbd></a>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Identidade</span>
+          <a href="#/conquistas" data-route="conquistas"><span data-icon="trophy"></span>Conquistas<kbd>8</kbd></a>
+          <a href="#/reflexao" data-route="reflexao"><span data-icon="pen"></span>Reflexão<kbd>9</kbd></a>
+          <a href="#/responsabilidade" data-route="responsabilidade"><span data-icon="shield"></span>Responsabilidade<kbd>0</kbd></a>
+          <a href="#/porque" data-route="porque"><span data-icon="anchor"></span>Por que continuo?</a>
+        </div>
+      </nav>
+
+      <div class="sidebar-foot">
+        <a href="#/config" data-route="config" class="nav-config"><span data-icon="gear"></span>Configurações</a>
+        <div class="sidebar-level" id="sidebar-level"></div>
+      </div>
+    </aside>
+    <div class="sidebar-scrim" id="sidebar-scrim"></div>
+
+    <!-- ===== Main ===== -->
+    <main class="main" id="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" data-action="toggle-sidebar" aria-label="Menu"><span data-icon="menu"></span></button>
+        <div class="topbar-quote" id="topbar-quote" title="Clique para outra frase" data-action="new-quote"></div>
+        <div class="topbar-right">
+          <span class="topbar-clock" id="topbar-clock"></span>
+          <button class="icon-btn" data-action="help" title="Atalhos (?)"><span data-icon="keyboard"></span></button>
+        </div>
+      </header>
+      <div class="view" id="view" tabindex="-1"></div>
+    </main>
+  </div>
+
+  <!-- ===== Overlays ===== -->
+  <div class="overlay war-overlay" id="war-overlay" hidden></div>
+  <div class="overlay celebrate-overlay" id="celebrate-overlay" hidden></div>
+  <div class="overlay modal-overlay" id="modal-overlay" hidden></div>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <div class="chart-tip" id="chart-tip" hidden></div>
+
+  
+<script>
+/* =============================================================
+   PROJETO 66 | Gestão à Vista — configuração central
+   Namespace global: P66 (padrão do repositório: sem bundler)
+   ============================================================= */
+'use strict';
+
+window.P66 = window.P66 || {};
+
+/* ---------- Constantes do ciclo ---------- */
+P66.CYCLE_DAYS = 66;
+
+/* ---------- Ícones (SVG stroke, estilo tático/premium) ---------- */
+P66.ICONS = (() => {
+  const w = (paths, vb = '0 0 24 24') =>
+    `<svg viewBox="${vb}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+  return {
+    target:  w('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>'),
+    clock:   w('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>'),
+    flag:    w('<path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/>'),
+    radar:   w('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l6-6"/><circle cx="12" cy="12" r="1" fill="currentColor"/>'),
+    chart:   w('<path d="M4 20h16"/><path d="M7 20v-7"/><path d="M12 20V7"/><path d="M17 20v-11"/>'),
+    compass: w('<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>'),
+    spark:   w('<path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/>'),
+    trophy:  w('<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 5H5a3 3 0 0 0 3 4"/><path d="M16 5h3a3 3 0 0 1-3 4"/><path d="M12 13v3"/><path d="M8 20h8M10 16h4v4"/>'),
+    pen:     w('<path d="M14 5l5 5L8 21H3v-5z"/><path d="M12 7l5 5"/>'),
+    shield:  w('<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>'),
+    anchor:  w('<circle cx="12" cy="5" r="2.5"/><path d="M12 7.5V21"/><path d="M4 13a8 8 0 0 0 16 0"/><path d="M9 13H4M20 13h-5"/>'),
+    gear:    w('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>'),
+    sword:   w('<path d="M14.5 3.5L20 3l-.5 5.5L8 20l-4-4z"/><path d="M5 13l6 6"/><path d="M3 21l2-2"/>'),
+    menu:    w('<path d="M4 7h16M4 12h16M4 17h16"/>'),
+    keyboard:w('<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/>'),
+    alarm:   w('<circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 2"/><path d="M5 4L3 6M19 4l2 2"/>'),
+    bible:   w('<path d="M5 4a2 2 0 0 1 2-2h12v18H7a2 2 0 0 0-2 2z"/><path d="M12 6v6M9.5 8.5h5"/>'),
+    dumbbell:w('<path d="M7 8v8M4 10v4M17 8v8M20 10v4M7 12h10"/>'),
+    droplet: w('<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>'),
+    book:    w('<path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/>'),
+    brain:   w('<path d="M12 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 0 3 3 0 0 0 2-5 3 3 0 0 0-2-5 3 3 0 0 0-3-3z"/><path d="M12 4v16"/>'),
+    wind:    w('<path d="M4 9h9a2.5 2.5 0 1 0-2.5-2.5"/><path d="M4 14h13a2.5 2.5 0 1 1-2.5 2.5"/>'),
+    heart:   w('<path d="M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.8-6 2 0 3.6 1.2 5.2 3.2C13.6 6.2 15.2 5 17.2 5c3.2 0 5 3.2 3.8 6-2 4.5-9 9-9 9z"/>'),
+    clipboard:w('<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4a2 2 0 0 1 6 0"/><path d="M9 10h6M9 14h6M9 18h3"/>'),
+    moon:    w('<path d="M20 14A8 8 0 1 1 10 4a7 7 0 0 0 10 10z"/>'),
+    flame:   w('<path d="M12 3s5 4.5 5 9.5a5 5 0 0 1-10 0C7 9 9 7 9.5 5c1 1 1.6 2 1.7 3.3C12.2 6.8 12 4.5 12 3z"/>'),
+    check:   w('<path d="M4 12.5l5 5L20 6.5"/>'),
+    plus:    w('<path d="M12 5v14M5 12h14"/>'),
+    search:  w('<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>'),
+    calendar:w('<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'),
+    cross:   w('<path d="M12 3v18M6 9h12"/>'),
+    users:   w('<circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5a3.5 3.5 0 0 1 0 7M21 20c0-2.8-1.9-5.1-4.5-5.8"/>'),
+    coins:   w('<circle cx="9" cy="9" r="6"/><path d="M14.5 5.5A6 6 0 1 1 8 15.4"/><path d="M9 6.5v5M7 9h4"/>'),
+    briefcase:w('<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>'),
+    smile:   w('<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01"/><path d="M8.5 14.5a5 5 0 0 0 7 0"/>'),
+    x:       w('<path d="M6 6l12 12M18 6L6 18"/>'),
+    pause:   w('<rect x="7" y="5" width="3.5" height="14" rx="1"/><rect x="13.5" y="5" width="3.5" height="14" rx="1"/>'),
+    play:    w('<path d="M8 5l11 7-11 7z"/>'),
+    reset:   w('<path d="M4 10a8 8 0 1 1 2 6"/><path d="M4 10V5m0 5h5"/>'),
+    download:w('<path d="M12 4v11M7 11l5 5 5-5"/><path d="M5 20h14"/>'),
+    upload:  w('<path d="M12 20V9M7 13l5-5 5 5"/><path d="M5 4h14"/>'),
+    printer: w('<path d="M7 8V4h10v4"/><rect x="4" y="8" width="16" height="8" rx="1.5"/><path d="M7 13h10v7H7z"/>'),
+    arrowUp: w('<path d="M12 19V5M6 11l6-6 6 6"/>'),
+    arrowDown:w('<path d="M12 5v14M6 13l6 6 6-6"/>'),
+    minus:   w('<path d="M5 12h14"/>'),
+    warning: w('<path d="M12 4L2.5 20h19z"/><path d="M12 10v4M12 17.5h.01"/>'),
+    star:    w('<path d="M12 3l2.5 5.7 6 .6-4.5 4.1 1.3 5.9L12 16.2 6.7 19.3 8 13.4 3.5 9.3l6-.6z"/>'),
+    camera:  w('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7l1.5-3h3L15 7"/><circle cx="12" cy="13" r="3.5"/>'),
+    trash:   w('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>'),
+    sun:     w('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>'),
+  };
+})();
+P66.icon = (name) => P66.ICONS[name] || P66.ICONS.target;
+
+/* ---------- Áreas do Homem Integral ---------- */
+P66.AREAS = {
+  espiritual:   { label: 'Espiritual',   icon: 'cross' },
+  fisica:       { label: 'Física',       icon: 'dumbbell' },
+  intelectual:  { label: 'Intelectual',  icon: 'brain' },
+  financeira:   { label: 'Financeira',   icon: 'coins' },
+  familia:      { label: 'Família',      icon: 'users' },
+  casamento:    { label: 'Casamento',    icon: 'heart' },
+  emocional:    { label: 'Emocional',    icon: 'smile' },
+  profissional: { label: 'Profissional', icon: 'briefcase' },
+  social:       { label: 'Social',       icon: 'users' },
+};
+
+/* ---------- Os 10 hábitos padrão ----------
+   time  = horário planejado (timeline "Hoje")
+   min   = tempo estimado em minutos
+   xp    = pontos por conclusão
+   prio  = alta | media | baixa
+   areas = áreas do Homem Integral que o hábito alimenta            */
+P66.DEFAULT_HABITS = [
+  { id: 'h_acordar',   name: 'Acordar às 05:30',            goal: 'Ganhar a primeira batalha do dia',            icon: 'alarm',    time: '05:30', min: 0,  xp: 80,  prio: 'alta',  areas: ['emocional', 'profissional'] },
+  { id: 'h_devocional',name: 'Devocional + Bíblia',         goal: 'Buscar a Deus antes de qualquer tela',        icon: 'bible',    time: '06:00', min: 20, xp: 120, prio: 'alta',  areas: ['espiritual'] },
+  { id: 'h_treino',    name: 'Treino de 30 minutos',        goal: 'Corrida, musculação, flexão ou barra',        icon: 'dumbbell', time: '06:30', min: 30, xp: 100, prio: 'alta',  areas: ['fisica'] },
+  { id: 'h_agua',      name: 'Água: 500ml ao acordar + 2L', goal: 'Hidratar o corpo desde a primeira hora',      icon: 'droplet',  time: '07:30', min: 5,  xp: 40,  prio: 'media', areas: ['fisica'] },
+  { id: 'h_leitura',   name: 'Leitura de 10 páginas',       goal: 'Ficar mais inteligente e interessante',       icon: 'book',     time: '08:00', min: 25, xp: 70,  prio: 'alta',  areas: ['intelectual'] },
+  { id: 'h_estudo',    name: 'Estudar habilidade (IA/Inglês)', goal: '30 minutos construindo o futuro',          icon: 'brain',    time: '12:30', min: 30, xp: 90,  prio: 'media', areas: ['intelectual', 'profissional'] },
+  { id: 'h_pausa',     name: 'Pausa de 10 min em silêncio', goal: 'Esvaziar a cabeça, relaxar e alongar',        icon: 'wind',     time: '15:00', min: 10, xp: 50,  prio: 'baixa', areas: ['emocional'] },
+  { id: 'h_esposa',    name: 'Investir na esposa',          goal: 'Atenção total, sem celular, todos os dias',   icon: 'heart',    time: '19:30', min: 20, xp: 90,  prio: 'alta',  areas: ['casamento', 'familia'] },
+  { id: 'h_plano',     name: 'Planejar amanhã + organizar mesa', goal: 'Terminar o dia no comando do próximo',   icon: 'clipboard',time: '21:00', min: 10, xp: 40,  prio: 'media', areas: ['profissional', 'financeira'] },
+  { id: 'h_sono',      name: 'Protocolo do sono',           goal: 'Sem telas 2h antes, quarto frio, celular fora', icon: 'moon',   time: '21:30', min: 30, xp: 80,  prio: 'alta',  areas: ['fisica', 'emocional'] },
+];
+
+/* ---------- Banco de missões (5 sorteadas por dia) ---------- */
+P66.MISSIONS = [
+  { id: 'm_pais',      name: 'Ligar para seus pais',                    xp: 60, icon: 'users',    areas: ['familia', 'social'] },
+  { id: 'm_elogio',    name: 'Fazer um elogio sincero à sua esposa',    xp: 50, icon: 'heart',    areas: ['casamento'] },
+  { id: 'm_paginas',   name: 'Ler 10 páginas extras',                   xp: 40, icon: 'book',     areas: ['intelectual'] },
+  { id: 'm_agua',      name: 'Bater 2 litros de água antes das 18h',    xp: 30, icon: 'droplet',  areas: ['fisica'] },
+  { id: 'm_mesa',      name: 'Organizar a mesa de trabalho',            xp: 30, icon: 'clipboard',areas: ['profissional'] },
+  { id: 'm_evangelizar',name:'Evangelizar ou abençoar alguém hoje',     xp: 80, icon: 'cross',    areas: ['espiritual', 'social'] },
+  { id: 'm_orcamento', name: 'Revisar o orçamento do mês',              xp: 60, icon: 'coins',    areas: ['financeira'] },
+  { id: 'm_gratidao',  name: 'Anotar 3 motivos de gratidão',            xp: 40, icon: 'pen',      areas: ['emocional', 'espiritual'] },
+  { id: 'm_caminhada', name: 'Caminhar 15 minutos ao ar livre',         xp: 40, icon: 'sun',      areas: ['fisica', 'emocional'] },
+  { id: 'm_amigo',     name: 'Mandar mensagem para um amigo distante',  xp: 30, icon: 'users',    areas: ['social'] },
+  { id: 'm_emails',    name: 'Zerar a caixa de entrada',                xp: 40, icon: 'briefcase',areas: ['profissional'] },
+  { id: 'm_investir',  name: 'Guardar ou investir algum valor hoje',    xp: 70, icon: 'coins',    areas: ['financeira'] },
+  { id: 'm_oracao',    name: 'Orar por alguém específico pelo nome',    xp: 50, icon: 'cross',    areas: ['espiritual'] },
+  { id: 'm_familia',   name: 'Tempo de qualidade com a família',        xp: 60, icon: 'users',    areas: ['familia'] },
+  { id: 'm_versiculo', name: 'Memorizar um versículo',                  xp: 60, icon: 'bible',    areas: ['espiritual', 'intelectual'] },
+  { id: 'm_gentileza', name: 'Fazer algo gentil sem ser notado',        xp: 50, icon: 'smile',    areas: ['emocional', 'social'] },
+  { id: 'm_dormir',    name: 'Deitar antes das 22h30',                  xp: 60, icon: 'moon',     areas: ['fisica'] },
+  { id: 'm_semredes',  name: 'Sem redes sociais até as 18h',            xp: 80, icon: 'shield',   areas: ['emocional', 'profissional'] },
+  { id: 'm_agradecer', name: 'Agradecer a alguém por escrito',          xp: 40, icon: 'pen',      areas: ['social', 'emocional'] },
+  { id: 'm_alongar',   name: 'Alongamento de 10 minutos',               xp: 30, icon: 'wind',     areas: ['fisica'] },
+  { id: 'm_semana',    name: 'Planejar a próxima semana',               xp: 60, icon: 'calendar', areas: ['profissional'] },
+  { id: 'm_igreja',    name: 'Convidar alguém para a igreja',           xp: 70, icon: 'cross',    areas: ['espiritual', 'social'] },
+  { id: 'm_metas',     name: 'Revisar as metas do ciclo',               xp: 50, icon: 'target',   areas: ['profissional', 'emocional'] },
+  { id: 'm_servir',    name: 'Ato de serviço para a esposa',            xp: 60, icon: 'heart',    areas: ['casamento'] },
+];
+P66.MISSIONS_PER_DAY = 5;
+
+/* ---------- Patentes (níveis de XP) ---------- */
+P66.RANKS = [
+  { level: 1,  name: 'Recruta',          xp: 0 },
+  { level: 2,  name: 'Soldado',          xp: 400 },
+  { level: 3,  name: 'Cabo',             xp: 1000 },
+  { level: 4,  name: 'Sargento',         xp: 1800 },
+  { level: 5,  name: 'Subtenente',       xp: 2800 },
+  { level: 6,  name: 'Tenente',          xp: 4200 },
+  { level: 7,  name: 'Capitão',          xp: 6000 },
+  { level: 8,  name: 'Major',            xp: 8200 },
+  { level: 9,  name: 'Tenente-Coronel',  xp: 11000 },
+  { level: 10, name: 'Coronel',          xp: 14500 },
+  { level: 11, name: 'General',          xp: 19000 },
+  { level: 12, name: 'Marechal',         xp: 25000 },
+];
+
+/* ---------- Conquistas ----------
+   check(S) recebe P66.Store e devolve true quando desbloqueada     */
+P66.ACHIEVEMENTS = [
+  { id: 'a_primeira',   name: 'Primeira Batalha',    desc: 'Conclua seu primeiro hábito',                 icon: 'check',   check: S => S.totalCompletions() >= 1 },
+  { id: 'a_dia1',       name: 'Dia Perfeito',        desc: 'Complete 100% dos hábitos em um dia',         icon: 'star',    check: S => S.perfectDays() >= 1 },
+  { id: 'a_streak7',    name: 'Semana de Ferro',     desc: '7 dias perfeitos consecutivos',               icon: 'flame',   check: S => S.bestStreak() >= 7 },
+  { id: 'a_streak14',   name: 'Quinzena de Aço',     desc: '14 dias perfeitos consecutivos',              icon: 'flame',   check: S => S.bestStreak() >= 14 },
+  { id: 'a_streak21',   name: 'Hábito Forjado',      desc: '21 dias perfeitos consecutivos',              icon: 'flame',   check: S => S.bestStreak() >= 21 },
+  { id: 'a_streak33',   name: 'Meio Caminho',        desc: '33 dias perfeitos consecutivos',              icon: 'flame',   check: S => S.bestStreak() >= 33 },
+  { id: 'a_streak66',   name: 'Projeto 66 Completo', desc: '66 dias perfeitos consecutivos',              icon: 'trophy',  check: S => S.bestStreak() >= 66 },
+  { id: 'a_streak100',  name: 'Centurião',           desc: '100 dias perfeitos consecutivos',             icon: 'trophy',  check: S => S.bestStreak() >= 100 },
+  { id: 'a_streak365',  name: 'Imparável',           desc: '365 dias perfeitos consecutivos',             icon: 'trophy',  check: S => S.bestStreak() >= 365 },
+  { id: 'a_imaculado',  name: 'Imaculado',           desc: 'Feche um ciclo de 66 dias sem quebrar nenhum',icon: 'shield',  check: S => S.flawlessCycle() },
+  { id: 'a_treino100',  name: 'Corpo de Elite',      desc: 'Treine 100 vezes',                            icon: 'dumbbell',check: S => S.habitCount('h_treino') >= 100 },
+  { id: 'a_devo100',    name: 'Enraizado',           desc: '100 devocionais concluídos',                  icon: 'bible',   check: S => S.habitCount('h_devocional') >= 100 },
+  { id: 'a_leitura100', name: 'Mente Afiada',        desc: '100 leituras concluídas',                     icon: 'book',    check: S => S.habitCount('h_leitura') >= 100 },
+  { id: 'a_missao10',   name: 'Operador',            desc: 'Complete 10 missões',                         icon: 'flag',    check: S => S.missionsCount() >= 10 },
+  { id: 'a_missao50',   name: 'Forças Especiais',    desc: 'Complete 50 missões',                         icon: 'flag',    check: S => S.missionsCount() >= 50 },
+  { id: 'a_nivel5',     name: 'Subtenente',          desc: 'Alcance o nível 5',                           icon: 'arrowUp', check: S => S.levelInfo().level >= 5 },
+  { id: 'a_nivel10',    name: 'Coronel',             desc: 'Alcance o nível 10',                          icon: 'arrowUp', check: S => S.levelInfo().level >= 10 },
+  { id: 'a_reflexao1',  name: 'Autoexame',           desc: 'Registre sua primeira reflexão',              icon: 'pen',     check: S => S.journalCount() >= 1 },
+  { id: 'a_reflexao7',  name: 'Vigilante',           desc: '7 reflexões registradas',                     icon: 'pen',     check: S => S.journalCount() >= 7 },
+];
+
+/* ---------- Paleta de dados (validada: dataviz six checks, modo escuro) ---------- */
+P66.VIZ = {
+  surface: '#14161a',
+  series:  ['#c9821f', '#199e70', '#3987e5', '#e5484d'],  // categórica validada
+  heat:    ['#6b4d1c', '#9c6f24', '#cd922f', '#f0b445'],  // rampa âmbar validada (ordinal)
+  heatZero:'#1d2026',                                     // célula "sem execução" (track neutro)
+  good:    '#199e70',
+  bad:     '#e5484d',
+  ink:     '#f2f3f5',
+  ink2:    '#9ba1ab',
+  ink3:    '#5f6670',
+  grid:    'rgba(255,255,255,0.06)',
+};
+
+</script>
+<script>
+/* =============================================================
+   PROJETO 66 — Banco de conteúdo motivacional
+   Regras de direitos autorais respeitadas:
+   - Versículos: tradução João Ferreira de Almeida (domínio público)
+   - Autores: apenas citações curtas amplamente conhecidas, com crédito
+   - Demais frases: originais ou paráfrases marcadas como "inspirado em"
+   Categorias: versiculo, disciplina, lideranca, masculinidade,
+               responsabilidade, familia, crescimento, fe, foco
+   ============================================================= */
+'use strict';
+
+P66.QUOTES = [
+  /* ---------- Versículos (Almeida, domínio público) ---------- */
+  { t: 'Tudo posso naquele que me fortalece.', a: 'Filipenses 4:13', c: 'versiculo' },
+  { t: 'O Senhor é o meu pastor; nada me faltará.', a: 'Salmos 23:1', c: 'versiculo' },
+  { t: 'Melhor é o longânimo do que o valente, e o que governa o seu espírito do que o que toma uma cidade.', a: 'Provérbios 16:32', c: 'versiculo' },
+  { t: 'Vai ter com a formiga, ó preguiçoso; olha para os seus caminhos e sê sábio.', a: 'Provérbios 6:6', c: 'versiculo' },
+  { t: 'Esforçai-vos, e ele fortalecerá o vosso coração, vós todos que esperais no Senhor.', a: 'Salmos 31:24', c: 'versiculo' },
+  { t: 'Não to mandei eu? Esforça-te e tem bom ânimo; não pasmes, nem te espantes.', a: 'Josué 1:9', c: 'versiculo' },
+  { t: 'Buscai primeiro o reino de Deus, e a sua justiça, e todas essas coisas vos serão acrescentadas.', a: 'Mateus 6:33', c: 'versiculo' },
+  { t: 'A resposta branda desvia o furor.', a: 'Provérbios 15:1', c: 'versiculo' },
+  { t: 'Combati o bom combate, acabei a carreira, guardei a fé.', a: '2 Timóteo 4:7', c: 'versiculo' },
+  { t: 'Corramos com paciência a carreira que nos está proposta.', a: 'Hebreus 12:1', c: 'versiculo' },
+  { t: 'Deus não nos deu o espírito de temor, mas de fortaleza, e de amor, e de moderação.', a: '2 Timóteo 1:7', c: 'versiculo' },
+  { t: 'O que segue a justiça e a beneficência achará a vida, a justiça e a honra.', a: 'Provérbios 21:21', c: 'versiculo' },
+  { t: 'Como o ferro com o ferro se aguça, assim o homem afia o rosto do seu amigo.', a: 'Provérbios 27:17', c: 'versiculo' },
+  { t: 'Confia no Senhor de todo o teu coração, e não te estribes no teu próprio entendimento.', a: 'Provérbios 3:5', c: 'versiculo' },
+  { t: 'Os que esperam no Senhor renovarão as suas forças, subirão com asas como águias.', a: 'Isaías 40:31', c: 'versiculo' },
+  { t: 'Vigiai e orai, para que não entreis em tentação.', a: 'Mateus 26:41', c: 'versiculo' },
+  { t: 'Ensina-nos a contar os nossos dias, de tal maneira que alcancemos corações sábios.', a: 'Salmos 90:12', c: 'versiculo' },
+  { t: 'Tudo quanto te vier à mão para fazer, faze-o conforme as tuas forças.', a: 'Eclesiastes 9:10', c: 'versiculo' },
+  { t: 'O preguiçoso deseja, e coisa nenhuma alcança, mas a alma dos diligentes se farta.', a: 'Provérbios 13:4', c: 'versiculo' },
+  { t: 'Eu e a minha casa serviremos ao Senhor.', a: 'Josué 24:15', c: 'versiculo' },
+  { t: 'Sê fiel até a morte, e dar-te-ei a coroa da vida.', a: 'Apocalipse 2:10', c: 'versiculo' },
+  { t: 'Lâmpada para os meus pés é tua palavra, e luz para o meu caminho.', a: 'Salmos 119:105', c: 'versiculo' },
+  { t: 'Vós, maridos, amai vossas mulheres, como também Cristo amou a igreja.', a: 'Efésios 5:25', c: 'versiculo' },
+  { t: 'Quer comais quer bebais, ou façais outra qualquer coisa, fazei tudo para glória de Deus.', a: '1 Coríntios 10:31', c: 'versiculo' },
+  { t: 'As suas misericórdias não têm fim; novas são cada manhã.', a: 'Lamentações 3:22-23', c: 'versiculo' },
+  { t: 'Não sabeis vós que o vosso corpo é o templo do Espírito Santo?', a: '1 Coríntios 6:19', c: 'versiculo' },
+  { t: 'Sobre tudo o que se deve guardar, guarda o teu coração, porque dele procedem as saídas da vida.', a: 'Provérbios 4:23', c: 'versiculo' },
+  { t: 'Se Deus é por nós, quem será contra nós?', a: 'Romanos 8:31', c: 'versiculo' },
+  { t: 'Aquietai-vos, e sabei que eu sou Deus.', a: 'Salmos 46:10', c: 'versiculo' },
+  { t: 'Instrui o menino no caminho em que deve andar, e até quando envelhecer não se desviará dele.', a: 'Provérbios 22:6', c: 'versiculo' },
+  { t: 'Andai como filhos da luz.', a: 'Efésios 5:8', c: 'versiculo' },
+  { t: 'Remindo o tempo, porquanto os dias são maus.', a: 'Efésios 5:16', c: 'versiculo' },
+  { t: 'Cria em mim, ó Deus, um coração puro, e renova em mim um espírito reto.', a: 'Salmos 51:10', c: 'versiculo' },
+  { t: 'O choro pode durar uma noite, mas a alegria vem pela manhã.', a: 'Salmos 30:5', c: 'versiculo' },
+
+  /* ---------- Disciplina ---------- */
+  { t: 'Disciplina é igual a liberdade.', a: 'Jocko Willink', c: 'disciplina' },
+  { t: 'Ninguém está vindo te salvar. Levanta e executa.', a: 'Inspirado em David Goggins', c: 'disciplina' },
+  { t: 'Quando achar que acabou, você usou só 40% do que tem.', a: 'Inspirado em David Goggins', c: 'disciplina' },
+  { t: 'A cama vence quem não tem missão.', a: null, c: 'disciplina' },
+  { t: 'Motivação é volátil. Disciplina é infraestrutura.', a: null, c: 'disciplina' },
+  { t: 'O treino que você não quer fazer é o que mais importa.', a: null, c: 'disciplina' },
+  { t: 'Faça o difícil enquanto está fácil recusar.', a: null, c: 'disciplina' },
+  { t: 'Sua rotina de hoje é a sua biografia em rascunho.', a: null, c: 'disciplina' },
+  { t: 'Você não decide seu futuro. Decide seus hábitos — e eles decidem seu futuro.', a: null, c: 'disciplina' },
+  { t: 'O despertador é o primeiro inimigo do dia. Vença-o.', a: null, c: 'disciplina' },
+  { t: 'A repetição entediante é o preço da excelência.', a: null, c: 'disciplina' },
+  { t: 'Nenhum hábito é pequeno quando repetido 66 vezes.', a: null, c: 'disciplina' },
+  { t: 'Conforto agora, arrependimento depois. Escolha uma vez só.', a: null, c: 'disciplina' },
+  { t: 'Disciplina é lembrar do que você quer de verdade.', a: null, c: 'disciplina' },
+  { t: 'Quem domina a manhã não é dominado pelo dia.', a: null, c: 'disciplina' },
+  { t: 'Você não precisa de vontade. Precisa de um horário.', a: null, c: 'disciplina' },
+  { t: 'Constância silenciosa vale mais que intensidade barulhenta.', a: null, c: 'disciplina' },
+  { t: 'Cansaço passa. Desistência fica.', a: null, c: 'disciplina' },
+  { t: 'Ordem externa começa com ordem interna — e vice-versa.', a: null, c: 'disciplina' },
+  { t: 'A preguiça cobra juros. A disciplina paga dividendos.', a: null, c: 'disciplina' },
+  { t: 'O corpo obedece a quem manda todos os dias.', a: null, c: 'disciplina' },
+  { t: 'Não negocie com o travesseiro. Ele sempre vence a negociação.', a: null, c: 'disciplina' },
+  { t: 'Um dia quebrado não quebra o homem. Dois começam a quebrar.', a: null, c: 'disciplina' },
+  { t: 'Trate seus hábitos como compromissos com alguém que você respeita: você.', a: null, c: 'disciplina' },
+  { t: 'Faça a cama. Vença a primeira batalha antes das 6h.', a: 'Inspirado em William McRaven', c: 'disciplina' },
+  { t: 'Hoje difícil, amanhã forte. Hoje fácil, amanhã fraco.', a: null, c: 'disciplina' },
+  { t: 'A rotina certa transforma esforço em identidade.', a: null, c: 'disciplina' },
+  { t: 'Quem falha em treinar, treina a falhar.', a: null, c: 'disciplina' },
+  { t: 'Cinco minutos de ação matam uma hora de ansiedade.', a: null, c: 'disciplina' },
+  { t: 'Seja o homem que aparece. Todos os dias. Sem plateia.', a: null, c: 'disciplina' },
+
+  /* ---------- Liderança ---------- */
+  { t: 'Um líder conhece o caminho, segue o caminho e mostra o caminho.', a: 'John C. Maxwell', c: 'lideranca' },
+  { t: 'Liderança é influência — nada mais, nada menos.', a: 'John C. Maxwell', c: 'lideranca' },
+  { t: 'Assuma o comando do seu dia ou alguém assumirá por você.', a: null, c: 'lideranca' },
+  { t: 'Responsabilidade extrema: não há mau pelotão, há mau comandante.', a: 'Inspirado em Jocko Willink', c: 'lideranca' },
+  { t: 'Liderar é servir primeiro e ser servido nunca.', a: null, c: 'lideranca' },
+  { t: 'Sua família segue o seu exemplo, não o seu discurso.', a: null, c: 'lideranca' },
+  { t: 'O líder que não se governa não governa ninguém.', a: null, c: 'lideranca' },
+  { t: 'Calma é contagiosa. Pânico também. Escolha o que espalhar.', a: null, c: 'lideranca' },
+  { t: 'Comece com o fim em mente.', a: 'Stephen Covey', c: 'lideranca' },
+  { t: 'Primeiro o mais importante.', a: 'Stephen Covey', c: 'lideranca' },
+  { t: 'Entre o estímulo e a resposta há um espaço. Nele mora sua liberdade.', a: 'Inspirado em Viktor Frankl', c: 'lideranca' },
+  { t: 'Grandes líderes fazem reuniões consigo mesmos todas as manhãs.', a: null, c: 'lideranca' },
+  { t: 'Quem lidera a própria agenda lidera a própria vida.', a: null, c: 'lideranca' },
+  { t: 'Autoridade se recebe. Respeito se constrói diariamente.', a: null, c: 'lideranca' },
+  { t: 'O padrão que você tolera é o padrão que você lidera.', a: null, c: 'lideranca' },
+  { t: 'Decida cedo, corrija rápido, aprenda sempre.', a: null, c: 'lideranca' },
+  { t: 'Um homem no comando de si mesmo é raro — e insubstituível.', a: null, c: 'lideranca' },
+  { t: 'Delegue tarefas, nunca o caráter.', a: null, c: 'lideranca' },
+  { t: 'Planeje na véspera. A batalha se vence antes dela começar.', a: null, c: 'lideranca' },
+  { t: 'Líderes leem. Quem não lê, repete.', a: null, c: 'lideranca' },
+  { t: 'Seja tão confiável que sua palavra dispense contrato.', a: null, c: 'lideranca' },
+  { t: 'A disciplina do líder é a segurança dos liderados.', a: null, c: 'lideranca' },
+  { t: 'Não reclame do time se você não treinou o time.', a: null, c: 'lideranca' },
+  { t: 'Visão sem execução é alucinação.', a: null, c: 'lideranca' },
+
+  /* ---------- Masculinidade ---------- */
+  { t: 'Arrume o seu quarto antes de criticar o mundo.', a: 'Inspirado em Jordan Peterson', c: 'masculinidade' },
+  { t: 'Fique de pé, com os ombros para trás.', a: 'Inspirado em Jordan Peterson', c: 'masculinidade' },
+  { t: 'Compare-se com quem você era ontem, não com outra pessoa hoje.', a: 'Inspirado em Jordan Peterson', c: 'masculinidade' },
+  { t: 'Um homem forte é perigoso sob controle — inofensivo é outra coisa.', a: 'Inspirado em Jordan Peterson', c: 'masculinidade' },
+  { t: 'Força sem domínio próprio é apenas risco.', a: null, c: 'masculinidade' },
+  { t: 'Homem que foge do desconforto foge de si mesmo.', a: null, c: 'masculinidade' },
+  { t: 'Proteja, proveja, presida — em amor.', a: null, c: 'masculinidade' },
+  { t: 'Seja a rocha da casa, não a tempestade.', a: null, c: 'masculinidade' },
+  { t: 'Palavra dada é dívida de honra.', a: null, c: 'masculinidade' },
+  { t: 'O homem maduro faz o necessário mesmo sem vontade.', a: null, c: 'masculinidade' },
+  { t: 'Carregue peso. Físico e moral. É para isso que existem ombros.', a: null, c: 'masculinidade' },
+  { t: 'Voluntarie-se para o difícil antes que o difícil te convoque.', a: null, c: 'masculinidade' },
+  { t: 'Homens fortes criam tempos bons. Seja a exceção nos tempos fáceis.', a: null, c: 'masculinidade' },
+  { t: 'Domar a língua é o primeiro campeonato do homem.', a: null, c: 'masculinidade' },
+  { t: 'Sua esposa não precisa de um menino grande. Precisa de um homem constante.', a: null, c: 'masculinidade' },
+  { t: 'Frieza na crise, calor no lar.', a: null, c: 'masculinidade' },
+  { t: 'O espelho não mente: você é o resultado das suas repetições.', a: null, c: 'masculinidade' },
+  { t: 'Menos desabafo, mais plano de ação.', a: null, c: 'masculinidade' },
+  { t: 'Um homem sem rotina é um navio sem leme.', a: null, c: 'masculinidade' },
+  { t: 'Coragem não é ausência de medo — é ação apesar dele.', a: null, c: 'masculinidade' },
+  { t: 'Aguente o desconforto em silêncio, celebre a vitória com gratidão.', a: null, c: 'masculinidade' },
+  { t: 'Seu filho está te assistindo. Aja como se isso importasse — porque importa.', a: null, c: 'masculinidade' },
+  { t: 'Homem de verdade pede perdão primeiro.', a: null, c: 'masculinidade' },
+  { t: 'A força do homem se mede pelo que ele constrói, não pelo que destrói.', a: null, c: 'masculinidade' },
+
+  /* ---------- Responsabilidade ---------- */
+  { t: 'Se é para ser, depende de mim — debaixo de Deus.', a: null, c: 'responsabilidade' },
+  { t: 'A culpa é sua. A solução também. Isso é ótimo.', a: null, c: 'responsabilidade' },
+  { t: 'Dono dos resultados, não vítima das circunstâncias.', a: null, c: 'responsabilidade' },
+  { t: 'Quem dá desculpa entrega o comando.', a: null, c: 'responsabilidade' },
+  { t: 'Assuma o erro em 10 segundos e ganhe o dia de volta.', a: null, c: 'responsabilidade' },
+  { t: 'Você é o CEO da sua vida. Aja como tal no primeiro turno.', a: null, c: 'responsabilidade' },
+  { t: 'Prestação de contas não é peso — é proteção.', a: null, c: 'responsabilidade' },
+  { t: 'O que não é medido escorrega. O que é medido melhora.', a: null, c: 'responsabilidade' },
+  { t: 'Prometa menos. Cumpra mais. Sempre.', a: null, c: 'responsabilidade' },
+  { t: 'Ninguém terceiriza flexão. Nem caráter.', a: null, c: 'responsabilidade' },
+  { t: 'Sua palavra vale o que sua agenda mostra.', a: null, c: 'responsabilidade' },
+  { t: 'Falhou? Registre, corrija, siga. Sem novela.', a: null, c: 'responsabilidade' },
+  { t: 'Adulto é quem paga o preço antes de usar o produto.', a: null, c: 'responsabilidade' },
+  { t: 'Responsabilidade é a assinatura do homem maduro.', a: null, c: 'responsabilidade' },
+  { t: 'Não herde culpas, herde deveres.', a: null, c: 'responsabilidade' },
+  { t: 'A liberdade cresce na exata medida da responsabilidade assumida.', a: null, c: 'responsabilidade' },
+  { t: 'Cada hábito quebrado tem um motivo. Anote-o e elimine-o.', a: null, c: 'responsabilidade' },
+  { t: 'Segunda-feira não é desculpa. É oportunidade com nome feio.', a: null, c: 'responsabilidade' },
+  { t: 'O extrato bancário e a balança não aceitam narrativa.', a: null, c: 'responsabilidade' },
+  { t: 'Vigie suas entradas: o que consome te consome.', a: null, c: 'responsabilidade' },
+  { t: 'Quem se mede não se engana.', a: null, c: 'responsabilidade' },
+  { t: 'A agenda revela a teologia prática de um homem.', a: null, c: 'responsabilidade' },
+  { t: 'Autocomando hoje, autoridade amanhã.', a: null, c: 'responsabilidade' },
+  { t: 'Erro confessado é aula. Erro escondido é dívida.', a: null, c: 'responsabilidade' },
+
+  /* ---------- Família ---------- */
+  { t: 'Nenhum sucesso compensa o fracasso no lar.', a: 'David O. McKay', c: 'familia' },
+  { t: 'Sua esposa é aliança, não plateia.', a: null, c: 'familia' },
+  { t: 'Filhos soletram amor assim: T-E-M-P-O.', a: null, c: 'familia' },
+  { t: 'Ligue para seus pais. Um dia o telefone não vai tocar.', a: null, c: 'familia' },
+  { t: 'O lar é o primeiro púlpito do homem.', a: null, c: 'familia' },
+  { t: 'Celular na mesa, família em espera. Inverta.', a: null, c: 'familia' },
+  { t: 'Ame sua esposa em público e em particular — na mesma medida.', a: null, c: 'familia' },
+  { t: 'A herança que fica é o exemplo que você deu.', a: null, c: 'familia' },
+  { t: 'Casa em ordem, coração em paz.', a: null, c: 'familia' },
+  { t: 'Elogie sua esposa hoje. Amanhã de novo.', a: null, c: 'familia' },
+  { t: 'Ore com sua família, não apenas pela sua família.', a: null, c: 'familia' },
+  { t: 'O melhor presente para seus filhos é amar a mãe deles.', a: null, c: 'familia' },
+  { t: 'Jantar sem tela é culto de comunhão.', a: null, c: 'familia' },
+  { t: 'Perdoe rápido. A casa é pequena demais para orgulho grande.', a: null, c: 'familia' },
+  { t: 'Trabalhe duro fora para estar inteiro dentro.', a: null, c: 'familia' },
+  { t: 'A porta de casa deve ser a fronteira do estresse.', a: null, c: 'familia' },
+  { t: 'Escute sua esposa sem consertar nada. Só escute.', a: null, c: 'familia' },
+  { t: 'Data marcada com a família é reunião inadiável.', a: null, c: 'familia' },
+  { t: 'Seu casamento é o seu ministério mais visível.', a: null, c: 'familia' },
+  { t: 'Filho não precisa de herói perfeito, precisa de pai presente.', a: null, c: 'familia' },
+  { t: 'Abrace mais. Estatísticas não abraçam ninguém.', a: null, c: 'familia' },
+  { t: 'Construa memórias como quem constrói patrimônio.', a: null, c: 'familia' },
+
+  /* ---------- Crescimento (Kaizen / Atomic Habits) ---------- */
+  { t: 'Você não sobe até o nível das suas metas; você cai até o nível dos seus sistemas.', a: 'James Clear', c: 'crescimento' },
+  { t: 'Melhorar 1% ao dia é ficar 37x melhor em um ano.', a: 'Inspirado em James Clear', c: 'crescimento' },
+  { t: 'Cada ação é um voto na pessoa que você quer se tornar.', a: 'Inspirado em James Clear', c: 'crescimento' },
+  { t: 'Não quebre a corrente duas vezes seguidas.', a: 'Inspirado em James Clear', c: 'crescimento' },
+  { t: 'Torne o hábito óbvio, atraente, fácil e satisfatório.', a: 'Inspirado em James Clear', c: 'crescimento' },
+  { t: 'Kaizen: hoje um pouco melhor que ontem. Sem exceção.', a: null, c: 'crescimento' },
+  { t: 'Pequenos reparos evitam grandes reformas.', a: null, c: 'crescimento' },
+  { t: 'O composto mais poderoso do mundo é o juro sobre hábito.', a: null, c: 'crescimento' },
+  { t: 'Plante leitura, colha visão.', a: null, c: 'crescimento' },
+  { t: 'Aprenda uma habilidade nova: é o seguro de vida da sua carreira.', a: null, c: 'crescimento' },
+  { t: 'Meça a semana, não o humor do dia.', a: null, c: 'crescimento' },
+  { t: 'Repetição é a mãe da maestria.', a: null, c: 'crescimento' },
+  { t: 'Devagar é suave. Suave é rápido.', a: 'Lema militar', c: 'crescimento' },
+  { t: 'Um livro por mês te coloca em outra classe em cinco anos.', a: null, c: 'crescimento' },
+  { t: 'Falhar faz parte do treino. Desistir não.', a: null, c: 'crescimento' },
+  { t: 'Aprendiz todos os dias, mestre em alguns anos.', a: null, c: 'crescimento' },
+  { t: 'Progresso visível alimenta progresso contínuo.', a: null, c: 'crescimento' },
+  { t: 'Revise a semana como um técnico revê o jogo.', a: null, c: 'crescimento' },
+  { t: 'A planilha de hoje é o troféu de dezembro.', a: null, c: 'crescimento' },
+  { t: 'Identidade primeiro: seja um leitor, e a leitura acontece.', a: null, c: 'crescimento' },
+  { t: 'Erros documentados viram sabedoria. Erros ignorados viram rotina.', a: null, c: 'crescimento' },
+  { t: 'O dia 66 se constrói no dia 1, 2, 3...', a: null, c: 'crescimento' },
+  { t: 'Ambiente vence força de vontade: prepare o terreno.', a: null, c: 'crescimento' },
+  { t: 'Não conte os dias. Faça os dias contarem.', a: 'Muhammad Ali', c: 'crescimento' },
+  { t: 'A melhor hora de plantar uma árvore foi há 20 anos. A segunda melhor é agora.', a: 'Provérbio chinês', c: 'crescimento' },
+  { t: 'Excelência é hábito, não ato.', a: 'Inspirado em Aristóteles', c: 'crescimento' },
+
+  /* ---------- Fé ---------- */
+  { t: 'Ore como se tudo dependesse de Deus. Trabalhe como se tudo dependesse de você.', a: 'Atribuído a Agostinho', c: 'fe' },
+  { t: 'A oração da manhã afina o instrumento do dia.', a: null, c: 'fe' },
+  { t: 'Joelhos no chão pela manhã, coluna ereta o dia inteiro.', a: null, c: 'fe' },
+  { t: 'Quem abre o dia com a Palavra fecha o dia com paz.', a: null, c: 'fe' },
+  { t: 'Fé sem obras é teoria. Obras sem fé é vaidade.', a: null, c: 'fe' },
+  { t: 'Devocional não é obrigação — é abastecimento.', a: null, c: 'fe' },
+  { t: 'A Bíblia lida transforma; a Bíblia na estante decora.', a: null, c: 'fe' },
+  { t: 'Deus honra o homem que honra os compromissos invisíveis.', a: null, c: 'fe' },
+  { t: 'Trabalhe com excelência: seu ofício também é altar.', a: null, c: 'fe' },
+  { t: 'Gratidão de manhã é blindagem contra a murmuração à tarde.', a: null, c: 'fe' },
+  { t: 'Santidade nos detalhes: como você faz uma coisa é como faz tudo.', a: null, c: 'fe' },
+  { t: 'O silêncio diante de Deus organiza o barulho de dentro.', a: null, c: 'fe' },
+  { t: 'Caráter é quem você é quando só Deus está vendo.', a: null, c: 'fe' },
+  { t: 'Semeie fidelidade no oculto; a colheita vem em público.', a: null, c: 'fe' },
+  { t: 'Cristo no centro, o resto em ordem.', a: null, c: 'fe' },
+  { t: 'A alma também tem agenda: reserve o primeiro horário.', a: null, c: 'fe' },
+  { t: 'Adore antes de rolar o feed.', a: null, c: 'fe' },
+  { t: 'Um homem de joelhos vê mais longe que um homem no pedestal.', a: null, c: 'fe' },
+  { t: 'Descanso também é mandamento. Durma como quem confia.', a: null, c: 'fe' },
+  { t: 'Provações são academias da fé.', a: null, c: 'fe' },
+  { t: 'Evangelizar é transbordar, não performar.', a: null, c: 'fe' },
+  { t: 'Deus não procura homens perfeitos — procura homens disponíveis.', a: null, c: 'fe' },
+
+  /* ---------- Foco ---------- */
+  { t: 'Foco é dizer não para mil coisas boas.', a: 'Inspirado em Steve Jobs', c: 'foco' },
+  { t: 'Uma missão por vez. Conclua. Próxima.', a: null, c: 'foco' },
+  { t: 'O celular no bolso é uma reunião que nunca acaba. Encerre-a.', a: null, c: 'foco' },
+  { t: 'Multitarefa é fazer duas coisas mal ao mesmo tempo.', a: null, c: 'foco' },
+  { t: 'Profundidade gera valor. Distração gera desculpas.', a: null, c: 'foco' },
+  { t: 'Notificação não é urgência. É interrupção com fantasia.', a: null, c: 'foco' },
+  { t: 'Proteja suas manhãs como um cofre.', a: null, c: 'foco' },
+  { t: '25 minutos de foco total valem 3 horas de atenção picada.', a: null, c: 'foco' },
+  { t: 'O modo avião também serve para decolar projetos.', a: null, c: 'foco' },
+  { t: 'Comece pela rã: a tarefa mais difícil, primeiro.', a: 'Inspirado em Brian Tracy', c: 'foco' },
+  { t: 'Onde vai sua atenção, vai sua vida.', a: null, c: 'foco' },
+  { t: 'Menos abas abertas, mais capítulos fechados.', a: null, c: 'foco' },
+  { t: 'Diga não hoje para poder dizer sim ao que importa.', a: null, c: 'foco' },
+  { t: 'Ocupado é diferente de produtivo. Meça resultado, não movimento.', a: null, c: 'foco' },
+  { t: 'A tela que você evita à noite devolve o foco pela manhã.', a: null, c: 'foco' },
+  { t: 'Grandes obras nascem de blocos de silêncio.', a: null, c: 'foco' },
+  { t: 'Se tudo é prioridade, nada é prioridade.', a: null, c: 'foco' },
+  { t: 'Cronômetro rodando, mundo esperando.', a: null, c: 'foco' },
+  { t: 'Termine o que começou. É raro. Seja raro.', a: null, c: 'foco' },
+  { t: 'Um homem focado é uma força da natureza.', a: null, c: 'foco' },
+];
+
+/* Sorteio anti-repetição: evita as últimas N frases exibidas */
+P66.pickQuote = function (recentIdx) {
+  const total = P66.QUOTES.length;
+  const recent = new Set(recentIdx || []);
+  let idx, guard = 0;
+  do {
+    idx = Math.floor(Math.random() * total);
+    guard++;
+  } while (recent.has(idx) && guard < 200);
+  return idx;
+};
+
+</script>
+<script>
+/* =============================================================
+   PROJETO 66 — Sons de vitória (Web Audio, sem assets externos)
+   Sfx.init() precisa ser chamado após o primeiro gesto do usuário.
+   ============================================================= */
+'use strict';
+
+P66.Sfx = {
+  ctx: null,
+  enabled: true,
+
+  init() {
+    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) this.ctx = new AC();
+  },
+
+  _tone(freq, t0, dur, type = 'sine', gain = 0.12) {
+    const ctx = this.ctx;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t0);
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(gain, t0 + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(g).connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.05);
+  },
+
+  _play(notes, type = 'sine', gain = 0.12) {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    notes.forEach(([f, at, dur]) => this._tone(f, now + at, dur, type, gain));
+  },
+
+  /* hábito concluído — dois toques secos e limpos */
+  win()     { this._play([[660, 0, 0.10], [990, 0.09, 0.22]], 'triangle', 0.14); },
+  /* missão extra concluída */
+  mission() { this._play([[520, 0, 0.09], [780, 0.08, 0.16]], 'triangle', 0.11); },
+  /* dia 100% — pequena fanfarra */
+  fanfare() { this._play([[523, 0, 0.14], [659, 0.12, 0.14], [784, 0.24, 0.14], [1047, 0.38, 0.42]], 'triangle', 0.15); },
+  /* subiu de nível */
+  levelUp() { this._play([[392, 0, 0.12], [523, 0.11, 0.12], [659, 0.22, 0.12], [784, 0.33, 0.3], [1047, 0.46, 0.5]], 'triangle', 0.16); },
+  /* conquista desbloqueada */
+  badge()   { this._play([[880, 0, 0.1], [1174, 0.1, 0.3]], 'sine', 0.12); },
+  /* desfazer / neutro */
+  tick()    { this._play([[440, 0, 0.06]], 'sine', 0.07); },
+};
+
+</script>
+<script>
+/* =============================================================
+   PROJETO 66 — Store: estado, persistência (localStorage) e
+   todas as estatísticas derivadas (streaks, XP, áreas, séries).
+   ============================================================= */
+'use strict';
+
+P66.Store = {
+  KEY: 'p66_state_v1',
+  state: null,
+
+  /* ---------- ciclo de vida ---------- */
+  init() {
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      this.state = raw ? JSON.parse(raw) : null;
+    } catch (e) { this.state = null; }
+    if (!this.state || this.state.version !== 1) this.state = this._defaultState();
+    this._ensureDay(this.today());
+    this.save();
+  },
+
+  _defaultState() {
+    return {
+      version: 1,
+      profile: { name: 'Renan', cycleStart: this.today() },
+      settings: { sound: true, onboarded: false },
+      habits: JSON.parse(JSON.stringify(P66.DEFAULT_HABITS)),
+      log: {},            // 'YYYY-MM-DD' -> { total, habits:{id:iso}, missions:{id:iso}, extraMissions:[{id,name,xp}] }
+      failures: {},       // 'YYYY-MM-DD' -> { motivo, plano }
+      journal: {},        // 'YYYY-MM-DD' -> { bem, falha, melhorar, vitoria, deus, ts }
+      whys: [],           // [{id, type, text, img?, createdAt}]
+      achievements: {},   // id -> dateKey
+      xp: 0,
+      recentQuotes: [],
+      warSessions: [],    // [{date, seconds}]
+    };
+  },
+
+  save() {
+    try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); }
+    catch (e) { console.warn('P66: falha ao salvar', e); }
+  },
+
+  _emit() {
+    this.save();
+    document.dispatchEvent(new CustomEvent('p66:change'));
+  },
+
+  /* ---------- datas ---------- */
+  dkey(d) {
+    const p = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  },
+  today() { return this.dkey(new Date()); },
+  parseKey(k) {
+    const [y, m, d] = k.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  },
+  addDays(k, n) {
+    const d = this.parseKey(k);
+    d.setDate(d.getDate() + n);
+    return this.dkey(d);
+  },
+  diffDays(a, b) { return Math.round((this.parseKey(b) - this.parseKey(a)) / 864e5); },
+  weekdayShort(k) { return ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][this.parseKey(k).getDay()]; },
+  fmtDate(k) {
+    const d = this.parseKey(k);
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+  },
+  fmtDateLong(k) {
+    const d = this.parseKey(k);
+    return d.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+  },
+
+  /* ---------- ciclo de 66 dias ---------- */
+  cycleStart() { return this.state.profile.cycleStart; },
+  _elapsed() { return Math.max(0, this.diffDays(this.cycleStart(), this.today())); },
+  cycleNumber() { return Math.floor(this._elapsed() / P66.CYCLE_DAYS) + 1; },
+  dayNumber() { return (this._elapsed() % P66.CYCLE_DAYS) + 1; },
+  daysLeft() { return P66.CYCLE_DAYS - this.dayNumber(); },
+  currentCycleStartKey() {
+    return this.addDays(this.cycleStart(), (this.cycleNumber() - 1) * P66.CYCLE_DAYS);
+  },
+  restartCycle() {
+    this.state.profile.cycleStart = this.today();
+    this._emit();
+  },
+
+  /* ---------- dia / hábitos ---------- */
+  habits() { return this.state.habits.filter(h => h.active !== false); },
+  habitById(id) { return this.state.habits.find(h => h.id === id); },
+
+  _ensureDay(k) {
+    if (!this.state.log[k]) {
+      this.state.log[k] = { total: this.habits().length, habits: {}, missions: {}, extraMissions: [] };
+    }
+    return this.state.log[k];
+  },
+  day(k) { return this.state.log[k] || null; },
+
+  isDone(id, k) {
+    const e = this.day(k || this.today());
+    return !!(e && e.habits[id]);
+  },
+  doneAt(id, k) {
+    const e = this.day(k || this.today());
+    return e ? e.habits[id] || null : null;
+  },
+
+  completeHabit(id) {
+    const k = this.today();
+    const e = this._ensureDay(k);
+    if (e.habits[id]) return null;
+    const h = this.habitById(id);
+    if (!h) return null;
+    e.habits[id] = new Date().toISOString();
+    this.state.xp += h.xp;
+    const before = this.levelInfo(this.state.xp - h.xp).level;
+    const after = this.levelInfo().level;
+    const unlocked = this.checkAchievements();
+    const c = this.completionForDay(k);
+    this._emit();
+    return { xp: h.xp, pct: c.pct, dayComplete: c.pct === 100, levelUp: after > before ? this.levelInfo() : null, unlocked };
+  },
+
+  undoHabit(id) {
+    const k = this.today();
+    const e = this.day(k);
+    if (!e || !e.habits[id]) return;
+    delete e.habits[id];
+    const h = this.habitById(id);
+    if (h) this.state.xp = Math.max(0, this.state.xp - h.xp);
+    this._emit();
+  },
+
+  completionForDay(k) {
+    const e = this.day(k);
+    const total = e ? (e.total || this.habits().length) : this.habits().length;
+    const done = e ? Object.keys(e.habits).length : 0;
+    return { done, total, pct: total ? Math.round((done / total) * 100) : 0 };
+  },
+
+  isPerfect(k) {
+    const c = this.completionForDay(k);
+    return c.total > 0 && c.done >= c.total;
+  },
+
+  /* hábitos de hoje cujo horário já passou e não foram concluídos */
+  lateHabitsToday() {
+    const now = new Date();
+    const cur = now.getHours() * 60 + now.getMinutes();
+    return this.habits().filter(h => {
+      if (this.isDone(h.id)) return false;
+      const [hh, mm] = h.time.split(':').map(Number);
+      return hh * 60 + mm < cur;
+    });
+  },
+
+  nextHabit() {
+    const pending = this.habits().filter(h => !this.isDone(h.id))
+      .sort((a, b) => a.time.localeCompare(b.time));
+    const now = new Date();
+    const cur = now.getHours() * 60 + now.getMinutes();
+    const upcoming = pending.find(h => {
+      const [hh, mm] = h.time.split(':').map(Number);
+      return hh * 60 + mm >= cur;
+    });
+    return upcoming || pending[0] || null;
+  },
+
+  /* ---------- missões ---------- */
+  _hash(s) {
+    let h = 2166136261;
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return h >>> 0;
+  },
+  _dailyMissionPool(k) {
+    const pool = [...P66.MISSIONS];
+    let seed = this._hash('p66' + k);
+    const rnd = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(rnd() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, P66.MISSIONS_PER_DAY);
+  },
+  missionsForDay(k) {
+    k = k || this.today();
+    const e = this.day(k);
+    return this._dailyMissionPool(k).concat((e && e.extraMissions) || []);
+  },
+  missionDone(id, k) {
+    const e = this.day(k || this.today());
+    return !!(e && e.missions[id]);
+  },
+  completeMission(id) {
+    const k = this.today();
+    const e = this._ensureDay(k);
+    if (e.missions[id]) return null;
+    const m = this.missionsForDay(k).find(x => x.id === id);
+    if (!m) return null;
+    e.missions[id] = new Date().toISOString();
+    this.state.xp += m.xp;
+    const before = this.levelInfo(this.state.xp - m.xp).level;
+    const after = this.levelInfo().level;
+    const unlocked = this.checkAchievements();
+    this._emit();
+    return { xp: m.xp, levelUp: after > before ? this.levelInfo() : null, unlocked };
+  },
+  undoMission(id) {
+    const k = this.today();
+    const e = this.day(k);
+    if (!e || !e.missions[id]) return;
+    const m = this.missionsForDay(k).find(x => x.id === id);
+    delete e.missions[id];
+    if (m) this.state.xp = Math.max(0, this.state.xp - m.xp);
+    this._emit();
+  },
+  addCustomMission(name, xp) {
+    const e = this._ensureDay(this.today());
+    e.extraMissions.push({ id: 'mx_' + Date.now(), name, xp: xp || 40, icon: 'flag', areas: [] });
+    this._emit();
+  },
+
+  /* ---------- streaks & contadores ---------- */
+  currentStreak() {
+    let k = this.today();
+    let n = 0;
+    if (this.isPerfect(k)) { n = 1; }
+    k = this.addDays(k, -1);
+    while (this.day(k) && this.isPerfect(k)) { n++; k = this.addDays(k, -1); }
+    return n;
+  },
+  bestStreak() {
+    const keys = Object.keys(this.state.log).sort();
+    let best = 0, run = 0, prev = null;
+    for (const k of keys) {
+      if (this.isPerfect(k)) {
+        run = (prev && this.diffDays(prev, k) === 1) ? run + 1 : 1;
+        prev = k;
+        if (run > best) best = run;
+      } else { run = 0; prev = null; }
+    }
+    return best;
+  },
+  perfectDays() {
+    return Object.keys(this.state.log).filter(k => this.isPerfect(k)).length;
+  },
+  brokenDays() {
+    // dias já encerrados do ciclo atual com menos de 100%
+    const start = this.currentCycleStartKey();
+    const today = this.today();
+    let n = 0;
+    for (let k = start; k < today; k = this.addDays(k, 1)) {
+      if (!this.isPerfect(k)) n++;
+    }
+    return n;
+  },
+  totalCompletions() {
+    return Object.values(this.state.log).reduce((s, e) => s + Object.keys(e.habits).length, 0);
+  },
+  habitCount(id) {
+    return Object.values(this.state.log).reduce((s, e) => s + (e.habits[id] ? 1 : 0), 0);
+  },
+  missionsCount() {
+    return Object.values(this.state.log).reduce((s, e) => s + Object.keys(e.missions).length, 0);
+  },
+  journalCount() { return Object.keys(this.state.journal).length; },
+  flawlessCycle() {
+    return this.dayNumber() === P66.CYCLE_DAYS && this.brokenDays() === 0 && this.isPerfect(this.today());
+  },
+  overallRate() {
+    const start = this.currentCycleStartKey();
+    const today = this.today();
+    let done = 0, total = 0;
+    for (let k = start; k <= today; k = this.addDays(k, 1)) {
+      const c = this.completionForDay(k);
+      done += c.done; total += c.total;
+    }
+    return total ? Math.round((done / total) * 100) : 0;
+  },
+  lastFailure() {
+    let k = this.addDays(this.today(), -1);
+    const start = this.cycleStart();
+    while (k >= start) {
+      if (this.day(k) && !this.isPerfect(k)) {
+        const e = this.day(k);
+        const missed = this.habits().filter(h => !e.habits[h.id]).map(h => h.name);
+        return { key: k, missed, note: this.state.failures[k] || null };
+      }
+      k = this.addDays(k, -1);
+    }
+    return null;
+  },
+  setFailureNote(k, motivo, plano) {
+    this.state.failures[k] = { motivo, plano };
+    this._emit();
+  },
+
+  /* ---------- séries para gráficos ---------- */
+  firstLogKey() {
+    return Object.keys(this.state.log).sort()[0] || this.today();
+  },
+  weeklySeries() {
+    // não plota dias anteriores ao primeiro registro (0% falso)
+    const first = this.firstLogKey();
+    const out = [];
+    for (let i = 6; i >= 0; i--) {
+      const k = this.addDays(this.today(), -i);
+      if (k < first) continue;
+      const c = this.completionForDay(k);
+      out.push({ key: k, label: this.weekdayShort(k), ...c });
+    }
+    return out;
+  },
+  monthlySeries(days = 30) {
+    const first = this.firstLogKey();
+    const out = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const k = this.addDays(this.today(), -i);
+      if (k < first) continue;
+      const c = this.completionForDay(k);
+      out.push({ key: k, label: this.fmtDate(k), ...c });
+    }
+    return out;
+  },
+  heatmapCycle() {
+    const start = this.currentCycleStartKey();
+    const today = this.today();
+    const cells = [];
+    for (let i = 0; i < P66.CYCLE_DAYS; i++) {
+      const k = this.addDays(start, i);
+      const c = this.completionForDay(k);
+      cells.push({
+        key: k, dayNum: i + 1, pct: c.pct,
+        state: k > today ? 'future' : (k === today ? 'today' : 'past'),
+      });
+    }
+    return cells;
+  },
+  hourHistogram() {
+    const hours = new Array(24).fill(0);
+    Object.values(this.state.log).forEach(e => {
+      Object.values(e.habits).forEach(iso => {
+        const d = new Date(iso);
+        if (!isNaN(d)) hours[d.getHours()]++;
+      });
+    });
+    return hours;
+  },
+  habitStrength() {
+    const start = this.currentCycleStartKey();
+    const today = this.today();
+    const opp = this.diffDays(start, today) + 1;
+    return this.habits().map(h => {
+      let done = 0, lateSum = 0, lateN = 0;
+      for (let k = start; k <= today; k = this.addDays(k, 1)) {
+        const iso = this.doneAt(h.id, k);
+        if (iso) {
+          done++;
+          const d = new Date(iso);
+          const [hh, mm] = h.time.split(':').map(Number);
+          const delta = (d.getHours() * 60 + d.getMinutes()) - (hh * 60 + mm);
+          if (!isNaN(delta)) { lateSum += delta; lateN++; }
+        }
+      }
+      return { habit: h, done, opp, rate: opp ? Math.round((done / opp) * 100) : 0, avgDelay: lateN ? Math.round(lateSum / lateN) : 0 };
+    }).sort((a, b) => b.rate - a.rate);
+  },
+  weekdayRates() {
+    // taxa média de conclusão por dia da semana (histórico todo)
+    const sums = new Array(7).fill(0), counts = new Array(7).fill(0);
+    Object.keys(this.state.log).forEach(k => {
+      if (k > this.today()) return;
+      const wd = this.parseKey(k).getDay();
+      sums[wd] += this.completionForDay(k).pct;
+      counts[wd]++;
+    });
+    return ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((label, i) => ({
+      label, pct: counts[i] ? Math.round(sums[i] / counts[i]) : 0, n: counts[i],
+    }));
+  },
+  minutesInvested() {
+    let min = 0;
+    Object.values(this.state.log).forEach(e => {
+      Object.keys(e.habits).forEach(id => {
+        const h = this.habitById(id);
+        if (h) min += h.min;
+      });
+    });
+    return min;
+  },
+  rateBetween(fromKey, toKey) {
+    let done = 0, total = 0;
+    for (let k = fromKey; k <= toKey; k = this.addDays(k, 1)) {
+      if (!this.day(k)) continue;
+      const c = this.completionForDay(k);
+      done += c.done; total += c.total;
+    }
+    return total ? Math.round((done / total) * 100) : null;
+  },
+
+  /* ---------- Homem Integral (0–100 por área) ---------- */
+  areaScores(windowDays = 14) {
+    const scores = {};
+    const from = this.addDays(this.today(), -(windowDays - 1));
+    Object.keys(P66.AREAS).forEach(a => { scores[a] = { done: 0, opp: 0, missions: 0 }; });
+    for (let k = from; k <= this.today(); k = this.addDays(k, 1)) {
+      const e = this.day(k);
+      this.habits().forEach(h => {
+        h.areas.forEach(a => {
+          if (!scores[a]) return;
+          scores[a].opp++;
+          if (e && e.habits[h.id]) scores[a].done++;
+        });
+      });
+      if (e) {
+        this.missionsForDay(k).forEach(m => {
+          if (e.missions[m.id]) m.areas.forEach(a => { if (scores[a]) scores[a].missions++; });
+        });
+      }
+    }
+    return Object.keys(P66.AREAS).map(a => {
+      const s = scores[a];
+      const base = s.opp ? (s.done / s.opp) * 100 : 0;
+      const bonus = Math.min(18, s.missions * 3);
+      return { area: a, ...P66.AREAS[a], score: Math.min(100, Math.round(s.opp ? base * 0.9 + bonus : Math.min(100, s.missions * 12))) };
+    });
+  },
+
+  /* ---------- XP / patentes ---------- */
+  levelInfo(xp) {
+    const total = xp === undefined ? this.state.xp : xp;
+    let cur = P66.RANKS[0], next = null;
+    for (const r of P66.RANKS) {
+      if (total >= r.xp) cur = r; else { next = r; break; }
+    }
+    const span = next ? next.xp - cur.xp : 1;
+    const into = next ? total - cur.xp : 1;
+    return { level: cur.level, name: cur.name, xp: total, next, pct: next ? Math.min(100, Math.round((into / span) * 100)) : 100 };
+  },
+
+  /* ---------- conquistas ---------- */
+  checkAchievements() {
+    const fresh = [];
+    P66.ACHIEVEMENTS.forEach(a => {
+      if (!this.state.achievements[a.id] && a.check(this)) {
+        this.state.achievements[a.id] = this.today();
+        fresh.push(a);
+      }
+    });
+    return fresh;
+  },
+
+  /* ---------- reflexão / diário ---------- */
+  saveJournal(k, entry) {
+    this.state.journal[k] = { ...entry, ts: new Date().toISOString() };
+    this.checkAchievements();
+    this._emit();
+  },
+  searchJournal(q) {
+    const term = (q || '').toLowerCase().trim();
+    return Object.keys(this.state.journal).sort().reverse()
+      .map(k => ({ key: k, ...this.state.journal[k] }))
+      .filter(e => !term || ['bem', 'falha', 'melhorar', 'vitoria', 'deus']
+        .some(f => (e[f] || '').toLowerCase().includes(term)));
+  },
+
+  /* ---------- "Por que continuo?" ---------- */
+  addWhy(type, text, img) {
+    this.state.whys.push({ id: 'w_' + Date.now(), type, text, img: img || null, createdAt: this.today() });
+    this._emit();
+  },
+  removeWhy(id) {
+    this.state.whys = this.state.whys.filter(w => w.id !== id);
+    this._emit();
+  },
+
+  /* ---------- frases ---------- */
+  nextQuote() {
+    const idx = P66.pickQuote(this.state.recentQuotes);
+    this.state.recentQuotes.push(idx);
+    if (this.state.recentQuotes.length > 40) this.state.recentQuotes.shift();
+    this.save();
+    return P66.QUOTES[idx];
+  },
+
+  /* ---------- backup ---------- */
+  exportJSON() { return JSON.stringify(this.state, null, 2); },
+  importJSON(text) {
+    const obj = JSON.parse(text);
+    if (!obj || obj.version !== 1 || !obj.profile || !obj.log) throw new Error('Arquivo de backup inválido.');
+    this.state = obj;
+    this._ensureDay(this.today());
+    this._emit();
+  },
+  resetAll() {
+    this.state = this._defaultState();
+    this.state.settings.onboarded = true;
+    this._emit();
+  },
+
+  /* ---------- dados de demonstração (16 dias -> hoje é o Dia 17) ---------- */
+  seedDemo() {
+    const s = this._defaultState();
+    s.settings.onboarded = true;
+    s.profile.name = this.state.profile.name || 'Renan';
+    s.profile.cycleStart = this.addDays(this.today(), -16);
+    let seed = this._hash('demo' + s.profile.cycleStart);
+    const rnd = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+    // perfil de cada dia: maioria forte, 3 dias quebrados (2, 9 e 13)
+    const brokenAt = new Set([2, 9, 13]);
+    for (let i = 0; i < 16; i++) {
+      const k = this.addDays(s.profile.cycleStart, i);
+      const e = { total: s.habits.length, habits: {}, missions: {}, extraMissions: [] };
+      const missCount = brokenAt.has(i) ? 2 + Math.floor(rnd() * 3) : 0;
+      const missIdx = new Set();
+      while (missIdx.size < missCount) missIdx.add(Math.floor(rnd() * s.habits.length));
+      s.habits.forEach((h, hi) => {
+        if (missIdx.has(hi)) return;
+        const [hh, mm] = h.time.split(':').map(Number);
+        const delay = Math.floor(rnd() * 50) - 10; // -10..+40 min do horário planejado
+        const d = this.parseKey(k);
+        d.setHours(hh, mm + Math.max(-15, delay), Math.floor(rnd() * 60));
+        e.habits[h.id] = d.toISOString();
+        s.xp += h.xp;
+      });
+      // 1 a 3 missões por dia
+      const mN = 1 + Math.floor(rnd() * 3);
+      this._dailyMissionPool(k).slice(0, mN).forEach(m => {
+        const d = this.parseKey(k); d.setHours(12 + Math.floor(rnd() * 9), Math.floor(rnd() * 60));
+        e.missions[m.id] = d.toISOString();
+        s.xp += m.xp;
+      });
+      s.log[k] = e;
+    }
+    s.failures[this.addDays(s.profile.cycleStart, 9)] = { motivo: 'Dormi tarde na véspera e o dia começou atrasado.', plano: 'Protocolo do sono às 21h30 sem exceção; celular fora do quarto.' };
+    s.failures[this.addDays(s.profile.cycleStart, 13)] = { motivo: 'Compromisso imprevisto à noite engoliu o planejamento.', plano: 'Antecipar leitura e planejamento para a hora do almoço quando houver agenda à noite.' };
+    const j = (k, o) => { s.journal[k] = { ...o, ts: this.parseKey(k).toISOString() }; };
+    j(this.addDays(s.profile.cycleStart, 14), { bem: 'Treino completo e devocional sem pressa.', falha: 'Peguei o celular antes do devocional.', melhorar: 'Deixar a Bíblia aberta na mesa na véspera.', vitoria: 'Terminei a proposta do cliente antes do prazo.', deus: 'Paciência se treina nas filas e nos imprevistos.' },
+    );
+    j(this.addDays(s.profile.cycleStart, 15), { bem: 'Dia 100% e ainda liguei para meus pais.', falha: 'Quase pulei a pausa da tarde.', melhorar: 'Alarme silencioso às 15h para a pausa.', vitoria: 'Minha esposa comentou que me viu mais presente.', deus: 'Constância vale mais que intensidade.' },
+    );
+    s.recentQuotes = this.state.recentQuotes || [];
+    this.state = s;
+    this._ensureDay(this.today());
+    this.checkAchievements();
+    this._emit();
+  },
+};
+
+</script>
+<script>
+/* =============================================================
+   PROJETO 66 — Gráficos SVG (sem bibliotecas)
+   Marcas finas, extremidades arredondadas ancoradas na base,
+   grid recessivo, tooltip em hover. Paleta validada em P66.VIZ.
+   ============================================================= */
+'use strict';
+
+P66.Charts = (() => {
+  const V = P66.VIZ;
+  const NS = 'http://www.w3.org/2000/svg';
+
+  /* ---------- tooltip singleton ---------- */
+  const tip = () => document.getElementById('chart-tip');
+  function showTip(evt, html) {
+    const t = tip();
+    if (!t) return;
+    t.innerHTML = html;
+    t.hidden = false;
+    const pad = 14;
+    let x = evt.clientX + pad, y = evt.clientY + pad;
+    const r = t.getBoundingClientRect();
+    if (x + r.width > window.innerWidth - 8) x = evt.clientX - r.width - pad;
+    if (y + r.height > window.innerHeight - 8) y = evt.clientY - r.height - pad;
+    t.style.left = x + 'px';
+    t.style.top = y + 'px';
+  }
+  function hideTip() { const t = tip(); if (t) t.hidden = true; }
+
+  function svgEl(tag, attrs) {
+    const el = document.createElementNS(NS, tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  /* barra com topo arredondado ancorada na base */
+  function barPath(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h);
+    if (h <= 0) return '';
+    return `M${x},${y + h} L${x},${y + r} Q${x},${y} ${x + r},${y} L${x + w - r},${y} Q${x + w},${y} ${x + w},${y + r} L${x + w},${y + h} Z`;
+  }
+
+  /* ---------- barras verticais (% por dia) ---------- */
+  function bars(el, data, opts = {}) {
+    el.innerHTML = '';
+    const W = el.clientWidth || 320, H = opts.height || 180;
+    const padL = 30, padB = 22, padT = 10, padR = 6;
+    const iw = W - padL - padR, ih = H - padT - padB;
+    const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: '100%', height: H, role: 'img' });
+    const max = opts.max || 100;
+
+    [0, 50, 100].forEach(v => {
+      const y = padT + ih - (v / max) * ih;
+      svg.appendChild(svgEl('line', { x1: padL, y1: y, x2: W - padR, y2: y, stroke: v === 0 ? 'rgba(255,255,255,0.14)' : V.grid, 'stroke-width': 1 }));
+      const lab = svgEl('text', { x: padL - 7, y: y + 3.5, 'text-anchor': 'end', fill: V.ink3, 'font-size': 10 });
+      lab.textContent = v;
+      svg.appendChild(lab);
+    });
+
+    const n = data.length;
+    const slot = iw / n;
+    const bw = Math.min(26, Math.max(6, slot - 4));
+    data.forEach((d, i) => {
+      const val = Math.max(0, Math.min(max, d.pct ?? d.value ?? 0));
+      const h = (val / max) * ih;
+      const x = padL + i * slot + (slot - bw) / 2;
+      const y = padT + ih - h;
+      const isToday = d.key === P66.Store.today();
+      const p = svgEl('path', {
+        d: barPath(x, y, bw, h, 4),
+        fill: isToday ? V.heat[3] : V.series[0],
+        opacity: d.future ? 0.25 : 1,
+      });
+      // alvo de hover maior que a marca
+      const hit = svgEl('rect', { x: padL + i * slot, y: padT, width: slot, height: ih, fill: 'transparent' });
+      hit.addEventListener('mousemove', e => showTip(e, `<strong>${d.label}</strong><br>${d.done !== undefined ? `${d.done}/${d.total} hábitos · ` : ''}${val}%`));
+      hit.addEventListener('mouseleave', hideTip);
+      svg.appendChild(p);
+      if (h > 0 || true) svg.appendChild(hit);
+      if (n <= 12 || i % Math.ceil(n / 10) === 0) {
+        const lab = svgEl('text', { x: padL + i * slot + slot / 2, y: H - 6, 'text-anchor': 'middle', fill: isToday ? V.ink2 : V.ink3, 'font-size': 10 });
+        lab.textContent = d.label;
+        svg.appendChild(lab);
+      }
+    });
+    el.appendChild(svg);
+  }
+
+  /* ---------- linha com área (evolução) ---------- */
+  function line(el, data, opts = {}) {
+    el.innerHTML = '';
+    const W = el.clientWidth || 320, H = opts.height || 200;
+    const padL = 30, padB = 22, padT = 10, padR = 10;
+    const iw = W - padL - padR, ih = H - padT - padB;
+    const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: '100%', height: H, role: 'img' });
+    const max = opts.max || 100;
+    const n = data.length;
+    const X = i => padL + (n === 1 ? iw / 2 : (i / (n - 1)) * iw);
+    const Y = v => padT + ih - (Math.max(0, Math.min(max, v)) / max) * ih;
+
+    [0, 50, 100].forEach(v => {
+      const y = Y(v);
+      svg.appendChild(svgEl('line', { x1: padL, y1: y, x2: W - padR, y2: y, stroke: v === 0 ? 'rgba(255,255,255,0.14)' : V.grid, 'stroke-width': 1 }));
+      const lab = svgEl('text', { x: padL - 7, y: y + 3.5, 'text-anchor': 'end', fill: V.ink3, 'font-size': 10 });
+      lab.textContent = v;
+      svg.appendChild(lab);
+    });
+
+    const pts = data.map((d, i) => [X(i), Y(d.pct ?? d.value ?? 0)]);
+    const lineD = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    const areaD = lineD + ` L${pts[pts.length - 1][0]},${padT + ih} L${pts[0][0]},${padT + ih} Z`;
+
+    const gid = 'g' + Math.random().toString(36).slice(2, 8);
+    const defs = svgEl('defs', {});
+    defs.innerHTML = `<linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${V.series[0]}" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="${V.series[0]}" stop-opacity="0"/></linearGradient>`;
+    svg.appendChild(defs);
+    svg.appendChild(svgEl('path', { d: areaD, fill: `url(#${gid})` }));
+    svg.appendChild(svgEl('path', { d: lineD, fill: 'none', stroke: V.series[0], 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+
+    // rótulos esparsos no eixo X (sem colidir com o último)
+    const step = Math.max(1, Math.ceil(n / 6));
+    data.forEach((d, i) => {
+      if (i % step !== 0 && i !== n - 1) return;
+      if (i !== n - 1 && n - 1 - i < step * 0.6) return;
+      const lab = svgEl('text', { x: X(i), y: H - 6, 'text-anchor': 'middle', fill: V.ink3, 'font-size': 10 });
+      lab.textContent = d.label;
+      svg.appendChild(lab);
+    });
+
+    // crosshair + tooltip
+    const cursor = svgEl('line', { x1: 0, y1: padT, x2: 0, y2: padT + ih, stroke: 'rgba(255,255,255,0.25)', 'stroke-width': 1, visibility: 'hidden' });
+    const dot = svgEl('circle', { r: 4, fill: V.heat[3], stroke: V.surface, 'stroke-width': 2, visibility: 'hidden' });
+    svg.appendChild(cursor); svg.appendChild(dot);
+    const hit = svgEl('rect', { x: padL, y: padT, width: iw, height: ih, fill: 'transparent' });
+    hit.addEventListener('mousemove', e => {
+      const box = svg.getBoundingClientRect();
+      const mx = (e.clientX - box.left) * (W / box.width);
+      let i = Math.round(((mx - padL) / iw) * (n - 1));
+      i = Math.max(0, Math.min(n - 1, i));
+      cursor.setAttribute('x1', X(i)); cursor.setAttribute('x2', X(i));
+      cursor.setAttribute('visibility', 'visible');
+      dot.setAttribute('cx', X(i)); dot.setAttribute('cy', Y(data[i].pct ?? data[i].value ?? 0));
+      dot.setAttribute('visibility', 'visible');
+      const d = data[i];
+      showTip(e, `<strong>${d.label}</strong><br>${d.done !== undefined ? `${d.done}/${d.total} hábitos · ` : ''}${d.pct ?? d.value ?? 0}%`);
+    });
+    hit.addEventListener('mouseleave', () => { cursor.setAttribute('visibility', 'hidden'); dot.setAttribute('visibility', 'hidden'); hideTip(); });
+    svg.appendChild(hit);
+    el.appendChild(svg);
+  }
+
+  /* ---------- heatmap dos 66 dias ---------- */
+  function heatColor(pct) {
+    if (pct <= 0) return V.heatZero;
+    if (pct < 34) return V.heat[0];
+    if (pct < 67) return V.heat[1];
+    if (pct < 100) return V.heat[2];
+    return V.heat[3];
+  }
+  function heatmap(el, cells, opts = {}) {
+    el.innerHTML = '';
+    const cols = opts.cols || 11; // 11 x 6 = 66
+    const size = 15, gap = 3;
+    const rows = Math.ceil(cells.length / cols);
+    const W = cols * (size + gap) - gap, H = rows * (size + gap) - gap;
+    const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: '100%', style: 'max-width:' + (W * 1.6) + 'px', role: 'img' });
+    cells.forEach((c, i) => {
+      const x = (i % cols) * (size + gap), y = Math.floor(i / cols) * (size + gap);
+      const attrs = { x, y, width: size, height: size, rx: 3.5 };
+      if (c.state === 'future') {
+        Object.assign(attrs, { fill: 'transparent', stroke: 'rgba(255,255,255,0.07)', 'stroke-width': 1 });
+      } else {
+        Object.assign(attrs, { fill: heatColor(c.pct) });
+        if (c.state === 'today') Object.assign(attrs, { stroke: V.ink, 'stroke-width': 1.4 });
+      }
+      const r = svgEl('rect', attrs);
+      r.addEventListener('mousemove', e => showTip(e,
+        `<strong>Dia ${c.dayNum}</strong> · ${P66.Store.fmtDate(c.key)}<br>` +
+        (c.state === 'future' ? 'Ainda por vir' : `${c.pct}% executado`)));
+      r.addEventListener('mouseleave', hideTip);
+      svg.appendChild(r);
+    });
+    el.appendChild(svg);
+  }
+
+  /* ---------- calendário mensal de execução ---------- */
+  function calendar(el, year, month) {
+    el.innerHTML = '';
+    const S = P66.Store;
+    const first = new Date(year, month, 1);
+    const daysIn = new Date(year, month + 1, 0).getDate();
+    const startWd = first.getDay();
+    const head = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+    const wrap = document.createElement('div');
+    wrap.className = 'cal-grid';
+    head.forEach(h => {
+      const c = document.createElement('div');
+      c.className = 'cal-head'; c.textContent = h;
+      wrap.appendChild(c);
+    });
+    for (let i = 0; i < startWd; i++) wrap.appendChild(document.createElement('div'));
+    for (let d = 1; d <= daysIn; d++) {
+      const k = S.dkey(new Date(year, month, d));
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      const c = S.completionForDay(k);
+      const isFuture = k > S.today();
+      const inLog = !!S.day(k);
+      if (!isFuture && inLog) {
+        cell.style.background = heatColor(c.pct);
+        if (c.pct >= 67) cell.classList.add('cal-dark-ink');
+      } else if (!isFuture) {
+        cell.style.background = V.heatZero;
+      }
+      if (k === S.today()) cell.classList.add('cal-today');
+      if (isFuture) cell.classList.add('cal-future');
+      cell.textContent = d;
+      cell.addEventListener('mousemove', e => showTip(e,
+        `<strong>${S.fmtDate(k)}</strong><br>` + (isFuture ? 'Ainda por vir' : (inLog ? `${c.done}/${c.total} hábitos · ${c.pct}%` : 'Sem registro'))));
+      cell.addEventListener('mouseleave', hideTip);
+      wrap.appendChild(cell);
+    }
+    el.appendChild(wrap);
+  }
+
+  /* ---------- medidor circular ---------- */
+  function ringSVG(pct, opts = {}) {
+    const size = opts.size || 92, sw = opts.stroke || 8;
+    const r = (size - sw) / 2, c = 2 * Math.PI * r;
+    const val = Math.max(0, Math.min(100, pct));
+    const color = opts.color || (val >= 70 ? V.good : val >= 40 ? V.series[0] : V.bad);
+    return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" class="ring" role="img" aria-label="${val}%">
+      <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="${sw}"/>
+      <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="${sw}"
+        stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - val / 100)}"
+        transform="rotate(-90 ${size / 2} ${size / 2})" class="ring-value"/>
+      <text x="50%" y="50%" dy="0.36em" text-anchor="middle" fill="${V.ink}" font-size="${size * 0.24}" font-weight="700">${Math.round(val)}</text>
+    </svg>`;
+  }
+
+  /* ---------- barras horizontais (força dos hábitos) ---------- */
+  function hbars(el, data, opts = {}) {
+    el.innerHTML = '';
+    const rows = data.map(d => {
+      const val = Math.max(0, Math.min(100, d.rate ?? d.value ?? 0));
+      const color = opts.color || V.series[0];
+      return `<div class="hbar-row" data-tip="${(d.tip || '').replace(/"/g, '&quot;')}">
+        <span class="hbar-label">${d.label}</span>
+        <span class="hbar-track"><span class="hbar-fill" style="width:${val}%;background:${color}"></span></span>
+        <span class="hbar-val">${val}%</span>
+      </div>`;
+    }).join('');
+    el.innerHTML = rows;
+    el.querySelectorAll('.hbar-row[data-tip]').forEach(r => {
+      const t = r.getAttribute('data-tip');
+      if (!t) return;
+      r.addEventListener('mousemove', e => showTip(e, t));
+      r.addEventListener('mouseleave', hideTip);
+    });
+  }
+
+  return { bars, line, heatmap, calendar, ringSVG, hbars, heatColor, showTip, hideTip };
+})();
+
+</script>
+<script>
+/* =============================================================
+   PROJETO 66 — Claudi, o analista de execução.
+   Motor 100% local: lê o histórico do Store, identifica padrões
+   e devolve insights objetivos e orientados à ação.
+   ============================================================= */
+'use strict';
+
+P66.Claudi = {
+
+  greeting() {
+    const S = P66.Store;
+    const h = new Date().getHours();
+    const nome = S.state.profile.name;
+    if (h < 5) return `Madrugada de trabalho, ${nome}? Cuide também do sono.`;
+    if (h < 12) return `Bom dia, ${nome}.`;
+    if (h < 18) return `Boa tarde, ${nome}.`;
+    return `Boa noite, ${nome}.`;
+  },
+
+  /* Análise diária completa — lista de insights ordenada por relevância */
+  briefing() {
+    const S = P66.Store;
+    const out = [];
+    const today = S.completionForDay(S.today());
+    const late = S.lateHabitsToday();
+    const hour = new Date().getHours();
+
+    /* 1. Situação de hoje */
+    if (today.pct === 100) {
+      out.push({ tone: 'good', icon: 'trophy', title: 'Dia vencido', text: `100% executado. ${today.total} de ${today.total} hábitos. Registre sua reflexão e proteja o sono — amanhã o campo de batalha reabre às ${S.habits()[0]?.time || '05:30'}.` });
+    } else if (late.length >= 3) {
+      out.push({ tone: 'bad', icon: 'warning', title: `${late.length} hábitos atrasados`, text: `${late.map(h => h.name).join(', ')}. Não tente recuperar tudo de uma vez: execute o mais rápido primeiro (${late.slice().sort((a, b) => a.min - b.min)[0].name}) e recupere o ritmo.` });
+    } else if (late.length > 0) {
+      out.push({ tone: 'warn', icon: 'clock', title: 'Atenção ao relógio', text: `${late.map(h => h.name).join(' e ')} ${late.length > 1 ? 'passaram' : 'passou'} do horário planejado. Ainda dá tempo de fechar o dia em 100%.` });
+    } else if (today.done > 0) {
+      out.push({ tone: 'good', icon: 'check', title: 'Em dia com o plano', text: `${today.done} de ${today.total} concluídos e nenhum atraso. Mantenha o ritmo — o próximo é "${S.nextHabit()?.name || '—'}".` });
+    }
+
+    /* 2. Risco de quebrar o dia à noite */
+    if (hour >= 20 && today.pct < 100 && today.pct > 0) {
+      const pend = S.habits().filter(h => !S.isDone(h.id));
+      out.push({ tone: 'warn', icon: 'moon', title: 'Reta final do dia', text: `Faltam ${pend.length}: ${pend.map(h => h.name).join(', ')}. ${pend.length <= 2 ? 'Dá para fechar 100% antes de dormir.' : 'Priorize os de maior XP e registre o motivo do que ficar para trás.'}` });
+    }
+
+    /* 3. Semana atual vs anterior */
+    const thisWeekFrom = S.addDays(S.today(), -6);
+    const prevWeekFrom = S.addDays(S.today(), -13);
+    const prevWeekTo = S.addDays(S.today(), -7);
+    const cur = S.rateBetween(thisWeekFrom, S.today());
+    const prev = S.rateBetween(prevWeekFrom, prevWeekTo);
+    if (cur !== null && prev !== null) {
+      const d = cur - prev;
+      if (d >= 5) out.push({ tone: 'good', icon: 'arrowUp', title: 'Tendência de evolução', text: `Sua execução subiu de ${prev}% para ${cur}% em relação à semana passada (+${d} pontos). O sistema está funcionando — não mexa no que está dando certo.` });
+      else if (d <= -5) out.push({ tone: 'bad', icon: 'arrowDown', title: 'Tendência de regressão', text: `Execução caiu de ${prev}% para ${cur}% (${d} pontos) em relação à semana passada. Reveja o que mudou na rotina nos últimos 7 dias e corte a causa, não o sintoma.` });
+      else out.push({ tone: 'info', icon: 'minus', title: 'Semana estável', text: `Execução em ${cur}% contra ${prev}% da semana anterior. Estabilidade é boa — o próximo passo é subir o padrão.` });
+    }
+
+    /* 4. Padrão de procrastinação: hábitos executados muito depois do horário */
+    const strength = S.habitStrength();
+    const procr = strength.filter(x => x.done >= 3 && x.avgDelay > 45);
+    if (procr.length) {
+      const w = procr[0];
+      out.push({ tone: 'warn', icon: 'clock', title: 'Padrão de procrastinação detectado', text: `"${w.habit.name}" é executado em média ${w.avgDelay} min depois das ${w.habit.time}. Ou o horário está errado, ou há um gatilho de fuga antes dele. Sugestão: mova para outro horário ou prepare o ambiente na véspera.` });
+    }
+
+    /* 5. Gargalo: hábito mais fraco do ciclo */
+    const weak = strength.filter(x => x.opp >= 3).slice(-1)[0];
+    if (weak && weak.rate < 60) {
+      out.push({ tone: 'bad', icon: 'target', title: 'Gargalo do ciclo', text: `"${weak.habit.name}" está em ${weak.rate}% de execução — é o elo mais fraco. Reduza o atrito: versão mínima de 5 minutos conta como vitória enquanto o hábito não se firma.` });
+    }
+
+    /* 6. Janela de ouro: horário em que você mais executa */
+    const hist = S.hourHistogram();
+    const totalEx = hist.reduce((a, b) => a + b, 0);
+    if (totalEx >= 10) {
+      const peak = hist.indexOf(Math.max(...hist));
+      out.push({ tone: 'info', icon: 'sun', title: 'Sua janela de ouro', text: `A maior parte das suas execuções acontece por volta das ${String(peak).padStart(2, '0')}h. Agende o que é mais difícil perto desse horário — você joga melhor nesse campo.` });
+    }
+
+    /* 7. Melhor e pior dia da semana */
+    const wd = S.weekdayRates().filter(x => x.n >= 2);
+    if (wd.length >= 3) {
+      const sorted = [...wd].sort((a, b) => b.pct - a.pct);
+      const best = sorted[0], worst = sorted[sorted.length - 1];
+      if (best.pct - worst.pct >= 15) {
+        out.push({ tone: 'info', icon: 'calendar', title: `${worst.label} é seu dia crítico`, text: `Média de ${worst.pct}% contra ${best.pct}% de ${best.label}. Planeje as ${worst.label}s na véspera com padrão reduzido e inegociável.` });
+      }
+    }
+
+    /* 8. Streak */
+    const streak = S.currentStreak();
+    const best = S.bestStreak();
+    if (streak >= 3) {
+      out.push({ tone: 'good', icon: 'flame', title: `${streak} dias perfeitos seguidos`, text: streak >= best ? 'É a sua melhor sequência até aqui. Proteja-a como patrimônio: a decisão de amanhã começa no sono de hoje.' : `Sua melhor marca é ${best}. Faltam ${best - streak + 1} dias para superá-la.` });
+    }
+
+    /* 9. Prioridades de amanhã */
+    const lows = strength.filter(x => x.opp >= 2).slice(-3).reverse();
+    if (lows.length === 3) {
+      out.push({ tone: 'info', icon: 'flag', title: 'Prioridades para amanhã', text: `Comece o dia garantindo os três mais frágeis: ${lows.map(x => `"${x.habit.name}" (${x.rate}%)`).join(', ')}. Vitória neles cedo muda o dia inteiro.` });
+    }
+
+    if (!out.length) {
+      out.push({ tone: 'info', icon: 'spark', title: 'Coletando dados', text: 'Ainda há pouco histórico para análise. Execute os hábitos de hoje — em poucos dias começo a apontar padrões, gargalos e tendências.' });
+    }
+    return out;
+  },
+
+  /* Mensagem curta e contextual para o dashboard */
+  headline() {
+    const S = P66.Store;
+    const today = S.completionForDay(S.today());
+    const late = S.lateHabitsToday();
+    const h = new Date().getHours();
+    if (today.pct === 100) return 'Missão do dia concluída. Hoje você venceu.';
+    if (late.length >= 3) return `${late.length} batalhas atrasadas. Recupere uma agora — a mais curta primeiro.`;
+    if (late.length > 0) return `"${late[0].name}" passou do horário. Execute e volte ao plano.`;
+    const next = S.nextHabit();
+    if (next) return `Próxima batalha: ${next.name} às ${next.time}.`;
+    if (h >= 20) return 'Feche o dia com a reflexão e proteja o sono.';
+    return 'Plano limpo. Execute.';
+  },
+};
+
+</script>
+<script>
+/* =============================================================
+   PROJETO 66 — Views: renderização de todas as telas.
+   Cada view expõe render() -> HTML e mount(root) para gráficos
+   e comportamentos pós-render. Eventos usam data-action
+   (delegação central em app.js).
+   ============================================================= */
+'use strict';
+
+P66.Views = (() => {
+  const S = () => P66.Store;
+  const C = () => P66.Charts;
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+  const ic = n => `<span class="i">${P66.icon(n)}</span>`;
+
+  /* ---------- helpers ---------- */
+  function habitStreak(id) {
+    let n = 0, k = S().today();
+    if (S().isDone(id, k)) n = 1;
+    k = S().addDays(k, -1);
+    while (S().day(k) && S().isDone(id, k)) { n++; k = S().addDays(k, -1); }
+    return n;
+  }
+
+  function habitStatus(h) {
+    const iso = S().doneAt(h.id);
+    if (iso) {
+      const d = new Date(iso);
+      return { key: 'done', label: `Concluído às ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}` };
+    }
+    const now = new Date();
+    const [hh, mm] = h.time.split(':').map(Number);
+    if (hh * 60 + mm < now.getHours() * 60 + now.getMinutes()) return { key: 'late', label: 'Atrasado' };
+    return { key: 'pending', label: `Às ${h.time}` };
+  }
+
+  function tile(label, value, sub, tone) {
+    return `<div class="tile ${tone ? 'tile-' + tone : ''}">
+      <span class="tile-label">${label}</span>
+      <span class="tile-value">${value}</span>
+      ${sub ? `<span class="tile-sub">${sub}</span>` : ''}
+    </div>`;
+  }
+
+  function sectionHead(title, sub) {
+    return `<div class="section-head"><h2>${title}</h2>${sub ? `<p>${sub}</p>` : ''}</div>`;
+  }
+
+  function heatLegend() {
+    const V = P66.VIZ;
+    return `<div class="heat-legend"><span>Menos</span>
+      ${[V.heatZero, ...V.heat].map(c => `<i style="background:${c}"></i>`).join('')}
+      <span>Mais</span></div>`;
+  }
+
+  const PRIO = { alta: 'Alta', media: 'Média', baixa: 'Baixa' };
+
+  function habitCard(h) {
+    const st = habitStatus(h);
+    const streak = habitStreak(h.id);
+    return `<article class="habit-card ${st.key}" data-habit="${h.id}">
+      <div class="habit-top">
+        <span class="habit-icon">${P66.icon(h.icon)}</span>
+        <span class="prio prio-${h.prio}">${PRIO[h.prio]}</span>
+      </div>
+      <h3 class="habit-name">${esc(h.name)}</h3>
+      <p class="habit-goal">${esc(h.goal)}</p>
+      <div class="habit-meta">
+        <span title="Horário planejado">${ic('clock')}${h.time}</span>
+        ${h.min ? `<span title="Tempo estimado">${h.min} min</span>` : ''}
+        <span title="XP por conclusão">+${h.xp} XP</span>
+      </div>
+      <div class="habit-foot">
+        <span class="habit-streak" title="Sequência de dias">${ic('flame')}${streak}</span>
+        <span class="habit-status st-${st.key}">${st.label}</span>
+        ${st.key === 'done'
+          ? `<button class="btn btn-ghost btn-sm" data-action="undo-habit" data-id="${h.id}">Desfazer</button>`
+          : `<button class="btn btn-primary btn-sm" data-action="complete-habit" data-id="${h.id}">Concluir</button>`}
+      </div>
+    </article>`;
+  }
+
+  /* =========================================================
+     DASHBOARD
+     ========================================================= */
+  const dashboard = {
+    render() {
+      const st = S();
+      const c = st.completionForDay(st.today());
+      const remaining = c.total - c.done;
+      const lvl = st.levelInfo();
+      const h = new Date().getHours();
+      const saud = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+      return `
+      <section class="hero">
+        <p class="hero-kicker">Ciclo ${st.cycleNumber()} · ${st.fmtDateLong(st.today())}</p>
+        <h1>${saud}, ${esc(st.state.profile.name)}.</h1>
+        <p class="hero-line">Hoje é o <strong>Dia ${st.dayNumber()} de ${P66.CYCLE_DAYS}</strong>.</p>
+        <p class="hero-line">${c.done > 0
+          ? `Você já venceu <strong>${c.done} ${c.done === 1 ? 'batalha' : 'batalhas'}</strong> hoje. ${remaining > 0 ? `${remaining === 1 ? 'Falta' : 'Faltam'} <strong>${remaining}</strong>.` : ''}`
+          : `<strong>${c.total} batalhas</strong> esperam por você hoje.`}</p>
+      </section>
+
+      <section class="mission-bar-wrap ${c.pct === 100 ? 'complete' : ''}">
+        <div class="mission-bar-head">
+          <span class="mission-bar-title">MISSÃO DO DIA</span>
+          <span class="mission-bar-pct">${c.pct}%</span>
+        </div>
+        <div class="mission-bar"><div class="mission-bar-fill" style="width:${c.pct}%"></div></div>
+        <p class="mission-bar-note">${P66.Claudi.headline()}</p>
+      </section>
+
+      <section class="quick-tiles">
+        ${tile('Sequência atual', `${st.currentStreak()} <small>dias</small>`, `Recorde: ${st.bestStreak()}`)}
+        ${tile('Patente', `Nv ${lvl.level}`, lvl.name)}
+        ${tile('XP total', lvl.xp.toLocaleString('pt-BR'), lvl.next ? `${lvl.next.xp - lvl.xp} até ${lvl.next.name}` : 'Patente máxima')}
+        ${tile('Dias restantes', st.daysLeft(), 'no ciclo de 66')}
+      </section>
+
+      ${sectionHead('Painel dos 10 hábitos', 'Cada cartão é uma batalha. Vença todas e o dia é seu.')}
+      <section class="habit-grid">
+        ${st.habits().map(habitCard).join('')}
+      </section>`;
+    },
+    mount() {},
+  };
+
+  /* =========================================================
+     HOJE — timeline
+     ========================================================= */
+  const hoje = {
+    render() {
+      const st = S();
+      const habits = [...st.habits()].sort((a, b) => a.time.localeCompare(b.time));
+      const next = st.nextHabit();
+      const c = st.completionForDay(st.today());
+      return `
+      ${sectionHead('Hoje', `${st.fmtDateLong(st.today())} · ${c.done}/${c.total} concluídos`)}
+      <section class="timeline">
+        ${habits.map(h => {
+          const stt = habitStatus(h);
+          const isNext = next && next.id === h.id && stt.key !== 'done';
+          return `<div class="tl-item ${stt.key} ${isNext ? 'next' : ''}">
+            <span class="tl-time">${h.time}</span>
+            <span class="tl-node"></span>
+            <div class="tl-card" ${stt.key !== 'done' ? `data-action="complete-habit" data-id="${h.id}" role="button" tabindex="0"` : ''}>
+              <span class="tl-icon">${P66.icon(h.icon)}</span>
+              <div class="tl-body">
+                <span class="tl-name">${esc(h.name)}</span>
+                <span class="tl-meta">${h.min ? h.min + ' min · ' : ''}+${h.xp} XP${isNext ? ' · <strong>PRÓXIMO</strong>' : ''}</span>
+              </div>
+              <span class="tl-status st-${stt.key}">${stt.key === 'done' ? ic('check') : stt.key === 'late' ? ic('warning') : ''}${stt.label}</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </section>`;
+    },
+    mount() {},
+  };
+
+  /* =========================================================
+     MISSÕES
+     ========================================================= */
+  const missoes = {
+    render() {
+      const st = S();
+      const list = st.missionsForDay();
+      const done = list.filter(m => st.missionDone(m.id)).length;
+      const xpToday = list.filter(m => st.missionDone(m.id)).reduce((s, m) => s + m.xp, 0);
+      return `
+      ${sectionHead('Missões do dia', 'Além dos hábitos: pequenas vitórias que constroem o homem integral. Renovadas diariamente.')}
+      <section class="quick-tiles">
+        ${tile('Cumpridas hoje', `${done}/${list.length}`)}
+        ${tile('XP em missões hoje', `+${xpToday}`)}
+        ${tile('Missões no total', st.missionsCount())}
+      </section>
+      <section class="mission-list">
+        ${list.map(m => {
+          const isDone = st.missionDone(m.id);
+          return `<div class="mission-item ${isDone ? 'done' : ''}">
+            <span class="mission-icon">${P66.icon(m.icon)}</span>
+            <div class="mission-body">
+              <span class="mission-name">${esc(m.name)}</span>
+              <span class="mission-meta">+${m.xp} XP${m.areas.length ? ' · ' + m.areas.map(a => P66.AREAS[a].label).join(', ') : ''}</span>
+            </div>
+            ${isDone
+              ? `<button class="btn btn-ghost btn-sm" data-action="undo-mission" data-id="${m.id}">Desfazer</button>`
+              : `<button class="btn btn-primary btn-sm" data-action="complete-mission" data-id="${m.id}">Cumprir</button>`}
+          </div>`;
+        }).join('')}
+      </section>
+      <section class="card form-inline">
+        <input type="text" id="new-mission-name" placeholder="Missão personalizada para hoje..." maxlength="80">
+        <button class="btn btn-secondary" data-action="add-mission">${ic('plus')}Adicionar</button>
+      </section>`;
+    },
+    mount() {},
+  };
+
+  /* =========================================================
+     SALA DE GUERRA — gestão à vista
+     ========================================================= */
+  const guerra = {
+    render() {
+      const st = S();
+      const lvl = st.levelInfo();
+      const late = st.lateHabitsToday();
+      return `
+      ${sectionHead('Sala de Guerra', 'Gestão à vista: o estado real da operação, sem filtro.')}
+      <section class="kpi-grid">
+        ${tile('Dias restantes', st.daysLeft(), `Dia ${st.dayNumber()} de 66`)}
+        ${tile('Hábitos concluídos', st.totalCompletions(), 'desde o início')}
+        ${tile('Atrasados hoje', late.length, late.length ? 'recupere agora' : 'tudo em dia', late.length ? 'bad' : 'good')}
+        ${tile('Maior sequência', `${st.bestStreak()} <small>dias</small>`)}
+        ${tile('Sequência atual', `${st.currentStreak()} <small>dias</small>`)}
+        ${tile('Dias perfeitos', st.perfectDays(), '', 'good')}
+        ${tile('Dias quebrados', st.brokenDays(), 'neste ciclo', st.brokenDays() ? 'bad' : 'good')}
+        ${tile('Execução geral', st.overallRate() + '%', 'do ciclo')}
+        ${tile('Pontuação total', lvl.xp.toLocaleString('pt-BR'), `XP · Nível ${lvl.level} · ${lvl.name}`)}
+      </section>
+
+      <div class="grid-2">
+        <section class="card">
+          <h3 class="card-title">Evolução semanal</h3>
+          <div id="ch-week" class="chart"></div>
+        </section>
+        <section class="card">
+          <h3 class="card-title">Evolução mensal</h3>
+          <div id="ch-month" class="chart"></div>
+        </section>
+      </div>
+
+      <div class="grid-2">
+        <section class="card">
+          <h3 class="card-title">Mapa de calor — ciclo de 66 dias</h3>
+          <div id="ch-heat" class="chart chart-heat"></div>
+          ${heatLegend()}
+        </section>
+        <section class="card">
+          <h3 class="card-title">Calendário de execução — ${new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</h3>
+          <div id="ch-cal" class="chart"></div>
+        </section>
+      </div>`;
+    },
+    mount(root) {
+      C().bars(root.querySelector('#ch-week'), S().weeklySeries());
+      C().line(root.querySelector('#ch-month'), S().monthlySeries(30));
+      C().heatmap(root.querySelector('#ch-heat'), S().heatmapCycle());
+      const now = new Date();
+      C().calendar(root.querySelector('#ch-cal'), now.getFullYear(), now.getMonth());
+    },
+  };
+
+  /* =========================================================
+     EVOLUÇÃO
+     ========================================================= */
+  const evolucao = {
+    render() {
+      const st = S();
+      const minutes = st.minutesInvested();
+      const hours = Math.floor(minutes / 60);
+      const strength = st.habitStrength();
+      const strong = strength[0], weakArr = strength.filter(x => x.opp >= 2), weak = weakArr[weakArr.length - 1];
+      return `
+      ${sectionHead('Evolução', 'Constância, horários e pontos fortes — os dados não mentem.')}
+      <section class="quick-tiles">
+        ${tile('Tempo investido', `${hours}h ${minutes % 60}min`, 'em hábitos concluídos')}
+        ${tile('Hábito mais forte', strong ? `${strong.rate}%` : '—', strong ? esc(strong.habit.name) : '')}
+        ${tile('Hábito mais fraco', weak ? `${weak.rate}%` : '—', weak ? esc(weak.habit.name) : '', weak && weak.rate < 60 ? 'bad' : '')}
+        ${tile('Execução geral', st.overallRate() + '%', 'do ciclo')}
+      </section>
+
+      <section class="card">
+        <h3 class="card-title">Constância — últimos 30 dias</h3>
+        <div id="ev-month" class="chart"></div>
+      </section>
+
+      <div class="grid-2">
+        <section class="card">
+          <h3 class="card-title">Horários de execução</h3>
+          <p class="card-sub">Em que hora do dia você vence as batalhas</p>
+          <div id="ev-hours" class="chart"></div>
+        </section>
+        <section class="card">
+          <h3 class="card-title">Dias da semana</h3>
+          <p class="card-sub">Taxa média de execução por dia</p>
+          <div id="ev-week" class="chart"></div>
+        </section>
+      </div>
+
+      <section class="card">
+        <h3 class="card-title">Força de cada hábito</h3>
+        <p class="card-sub">Taxa de execução no ciclo atual · passe o mouse para detalhes</p>
+        <div id="ev-strength"></div>
+      </section>`;
+    },
+    mount(root) {
+      const st = S();
+      C().line(root.querySelector('#ev-month'), st.monthlySeries(30));
+      const hist = st.hourHistogram();
+      const maxH = Math.max(1, ...hist);
+      C().bars(root.querySelector('#ev-hours'),
+        hist.map((v, i) => ({ label: String(i).padStart(2, '0'), value: Math.round((v / maxH) * 100), raw: v }))
+          .map(d => ({ ...d, pct: d.value, done: undefined })), { height: 160 });
+      C().bars(root.querySelector('#ev-week'), st.weekdayRates().map(d => ({ label: d.label, pct: d.pct })), { height: 160 });
+      C().hbars(root.querySelector('#ev-strength'), st.habitStrength().map(x => ({
+        label: esc(x.habit.name), rate: x.rate,
+        tip: `<strong>${esc(x.habit.name)}</strong><br>${x.done}/${x.opp} dias executado` + (x.avgDelay > 15 ? `<br>Atraso médio: ${x.avgDelay} min` : ''),
+      })));
+    },
+  };
+
+  /* =========================================================
+     HOMEM INTEGRAL
+     ========================================================= */
+  const integral = {
+    render() {
+      const scores = S().areaScores();
+      const weakest = [...scores].sort((a, b) => a.score - b.score)[0];
+      return `
+      ${sectionHead('Homem Integral', 'Nove áreas, uma vida. Nota 0–100 com base na execução dos últimos 14 dias.')}
+      <section class="area-grid">
+        ${scores.map(a => `
+          <div class="area-card">
+            <div class="area-ring">${C().ringSVG(a.score, { size: 96 })}</div>
+            <span class="area-name">${ic(a.icon)}${a.label}</span>
+          </div>`).join('')}
+      </section>
+      ${weakest ? `<section class="card callout">
+        ${ic('target')}
+        <div><strong>Frente prioritária: ${weakest.label} (${weakest.score}).</strong>
+        Hábitos e missões dessa área merecem prioridade esta semana. Homem integral não deixa flanco aberto.</div>
+      </section>` : ''}`;
+    },
+    mount() {},
+  };
+
+  /* =========================================================
+     CLAUDI
+     ========================================================= */
+  const claudi = {
+    render() {
+      const items = P66.Claudi.briefing();
+      return `
+      <section class="claudi-head">
+        <div class="claudi-avatar">${P66.icon('spark')}</div>
+        <div>
+          <h2>Claudi</h2>
+          <p>${P66.Claudi.greeting()} Analisei sua execução — este é o relatório de hoje.</p>
+        </div>
+      </section>
+      <section class="claudi-list">
+        ${items.map(i => `
+          <div class="claudi-item tone-${i.tone}">
+            <span class="claudi-item-icon">${P66.icon(i.icon)}</span>
+            <div>
+              <strong>${i.title}</strong>
+              <p>${i.text}</p>
+            </div>
+          </div>`).join('')}
+      </section>
+      <p class="claudi-foot">Análise 100% local, recalculada a cada abertura. Quanto mais dias registrados, mais afiado o relatório.</p>`;
+    },
+    mount() {},
+  };
+
+  /* =========================================================
+     CONQUISTAS
+     ========================================================= */
+  const conquistas = {
+    render() {
+      const st = S();
+      const unlocked = st.state.achievements;
+      const n = Object.keys(unlocked).length;
+      return `
+      ${sectionHead('Conquistas', `${n} de ${P66.ACHIEVEMENTS.length} desbloqueadas. Medalhas não se compram — se conquistam.`)}
+      <section class="badge-grid">
+        ${P66.ACHIEVEMENTS.map(a => {
+          const got = unlocked[a.id];
+          return `<div class="badge ${got ? 'got' : 'locked'}">
+            <span class="badge-icon">${P66.icon(a.icon)}</span>
+            <strong>${a.name}</strong>
+            <p>${a.desc}</p>
+            <span class="badge-date">${got ? 'Conquistada em ' + st.fmtDate(got) : 'Bloqueada'}</span>
+          </div>`;
+        }).join('')}
+      </section>`;
+    },
+    mount() {},
+  };
+
+  /* =========================================================
+     REFLEXÃO — diário pesquisável
+     ========================================================= */
+  const QUESTIONS = [
+    { id: 'bem', q: 'O que fiz bem hoje?' },
+    { id: 'falha', q: 'Onde falhei?' },
+    { id: 'melhorar', q: 'Como posso melhorar amanhã?' },
+    { id: 'vitoria', q: 'Qual foi minha maior vitória?' },
+    { id: 'deus', q: 'O que Deus me ensinou hoje?' },
+  ];
+
+  const reflexao = {
+    render() {
+      const st = S();
+      const today = st.state.journal[st.today()] || {};
+      const entries = st.searchJournal('');
+      return `
+      ${sectionHead('Reflexão do dia', 'Cinco perguntas, todas as noites. O homem que se examina não se perde.')}
+      <section class="card">
+        ${QUESTIONS.map(x => `
+          <label class="field">
+            <span>${x.q}</span>
+            <textarea id="jr-${x.id}" rows="2" placeholder="...">${esc(today[x.id] || '')}</textarea>
+          </label>`).join('')}
+        <button class="btn btn-primary" data-action="save-journal">${ic('check')}Salvar reflexão</button>
+        ${today.ts ? `<span class="saved-hint">Salva ${new Date(today.ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>` : ''}
+      </section>
+
+      ${sectionHead('Diário', `${entries.length} ${entries.length === 1 ? 'registro' : 'registros'} · busca inteligente`)}
+      <section class="card form-inline">
+        ${ic('search')}
+        <input type="search" id="journal-search" placeholder="Buscar no diário... (ex.: treino, paciência, esposa)">
+      </section>
+      <section id="journal-list" class="journal-list">${reflexao.renderList(entries)}</section>`;
+    },
+    renderList(entries) {
+      if (!entries.length) return '<p class="empty">Nenhum registro encontrado.</p>';
+      return entries.map(e => `
+        <article class="journal-entry">
+          <header>${S().fmtDateLong(e.key)}</header>
+          ${QUESTIONS.filter(x => e[x.id]).map(x => `<p><strong>${x.q}</strong> ${esc(e[x.id])}</p>`).join('') || '<p class="empty">—</p>'}
+        </article>`).join('');
+    },
+    mount(root) {
+      const input = root.querySelector('#journal-search');
+      if (input) input.addEventListener('input', () => {
+        root.querySelector('#journal-list').innerHTML = reflexao.renderList(S().searchJournal(input.value));
+      });
+    },
+  };
+
+  /* =========================================================
+     RESPONSABILIDADE — prestação de contas
+     ========================================================= */
+  const responsabilidade = {
+    render() {
+      const st = S();
+      const fail = st.lastFailure();
+      return `
+      ${sectionHead('Responsabilidade', 'Prestação de contas sem narrativa: números, causa e plano de correção.')}
+      <section class="quick-tiles">
+        ${tile('Dias consecutivos', `${st.currentStreak()} <small>dias</small>`, 'perfeitos em sequência')}
+        ${tile('Dias quebrados', st.brokenDays(), 'neste ciclo', st.brokenDays() ? 'bad' : 'good')}
+        ${tile('Execução geral', st.overallRate() + '%', 'do ciclo', st.overallRate() >= 80 ? 'good' : st.overallRate() >= 50 ? '' : 'bad')}
+        ${tile('Última falha', fail ? st.fmtDate(fail.key) : '—', fail ? `${fail.missed.length} hábito(s) perdido(s)` : 'nenhuma registrada', fail ? 'bad' : 'good')}
+      </section>
+
+      ${fail ? `
+      <section class="card">
+        <h3 class="card-title">Análise da última falha — ${st.fmtDateLong(fail.key)}</h3>
+        <p class="card-sub">Hábitos perdidos: ${fail.missed.map(esc).join(', ') || '—'}</p>
+        <label class="field"><span>Motivo da falha</span>
+          <textarea id="fail-motivo" rows="2" placeholder="O que realmente aconteceu? Sem desculpas, com fatos.">${esc(fail.note?.motivo || '')}</textarea>
+        </label>
+        <label class="field"><span>Plano de correção</span>
+          <textarea id="fail-plano" rows="2" placeholder="O que muda para não repetir?">${esc(fail.note?.plano || '')}</textarea>
+        </label>
+        <button class="btn btn-primary" data-action="save-failure" data-key="${fail.key}">${ic('shield')}Registrar prestação de contas</button>
+      </section>` : `
+      <section class="card callout">${ic('shield')}<div><strong>Nenhuma falha registrada no ciclo.</strong> Continue assim — e quando falhar, volte aqui e preste contas. É isso que separa homens de meninos.</div></section>`}`;
+    },
+    mount() {},
+  };
+
+  /* =========================================================
+     POR QUE CONTINUO?
+     ========================================================= */
+  const WHY_TYPES = {
+    proposito: 'Propósito', objetivo: 'Objetivo', sonho: 'Sonho',
+    promessa: 'Promessa', versiculo: 'Versículo', familia: 'Família',
+  };
+  const porque = {
+    render() {
+      const whys = S().state.whys;
+      return `
+      ${sectionHead('Por que continuo?', 'Quando a vontade faltar, esta tela lembra você do que está em jogo.')}
+      <section class="card">
+        <div class="form-grid">
+          <select id="why-type">${Object.entries(WHY_TYPES).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select>
+          <input type="text" id="why-text" placeholder="Ex.: Ver meus filhos servindo a Deus. / Aposentar meus pais." maxlength="160">
+          <label class="btn btn-ghost btn-file" title="Anexar foto">
+            ${ic('camera')}<input type="file" id="why-photo" accept="image/*" hidden>
+          </label>
+          <button class="btn btn-primary" data-action="add-why">${ic('plus')}Adicionar</button>
+        </div>
+        <span id="why-photo-hint" class="saved-hint"></span>
+      </section>
+      <section class="why-grid">
+        ${whys.length ? whys.map(w => `
+          <article class="why-card">
+            ${w.img ? `<img src="${w.img}" alt="">` : ''}
+            <span class="why-type">${WHY_TYPES[w.type] || w.type}</span>
+            <p>${esc(w.text)}</p>
+            <button class="icon-btn why-del" data-action="remove-why" data-id="${w.id}" title="Remover">${P66.icon('trash')}</button>
+          </article>`).join('')
+        : '<p class="empty">Cadastre propósitos, sonhos, promessas e versículos. Eles aparecem automaticamente quando a execução cair — para lembrar você do porquê.</p>'}
+      </section>`;
+    },
+    mount(root) {
+      const photo = root.querySelector('#why-photo');
+      if (photo) photo.addEventListener('change', () => {
+        const hint = root.querySelector('#why-photo-hint');
+        hint.textContent = photo.files[0] ? `Foto anexada: ${photo.files[0].name}` : '';
+      });
+    },
+  };
+
+  /* =========================================================
+     CONFIGURAÇÕES
+     ========================================================= */
+  const config = {
+    render() {
+      const st = S();
+      return `
+      ${sectionHead('Configurações', 'Ajustes do sistema, backup e dados.')}
+      <section class="card">
+        <h3 class="card-title">Perfil</h3>
+        <div class="form-grid">
+          <input type="text" id="cfg-name" value="${esc(st.state.profile.name)}" maxlength="30" placeholder="Seu nome">
+          <button class="btn btn-secondary" data-action="save-name">Salvar</button>
+        </div>
+        <label class="switch-row">
+          <input type="checkbox" id="cfg-sound" ${st.state.settings.sound ? 'checked' : ''} data-action-change="toggle-sound">
+          <span>Sons de vitória</span>
+        </label>
+      </section>
+
+      <section class="card">
+        <h3 class="card-title">Ciclo</h3>
+        <p class="card-sub">Ciclo ${st.cycleNumber()} · Dia ${st.dayNumber()} de 66 · iniciado em ${st.fmtDate(st.currentCycleStartKey())}</p>
+        <button class="btn btn-ghost" data-action="restart-cycle">${ic('reset')}Reiniciar ciclo a partir de hoje</button>
+      </section>
+
+      <section class="card">
+        <h3 class="card-title">Backup & exportação</h3>
+        <p class="card-sub">Seus dados vivem neste dispositivo (modo offline). Exporte regularmente.</p>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-action="export-json">${ic('download')}Exportar backup (JSON)</button>
+          <label class="btn btn-secondary btn-file">${ic('upload')}Importar backup<input type="file" id="cfg-import" accept="application/json" hidden data-action-change="import-json"></label>
+          <button class="btn btn-secondary" data-action="export-pdf">${ic('printer')}Relatório em PDF</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3 class="card-title">Demonstração & dados</h3>
+        <div class="btn-row">
+          <button class="btn btn-ghost" data-action="seed-demo">${ic('spark')}Carregar 16 dias de demonstração</button>
+          <button class="btn btn-danger" data-action="reset-all">${ic('trash')}Zerar tudo</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3 class="card-title">Aplicativo</h3>
+        <p class="card-sub">PWA instalável: no navegador, use "Instalar aplicativo" / "Adicionar à tela inicial" para ter o Projeto 66 como app — funciona offline. Atalhos de teclado: pressione <kbd>?</kbd>.</p>
+      </section>`;
+    },
+    mount() {},
+  };
+
+  return { dashboard, hoje, missoes, guerra, evolucao, integral, claudi, conquistas, reflexao, responsabilidade, porque, config };
+})();
+
+</script>
+<script>
+/* =============================================================
+   PROJETO 66 — App: roteador, eventos, overlays e inicialização.
+   ============================================================= */
+'use strict';
+
+(() => {
+  const S = P66.Store;
+  const V = P66.Views;
+  const $ = sel => document.querySelector(sel);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+
+  const ROUTES = ['dashboard', 'hoje', 'missoes', 'guerra', 'evolucao', 'integral', 'claudi', 'conquistas', 'reflexao', 'responsabilidade', 'porque', 'config'];
+  const KEY_ROUTES = { '1': 'dashboard', '2': 'hoje', '3': 'missoes', '4': 'guerra', '5': 'evolucao', '6': 'integral', '7': 'claudi', '8': 'conquistas', '9': 'reflexao', '0': 'responsabilidade' };
+
+  let currentRoute = 'dashboard';
+  let reflexNudged = false;
+
+  /* ================= Router ================= */
+  function route() {
+    const h = location.hash.replace('#/', '') || 'dashboard';
+    return ROUTES.includes(h) ? h : 'dashboard';
+  }
+  function render() {
+    currentRoute = route();
+    const view = $('#view');
+    view.innerHTML = V[currentRoute].render();
+    V[currentRoute].mount(view);
+    document.querySelectorAll('#sidebar a[data-route]').forEach(a =>
+      a.classList.toggle('active', a.dataset.route === currentRoute));
+    renderSidebarLevel();
+    view.scrollTop = 0;
+    closeSidebar();
+  }
+  function go(r) { location.hash = '#/' + r; }
+
+  function renderSidebarLevel() {
+    const lvl = S.levelInfo();
+    $('#sidebar-level').innerHTML = `
+      <div class="lvl-head"><strong>Nv ${lvl.level} · ${lvl.name}</strong><span>${lvl.xp.toLocaleString('pt-BR')} XP</span></div>
+      <div class="lvl-bar"><i style="width:${lvl.pct}%"></i></div>
+      ${lvl.next ? `<span class="lvl-next">${lvl.next.xp - lvl.xp} XP até ${lvl.next.name}</span>` : '<span class="lvl-next">Patente máxima</span>'}`;
+  }
+
+  /* ================= Toasts ================= */
+  function toast(html, tone = '', ms = 3400) {
+    const t = document.createElement('div');
+    t.className = 'toast ' + tone;
+    t.innerHTML = html;
+    $('#toasts').appendChild(t);
+    requestAnimationFrame(() => t.classList.add('show'));
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 350); }, ms);
+  }
+
+  /* ================= Frases ================= */
+  function showQuote() {
+    const q = S.nextQuote();
+    $('#topbar-quote').innerHTML = `<span class="q-text">"${esc(q.t)}"</span>${q.a ? `<span class="q-author">— ${esc(q.a)}</span>` : ''}`;
+  }
+
+  /* ================= Relógio ================= */
+  function tickClock() {
+    const now = new Date();
+    $('#topbar-clock').textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    // virada de dia com o app aberto
+    if (!S.day(S.today())) { S._ensureDay(S.today()); S.save(); render(); }
+    // lembrete de reflexão à noite
+    if (!reflexNudged && now.getHours() >= 20 && !S.state.journal[S.today()] && currentRoute !== 'reflexao') {
+      reflexNudged = true;
+      toast(`${P66.icon('pen')} Fim de dia: registre sua <a href="#/reflexao">reflexão</a>.`, 'info', 6000);
+    }
+  }
+
+  /* ================= Celebrações ================= */
+  function celebrate(title, sub, extra = '') {
+    const o = $('#celebrate-overlay');
+    o.innerHTML = `<div class="celebrate">
+      <div class="celebrate-ring">${P66.icon('check')}</div>
+      <h1>${title}</h1>
+      <p>${sub}</p>${extra}
+      <button class="btn btn-primary" data-action="close-celebrate">Continuar</button>
+    </div><div class="confetti">${Array.from({ length: 24 }, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>`;
+    o.hidden = false;
+  }
+  function celebrateLevel(lvl) {
+    celebrate('PROMOÇÃO', `Você alcançou o nível ${lvl.level}.`, `<div class="rank-name">${lvl.name}</div>`);
+    P66.Sfx.levelUp();
+  }
+  function handleResult(res) {
+    if (!res) return;
+    if (res.xp) toast(`${P66.icon('arrowUp')} <strong>+${res.xp} XP</strong>`, 'good', 2200);
+    if (res.dayComplete) { celebrate('MISSÃO CONCLUÍDA', 'Hoje você venceu.'); P66.Sfx.fanfare(); }
+    if (res.levelUp) setTimeout(() => celebrateLevel(res.levelUp), res.dayComplete ? 1200 : 0);
+    (res.unlocked || []).forEach((a, i) =>
+      setTimeout(() => { toast(`${P66.icon(a.icon)} Conquista desbloqueada: <strong>${a.name}</strong>`, 'good', 5000); P66.Sfx.badge(); }, 600 + i * 700));
+  }
+
+  /* ================= "Por que continuo?" automático ================= */
+  function maybeShowWhy() {
+    const whys = S.state.whys;
+    if (!whys.length) return;
+    if (S.state.settings.lastWhyShown === S.today()) return;
+    const late = S.lateHabitsToday().length >= 3;
+    const y1 = S.addDays(S.today(), -1), y2 = S.addDays(S.today(), -2);
+    const twoBroken = S.day(y1) && S.day(y2) && !S.isPerfect(y1) && !S.isPerfect(y2);
+    if (!late && !twoBroken) return;
+    S.state.settings.lastWhyShown = S.today();
+    S.save();
+    const picks = [...whys].sort(() => Math.random() - 0.5).slice(0, 3);
+    openModal(`
+      <h2 class="modal-title">Por que você continua?</h2>
+      <p class="modal-sub">A execução caiu. Antes de qualquer desculpa, lembre-se do que está em jogo:</p>
+      ${picks.map(w => `<div class="why-remind">${w.img ? `<img src="${w.img}" alt="">` : ''}<p>${esc(w.text)}</p></div>`).join('')}
+      <button class="btn btn-primary" data-action="close-modal">De volta à luta</button>`);
+  }
+
+  /* ================= Modais genéricos ================= */
+  function openModal(html) {
+    const o = $('#modal-overlay');
+    o.innerHTML = `<div class="modal">${html}</div>`;
+    o.hidden = false;
+  }
+  function closeModal() { $('#modal-overlay').hidden = true; }
+
+  function helpModal() {
+    openModal(`
+      <h2 class="modal-title">Atalhos de teclado</h2>
+      <div class="help-grid">
+        ${Object.entries(KEY_ROUTES).map(([k, r]) => `<span><kbd>${k}</kbd></span><span>${r.charAt(0).toUpperCase() + r.slice(1)}</span>`).join('')}
+        <span><kbd>G</kbd></span><span>Modo Guerra</span>
+        <span><kbd>Esc</kbd></span><span>Fechar overlays</span>
+        <span><kbd>?</kbd></span><span>Esta ajuda</span>
+      </div>
+      <button class="btn btn-primary" data-action="close-modal">Fechar</button>`);
+  }
+
+  function onboarding() {
+    openModal(`
+      <div class="onboard-mark">66</div>
+      <h2 class="modal-title">PROJETO 66</h2>
+      <p class="modal-sub">66 dias para transformar objetivos em identidade. Gestão à vista, disciplina militar e melhoria contínua — a sua vida gerida como o projeto mais importante que existe.</p>
+      <label class="field"><span>Como devo te chamar?</span>
+        <input type="text" id="ob-name" value="${esc(S.state.profile.name)}" maxlength="30">
+      </label>
+      <div class="btn-row">
+        <button class="btn btn-primary" data-action="ob-start">Começar o Dia 1</button>
+        <button class="btn btn-ghost" data-action="ob-demo">Explorar com dados de exemplo</button>
+      </div>`);
+  }
+
+  /* ================= Modo Guerra ================= */
+  const War = {
+    timer: null, seconds: 0, running: false,
+    open() {
+      const o = $('#war-overlay');
+      o.hidden = false;
+      document.body.classList.add('war-active');
+      this.seconds = 0; this.running = false;
+      this.renderInner();
+    },
+    close() {
+      clearInterval(this.timer); this.timer = null;
+      $('#war-overlay').hidden = true;
+      document.body.classList.remove('war-active');
+      render();
+    },
+    current() { return S.nextHabit(); },
+    renderInner() {
+      const h = this.current();
+      const o = $('#war-overlay');
+      if (!h) {
+        o.innerHTML = `<div class="war">
+          <p class="war-kicker">MODO GUERRA</p>
+          <h1 class="war-title">Nenhuma batalha pendente.</h1>
+          <p class="war-next">Todos os hábitos de hoje foram concluídos.</p>
+          <button class="btn btn-primary" data-action="exit-war">Sair</button>
+        </div>`;
+        return;
+      }
+      const pending = S.habits().filter(x => !S.isDone(x.id)).sort((a, b) => a.time.localeCompare(b.time));
+      const next = pending.find(x => x.id !== h.id);
+      o.innerHTML = `<div class="war">
+        <p class="war-kicker">MODO GUERRA · MISSÃO ATUAL</p>
+        <h1 class="war-title">${esc(h.name)}</h1>
+        <p class="war-goal">${esc(h.goal)}${h.min ? ` · ${h.min} min` : ''} · +${h.xp} XP</p>
+        <div class="war-clock" id="war-clock">00:00</div>
+        <div class="btn-row war-controls">
+          <button class="btn btn-secondary" data-action="war-toggle" id="war-toggle">${P66.icon('play')} Iniciar</button>
+          <button class="btn btn-ghost" data-action="war-reset">${P66.icon('reset')} Zerar</button>
+          <button class="btn btn-primary" data-action="war-complete" data-id="${h.id}">${P66.icon('check')} Missão cumprida</button>
+        </div>
+        <p class="war-next">${next ? `Próximo hábito: <strong>${esc(next.name)}</strong> às ${next.time}` : 'Última batalha do dia.'}</p>
+        <button class="war-exit" data-action="exit-war" title="Sair (Esc)">${P66.icon('x')}</button>
+      </div>`;
+      this.paint();
+    },
+    paint() {
+      const el = $('#war-clock');
+      if (!el) return;
+      const m = String(Math.floor(this.seconds / 60)).padStart(2, '0');
+      const s = String(this.seconds % 60).padStart(2, '0');
+      el.textContent = `${m}:${s}`;
+    },
+    toggle() {
+      this.running = !this.running;
+      const btn = $('#war-toggle');
+      if (this.running) {
+        btn.innerHTML = `${P66.icon('pause')} Pausar`;
+        this.timer = setInterval(() => { this.seconds++; this.paint(); }, 1000);
+      } else {
+        btn.innerHTML = `${P66.icon('play')} Retomar`;
+        clearInterval(this.timer);
+      }
+    },
+    reset() { this.seconds = 0; this.paint(); },
+    complete(id) {
+      if (this.seconds > 30) {
+        S.state.warSessions.push({ date: S.today(), seconds: this.seconds });
+      }
+      const res = S.completeHabit(id);
+      P66.Sfx.win();
+      clearInterval(this.timer); this.timer = null;
+      this.seconds = 0; this.running = false;
+      if (res && res.dayComplete) { this.close(); handleResult(res); return; }
+      handleResult({ ...res, dayComplete: false });
+      this.renderInner();
+    },
+  };
+
+  /* ================= Exportações ================= */
+  function download(name, text, type = 'application/json') {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type }));
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  }
+
+  function exportPDF() {
+    let box = $('#print-report');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'print-report';
+      document.body.appendChild(box);
+    }
+    const lvl = S.levelInfo();
+    const strength = S.habitStrength();
+    box.innerHTML = `
+      <h1>PROJETO 66 — Relatório de Execução</h1>
+      <p>${esc(S.state.profile.name)} · Ciclo ${S.cycleNumber()} · Dia ${S.dayNumber()} de 66 · gerado em ${new Date().toLocaleString('pt-BR')}</p>
+      <table><tr>
+        <td>Execução geral<br><strong>${S.overallRate()}%</strong></td>
+        <td>Dias perfeitos<br><strong>${S.perfectDays()}</strong></td>
+        <td>Dias quebrados<br><strong>${S.brokenDays()}</strong></td>
+        <td>Maior sequência<br><strong>${S.bestStreak()}</strong></td>
+        <td>XP<br><strong>${lvl.xp} (Nv ${lvl.level} · ${lvl.name})</strong></td>
+      </tr></table>
+      <h2>Força dos hábitos (ciclo atual)</h2>
+      <table>${strength.map(x => `<tr><td>${esc(x.habit.name)}</td><td>${x.done}/${x.opp}</td><td>${x.rate}%</td></tr>`).join('')}</table>
+      <h2>Conquistas</h2>
+      <p>${Object.keys(S.state.achievements).map(id => { const a = P66.ACHIEVEMENTS.find(x => x.id === id); return a ? a.name : ''; }).filter(Boolean).join(' · ') || 'Nenhuma ainda.'}</p>`;
+    window.print();
+  }
+
+  /* foto do "porquê": reduz para caber no localStorage */
+  function shrinkImage(file, cb) {
+    const img = new Image();
+    img.onload = () => {
+      const max = 480;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const cv = document.createElement('canvas');
+      cv.width = Math.round(img.width * scale);
+      cv.height = Math.round(img.height * scale);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      cb(cv.toDataURL('image/jpeg', 0.72));
+      URL.revokeObjectURL(img.src);
+    };
+    img.src = URL.createObjectURL(file);
+  }
+
+  /* ================= Sidebar (mobile) ================= */
+  function closeSidebar() { document.body.classList.remove('sidebar-open'); }
+
+  /* ================= Ações delegadas ================= */
+  const actions = {
+    'complete-habit': el => { const res = S.completeHabit(el.dataset.id); if (res) { P66.Sfx.win(); handleResult(res); } render(); },
+    'undo-habit': el => { S.undoHabit(el.dataset.id); P66.Sfx.tick(); render(); },
+    'complete-mission': el => { const res = S.completeMission(el.dataset.id); if (res) { P66.Sfx.mission(); handleResult(res); } render(); },
+    'undo-mission': el => { S.undoMission(el.dataset.id); P66.Sfx.tick(); render(); },
+    'add-mission': () => {
+      const inp = $('#new-mission-name');
+      if (inp && inp.value.trim()) { S.addCustomMission(inp.value.trim()); render(); }
+    },
+    'save-journal': () => {
+      const entry = {};
+      ['bem', 'falha', 'melhorar', 'vitoria', 'deus'].forEach(f => { const t = $('#jr-' + f); if (t) entry[f] = t.value.trim(); });
+      S.saveJournal(S.today(), entry);
+      toast(`${P66.icon('check')} Reflexão salva no diário.`, 'good');
+      render();
+    },
+    'save-failure': el => {
+      S.setFailureNote(el.dataset.key, $('#fail-motivo').value.trim(), $('#fail-plano').value.trim());
+      toast(`${P66.icon('shield')} Prestação de contas registrada.`, 'good');
+      render();
+    },
+    'add-why': () => {
+      const type = $('#why-type').value, text = $('#why-text').value.trim();
+      if (!text) { toast('Escreva o seu porquê antes de adicionar.', 'warn'); return; }
+      const file = $('#why-photo').files[0];
+      if (file) shrinkImage(file, img => { S.addWhy(type, text, img); render(); });
+      else { S.addWhy(type, text); render(); }
+    },
+    'remove-why': el => { if (confirm('Remover este porquê?')) { S.removeWhy(el.dataset.id); render(); } },
+    'save-name': () => {
+      const v = $('#cfg-name').value.trim();
+      if (v) { S.state.profile.name = v; S.save(); toast('Nome atualizado.', 'good'); render(); }
+    },
+    'seed-demo': () => {
+      if (confirm('Substituir os dados atuais por 16 dias de demonstração?')) { S.seedDemo(); toast('Dados de demonstração carregados — hoje é o Dia 17.', 'good'); go('dashboard'); render(); }
+    },
+    'reset-all': () => {
+      if (confirm('Apagar TODOS os dados e recomeçar do zero? Esta ação não tem volta.')) { S.resetAll(); go('dashboard'); render(); }
+    },
+    'restart-cycle': () => {
+      if (confirm('Reiniciar o ciclo de 66 dias a partir de hoje?')) { S.restartCycle(); render(); }
+    },
+    'export-json': () => download(`projeto66-backup-${S.today()}.json`, S.exportJSON()),
+    'export-pdf': exportPDF,
+    'war-mode': () => War.open(),
+    'exit-war': () => War.close(),
+    'war-toggle': () => War.toggle(),
+    'war-reset': () => War.reset(),
+    'war-complete': el => War.complete(el.dataset.id),
+    'close-celebrate': () => { $('#celebrate-overlay').hidden = true; },
+    'close-modal': closeModal,
+    'help': helpModal,
+    'new-quote': showQuote,
+    'toggle-sidebar': () => document.body.classList.toggle('sidebar-open'),
+    'ob-start': () => {
+      const v = $('#ob-name').value.trim();
+      if (v) S.state.profile.name = v;
+      S.state.settings.onboarded = true;
+      S.state.profile.cycleStart = S.today();
+      S.save(); closeModal(); render(); showQuote();
+    },
+    'ob-demo': () => {
+      const v = $('#ob-name').value.trim();
+      if (v) S.state.profile.name = v;
+      S.state.settings.onboarded = true;
+      S.save(); S.seedDemo(); closeModal(); render();
+      toast('Explorando com dados de exemplo — zere tudo em Configurações quando quiser começar de verdade.', 'info', 6000);
+    },
+  };
+
+  document.addEventListener('click', e => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    // inicializa o áudio no primeiro gesto
+    if (S.state.settings.sound) P66.Sfx.init();
+    const fn = actions[el.dataset.action];
+    if (fn) { e.preventDefault(); fn(el); }
+  });
+
+  document.addEventListener('change', e => {
+    const el = e.target.closest('[data-action-change]');
+    if (!el) return;
+    if (el.dataset.actionChange === 'toggle-sound') {
+      S.state.settings.sound = el.checked;
+      P66.Sfx.enabled = el.checked;
+      S.save();
+    }
+    if (el.dataset.actionChange === 'import-json') {
+      const f = el.files[0];
+      if (!f) return;
+      f.text().then(txt => {
+        try { S.importJSON(txt); toast('Backup importado com sucesso.', 'good'); render(); }
+        catch (err) { toast('Falha ao importar: ' + esc(err.message), 'bad', 5000); }
+      });
+    }
+  });
+
+  // timeline: permitir Enter/Espaço nos cards com role=button
+  document.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role="button"][data-action]')) {
+      e.preventDefault();
+      e.target.click();
+    }
+  });
+
+  /* ================= Atalhos globais ================= */
+  document.addEventListener('keydown', e => {
+    if (e.target.matches('input, textarea, select') || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'Escape') {
+      if (!$('#war-overlay').hidden) { War.close(); return; }
+      $('#celebrate-overlay').hidden = true;
+      closeModal();
+      return;
+    }
+    if (KEY_ROUTES[e.key]) { go(KEY_ROUTES[e.key]); return; }
+    if (e.key === 'g' || e.key === 'G') { War.open(); return; }
+    if (e.key === '?') helpModal();
+  });
+
+  /* ================= Boot ================= */
+  S.init();
+  P66.Sfx.enabled = S.state.settings.sound !== false;
+
+  window.addEventListener('hashchange', render);
+  document.addEventListener('p66:change', renderSidebarLevel);
+
+  let resizeT;
+  window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(render, 200); });
+
+  render();
+  showQuote();
+  tickClock();
+  setInterval(tickClock, 30000);
+  setTimeout(maybeShowWhy, 1200);
+
+  if (!S.state.settings.onboarded) onboarding();
+
+  /* service worker: apenas na versão multi-arquivo */
+})();
+
+</script>
+</body>
+</html>
