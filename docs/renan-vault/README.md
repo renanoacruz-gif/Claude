@@ -19,6 +19,7 @@ O Instagram é hoje seu "inbox" de conhecimento — mas funciona apenas como arm
 | [07 — Operação](./07-operacao-deploy-custos.md) | Deploy, CI/CD, monitoramento, observabilidade, custos GCP, escalabilidade, testes |
 | [08 — UX e Design System](./08-ux-design.md) | Interface dark premium, telas, atalhos, interações, modos de visualização |
 | [09 — Roadmap e Backlog](./09-roadmap-backlog.md) | MVP → V2 → V3 → Enterprise, backlog priorizado em épicos/sprints, plano passo a passo |
+| [10 — Guia de Execução](./10-guia-de-execucao.md) | Passo a passo prático com comandos: do zero ao sistema em produção, checkpoints por fase |
 
 ---
 
