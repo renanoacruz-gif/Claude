@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renan Vault</title>
+<style>
+  :root{
+    --bg:#0A0A0F; --raised:#111118; --overlay:#16161F;
+    --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.14);
+    --t1:#EDEDF2; --t2:#A0A0B0; --t3:#62626E;
+    --accent:#7C6CFF; --accent-soft:rgba(124,108,255,.14);
+    --grad:linear-gradient(135deg,#7C6CFF,#4CC9F0);
+    --ok:#3ECF8E; --warn:#F5A623; --danger:#F0506E;
+    --r:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--t1);font:14px/1.55 -apple-system,'Segoe UI',Inter,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  input,textarea{font:inherit;color:var(--t1);background:var(--raised);border:1px solid var(--border);border-radius:10px;padding:9px 12px;outline:none;width:100%}
+  input:focus,textarea:focus{border-color:var(--accent)}
+
+  header{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:16px;padding:14px 24px;background:rgba(10,10,15,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .logo{font-weight:700;font-size:15px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+  nav{display:flex;gap:4px}
+  nav button{padding:7px 14px;border-radius:9px;color:var(--t2);font-weight:500}
+  nav button.active{background:var(--accent-soft);color:var(--accent)}
+  nav button:hover{color:var(--t1)}
+  .spacer{flex:1}
+  .count{color:var(--t3);font-size:12px;white-space:nowrap}
+
+  main{max-width:1200px;margin:0 auto;padding:24px}
+  .hidden{display:none!important}
+
+  /* biblioteca */
+  .toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .toolbar input{flex:1;min-width:240px}
+  .btn{padding:9px 16px;border-radius:10px;background:var(--raised);border:1px solid var(--border);color:var(--t1);font-weight:500;white-space:nowrap}
+  .btn:hover{border-color:var(--border2)}
+  .btn.primary{background:var(--accent);border-color:transparent;color:#fff}
+  .btn.primary:hover{filter:brightness(1.1)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+  .chip{padding:5px 12px;border-radius:99px;background:var(--raised);border:1px solid var(--border);color:var(--t2);font-size:12.5px}
+  .chip.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px}
+  .card{background:var(--raised);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:transform .15s,border-color .15s;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-2px);border-color:var(--border2)}
+  .cover{height:130px;background:var(--overlay);display:flex;align-items:center;justify-content:center;font-size:34px;position:relative;overflow:hidden}
+  .cover img{width:100%;height:100%;object-fit:cover}
+  .badge{position:absolute;top:8px;right:8px;font-size:10.5px;padding:3px 8px;border-radius:99px;background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
+  .card-body{padding:12px 14px;display:flex;flex-direction:column;gap:7px;flex:1}
+  .card-title{font-weight:600;font-size:13.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card-meta{color:var(--t3);font-size:11.5px;display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+  .tag{color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:99px;font-size:11px}
+  .empty{text-align:center;padding:80px 20px;color:var(--t3)}
+  .empty h3{color:var(--t2);margin-bottom:8px;font-size:16px}
+
+  /* modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+  .modal{background:var(--overlay);border:1px solid var(--border2);border-radius:18px;max-width:680px;width:100%;padding:26px}
+  .modal h2{font-size:18px;margin-bottom:4px}
+  .modal .sub{color:var(--t3);font-size:12.5px;margin-bottom:16px}
+  .section{margin:16px 0}
+  .section h4{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:7px}
+  .section ul{padding-left:18px;color:var(--t2)}
+  .section p{color:var(--t2)}
+  .lifecycle{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+  .lifecycle .btn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+
+  /* chat */
+  .chat-box{display:flex;flex-direction:column;height:calc(100vh - 180px);max-width:760px;margin:0 auto}
+  .msgs{flex:1;overflow:auto;display:flex;flex-direction:column;gap:14px;padding:10px 4px}
+  .msg{max-width:85%;padding:12px 16px;border-radius:16px;white-space:pre-wrap}
+  .msg.user{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+  .msg.ai{align-self:flex-start;background:var(--raised);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--t1)}
+  .msg .srcs{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px}
+  .msg .srcs a{display:block;color:var(--accent);margin:3px 0}
+  .chat-input{display:flex;gap:10px;padding-top:14px}
+  .suggest{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .suggest button{font-size:12px;padding:6px 12px;border-radius:99px;background:var(--raised);border:1px solid var(--border);color:var(--t2)}
+  .suggest button:hover{color:var(--accent);border-color:var(--accent)}
+
+  /* settings */
+  .panel{background:var(--raised);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:16px;max-width:680px}
+  .panel h3{font-size:15px;margin-bottom:6px}
+  .panel .desc{color:var(--t2);font-size:13px;margin-bottom:14px}
+  .row{display:flex;gap:10px}
+  .bookmarklet{display:inline-block;padding:9px 18px;border-radius:10px;background:var(--grad);color:#fff;font-weight:600;cursor:grab}
+  .progress{height:6px;background:var(--overlay);border-radius:99px;overflow:hidden;margin-top:12px}
+  .progress i{display:block;height:100%;background:var(--grad);width:0;transition:width .4s}
+  .hint{color:var(--t3);font-size:12px;margin-top:8px}
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--overlay);border:1px solid var(--border2);border-radius:12px;padding:12px 18px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">◆ RENAN VAULT</div>
+  <nav>
+    <button data-tab="library" class="active">Biblioteca</button>
+    <button data-tab="chat">Chat IA</button>
+    <button data-tab="settings">Configurações</button>
+  </nav>
+  <div class="spacer"></div>
+  <div class="count" id="count"></div>
+</header>
+
+<main>
+  <!-- BIBLIOTECA -->
+  <section id="tab-library">
+    <div class="toolbar">
+      <input id="q" placeholder="Busca instantânea… (Enter = busca semântica IA)">
+      <button class="btn" id="aiSearch">✨ Busca IA</button>
+      <button class="btn primary" id="addBtn">+ Adicionar</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="grid" id="grid"></div>
+    <div class="empty hidden" id="empty">
+      <h3>Sua biblioteca está vazia</h3>
+      <p>Vá em <b>Configurações</b> para instalar o bookmarklet ou importar seu histórico do Instagram.</p>
+    </div>
+  </section>
+
+  <!-- CHAT -->
+  <section id="tab-chat" class="hidden">
+    <div class="chat-box">
+      <div class="suggest">
+        <button>Quais restaurantes devo levar minha esposa?</button>
+        <button>O que salvei sobre vendas e ainda não implementei?</button>
+        <button>Monte um plano com meus conteúdos de liderança</button>
+      </div>
+      <div class="msgs" id="msgs"></div>
+      <div class="chat-input">
+        <input id="chatInput" placeholder="Pergunte à sua biblioteca…">
+        <button class="btn primary" id="chatSend">Enviar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFIGURAÇÕES -->
+  <section id="tab-settings" class="hidden">
+    <div class="panel">
+      <h3>1 · Chave do Gemini (gratuita)</h3>
+      <div class="desc">Crie em <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>. Fica salva apenas no seu computador.</div>
+      <div class="row"><input id="apiKey" type="password" placeholder="AIza…"><button class="btn primary" id="saveKey">Salvar</button></div>
+    </div>
+    <div class="panel">
+      <h3>2 · Bookmarklet de captura</h3>
+      <div class="desc">Arraste o botão abaixo para a barra de favoritos. Em qualquer post do Instagram aberto, clique nele → informe a coleção → o post cai no Vault já com legenda e capa.</div>
+      <a class="bookmarklet" id="bm">→ Vault</a>
+      <div class="hint">Requer este servidor rodando (node server.js).</div>
+    </div>
+    <div class="panel">
+      <h3>3 · Importar histórico (export oficial do Instagram)</h3>
+      <div class="desc">Instagram → Central de Contas → Baixar suas informações (JSON). Selecione o arquivo <b>saved_posts.json</b> do ZIP.</div>
+      <div class="row"><input type="file" id="importFile" accept=".json"><button class="btn" id="importBtn">Importar</button></div>
+      <div class="hint" id="importResult"></div>
+    </div>
+    <div class="panel">
+      <h3>4 · Enriquecer com IA</h3>
+      <div class="desc">Processa todos os posts pendentes (resumo, categoria, tags, insights, busca semântica). Ritmo compatível com o free tier — deixe a aba aberta.</div>
+      <button class="btn primary" id="enrichAll">✨ Enriquecer tudo</button>
+      <div class="progress"><i id="pbar"></i></div>
+      <div class="hint" id="pstat"></div>
+    </div>
+    <div class="panel">
+      <h3>Backup</h3>
+      <div class="desc">Seus dados vivem em <code>data/vault.json</code>.</div>
+      <a class="btn" href="/api/export" style="display:inline-block">⬇ Exportar tudo (JSON)</a>
+    </div>
+  </section>
+</main>
+
+<div id="modalHost"></div>
+<div id="toastHost"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const CAT_EMOJI={'Vendas':'💼','Liderança':'🧭','Gestão':'📊','Tecnologia':'💻','IA':'🤖','Marketing':'📣','Lugares':'📍','Restaurantes':'🍝','Viagens':'✈️','Família':'❤️','Desenvolvimento Pessoal':'🌱','Espiritualidade':'🙏','Livros':'📚','Carros':'🚗','Negócios':'🏦','Outros':'✨'};
+let state={posts:[],filter:'',chip:'',semantic:null};
+
+function toast(t){const el=document.createElement('div');el.className='toast';el.textContent=t;$('#toastHost').append(el);setTimeout(()=>el.remove(),3200)}
+async function api(p,opt){const r=await fetch('/api/'+p,opt?{headers:{'Content-Type':'application/json'},...opt,body:opt.body?JSON.stringify(opt.body):undefined}:undefined);const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||r.status);return j}
+
+// ---- tabs ----
+$$('nav button').forEach(b=>b.onclick=()=>{$$('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('main>section').forEach(s=>s.classList.add('hidden'));$('#tab-'+b.dataset.tab).classList.remove('hidden')});
+
+// ---- biblioteca ----
+async function load(){const d=await api('posts');state.posts=d.posts;render();if(!d.hasKey&&d.posts.length===0){/* primeiro uso */}}
+function visible(){
+  if(state.semantic)return state.semantic;
+  let list=state.posts;
+  if(state.chip)list=list.filter(p=>(p.ai&&p.ai.category)===state.chip||p.collection===state.chip||(state.chip==='★'&&p.favorite));
+  if(state.filter){const f=state.filter.toLowerCase();list=list.filter(p=>JSON.stringify([p.caption,p.title,p.author,p.collection,p.ai&&p.ai.oneLiner,p.ai&&p.ai.tags,p.ai&&p.ai.category]).toLowerCase().includes(f))}
+  return list;
+}
+function render(){
+  const cats={};state.posts.forEach(p=>{const c=p.ai&&p.ai.category;if(c)cats[c]=(cats[c]||0)+1});
+  $('#chips').innerHTML=['★',...Object.keys(cats).sort((a,b)=>cats[b]-cats[a])].map(c=>
+    `<button class="chip ${state.chip===c?'active':''}" data-c="${c}">${c==='★'?'★ Favoritos':`${CAT_EMOJI[c]||''} ${c} · ${cats[c]}`}</button>`).join('');
+  $$('#chips .chip').forEach(ch=>ch.onclick=()=>{state.chip=state.chip===ch.dataset.c?'':ch.dataset.c;state.semantic=null;render()});
+  const list=visible();
+  $('#count').textContent=`${state.posts.length} posts · ${state.posts.filter(p=>p.status==='enriched').length} enriquecidos`;
+  $('#empty').classList.toggle('hidden',state.posts.length>0);
+  $('#grid').innerHTML=list.map(p=>{
+    const e=CAT_EMOJI[p.ai&&p.ai.category]||'✨';
+    return `<div class="card" data-id="${p.id}">
+      <div class="cover">${p.image?`<img src="${p.image}" loading="lazy" onerror="this.remove()">`:''}<span>${e}</span>
+        <span class="badge">${p.status==='enriched'?(p.ai.category||''):'⏳ pendente'}</span></div>
+      <div class="card-body">
+        <div class="card-title">${esc(p.ai&&p.ai.oneLiner||p.title||p.caption&&p.caption.slice(0,90)||p.url.replace('https://www.instagram.com',''))}</div>
+        ${p.ai&&p.ai.tags?`<div>${p.ai.tags.slice(0,3).map(t=>`<span class="tag">${esc(t)}</span>`).join(' ')}</div>`:''}
+        <div class="card-meta">${p.favorite?'★ ':''}${p.author?'@'+esc(p.author):''} ${p.collection?'· '+esc(p.collection):''} ${p.lifecycle&&p.lifecycle!=='inbox'?'· '+lifeLabel(p.lifecycle):''}</div>
+      </div></div>`;
+  }).join('')||'<div class="empty"><h3>Nada encontrado</h3></div>';
+  $$('.card').forEach(c=>c.onclick=()=>openModal(c.dataset.id));
+}
+function lifeLabel(l){return{to_test:'🧪 testar',implemented:'✅ implementado',archived:'📦 arquivado'}[l]||l}
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+$('#q').addEventListener('input',e=>{state.filter=e.target.value;state.semantic=null;render()});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter')semanticSearch()});
+$('#aiSearch').onclick=semanticSearch;
+async function semanticSearch(){
+  const q=$('#q').value.trim();if(!q)return;
+  $('#aiSearch').textContent='…';
+  try{const d=await api('search?q='+encodeURIComponent(q));state.semantic=d.results.map(r=>r.post);render();toast(`${d.results.length} resultados semânticos`)}
+  catch(e){toast('Erro: '+e.message)}
+  $('#aiSearch').textContent='✨ Busca IA';
+}
+$('#addBtn').onclick=async()=>{
+  const url=prompt('URL do post do Instagram:');if(!url)return;
+  const collection=prompt('Coleção (ex: Vendas):')||'';
+  const caption=prompt('Legenda (opcional — deixa a análise mais rica):')||'';
+  try{await api('capture',{method:'POST',body:{url,collection,caption,source:'manual'}});toast('✅ Capturado — enriquecendo…');setTimeout(load,1500)}
+  catch(e){toast('❌ '+e.message)}
+};
+
+// ---- modal ----
+function openModal(id){
+  const p=state.posts.find(x=>x.id===id);if(!p)return;
+  const a=p.ai||{};
+  const sec=(t,c)=>c?`<div class="section"><h4>${t}</h4>${c}</div>`:'';
+  const ul=arr=>arr&&arr.length?`<ul>${arr.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`:'';
+  $('#modalHost').innerHTML=`<div class="modal-bg" id="mbg"><div class="modal">
+    <h2>${esc(a.oneLiner||p.title||'Post')}</h2>
+    <div class="sub">${a.category?`${CAT_EMOJI[a.category]||''} ${a.category}${a.subcategory?' / '+a.subcategory:''} · `:''}${'★'.repeat(a.importance||0)} ${p.author?'· @'+esc(p.author):''} ${p.collection?'· 📁 '+esc(p.collection):''} · <a href="${p.url}" target="_blank">abrir no Instagram ↗</a></div>
+    ${sec('Resumo executivo',a.execSummary?`<p>${esc(a.execSummary)}</p>`:'')}
+    ${sec('Principais ideias',ul(a.keyIdeas))}
+    ${sec('Insights',ul(a.insights))}
+    ${sec('Ações sugeridas',ul(a.suggestedActions))}
+    ${sec('Perguntas que responde',ul(a.answersQuestions))}
+    ${sec('Por que é útil',a.whyUseful?`<p>${esc(a.whyUseful)}</p>`:'')}
+    ${sec('Tags',a.tags?a.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join(' '):'')}
+    ${sec('Legenda original',p.caption?`<p style="font-size:12.5px">${esc(p.caption.slice(0,600))}</p>`:'')}
+    ${p.lastError?sec('⚠️ Erro no enriquecimento',`<p style="color:var(--danger)">${esc(p.lastError)}</p>`):''}
+    <div class="lifecycle">
+      <button class="btn ${p.favorite?'on':''}" data-act="fav">★ Favorito</button>
+      <button class="btn ${p.lifecycle==='to_test'?'on':''}" data-act="to_test">🧪 Quero testar</button>
+      <button class="btn ${p.lifecycle==='implemented'?'on':''}" data-act="implemented">✅ Implementado</button>
+      <button class="btn ${p.lifecycle==='archived'?'on':''}" data-act="archived">📦 Arquivar</button>
+      <button class="btn" data-act="enrich">↻ Reprocessar IA</button>
+      <button class="btn" data-act="del" style="color:var(--danger)">Excluir</button>
+    </div>
+  </div></div>`;
+  $('#mbg').onclick=e=>{if(e.target.id==='mbg')$('#modalHost').innerHTML=''};
+  $$('.lifecycle .btn').forEach(b=>b.onclick=async()=>{
+    const act=b.dataset.act;
+    try{
+      if(act==='fav')await api('posts/'+id,{method:'PATCH',body:{favorite:!p.favorite}});
+      else if(act==='enrich'){await api(`posts/${id}/enrich`,{method:'POST',body:{}});toast('Reprocessando…')}
+      else if(act==='del'){if(!confirm('Excluir este post do Vault?'))return;await api('posts/'+id,{method:'DELETE'})}
+      else await api('posts/'+id,{method:'PATCH',body:{lifecycle:p.lifecycle===act?'inbox':act}});
+      $('#modalHost').innerHTML='';await load();
+    }catch(e){toast('❌ '+e.message)}
+  });
+}
+
+// ---- chat ----
+function addMsg(cls,text,sources){
+  const el=document.createElement('div');el.className='msg '+cls;el.textContent=text;
+  if(sources&&sources.length){const s=document.createElement('div');s.className='srcs';s.innerHTML='<b>Fontes:</b> '+sources.map(x=>`<a href="${x.url}" target="_blank">[${x.n}] ${esc(x.oneLiner).slice(0,80)}</a>`).join('');el.append(s)}
+  $('#msgs').append(el);$('#msgs').scrollTop=1e9;return el;
+}
+async function sendChat(text){
+  if(!text.trim())return;
+  addMsg('user',text);$('#chatInput').value='';
+  const thinking=addMsg('ai','Pensando…');
+  try{const d=await api('chat',{method:'POST',body:{message:text}});thinking.remove();addMsg('ai',d.answer,d.sources)}
+  catch(e){thinking.textContent='❌ '+e.message}
+}
+$('#chatSend').onclick=()=>sendChat($('#chatInput').value);
+$('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat(e.target.value)});
+$$('.suggest button').forEach(b=>b.onclick=()=>sendChat(b.textContent));
+
+// ---- settings ----
+$('#saveKey').onclick=async()=>{await api('settings',{method:'POST',body:{apiKey:$('#apiKey').value}});toast('✅ Chave salva');$('#apiKey').value=''};
+const BM="javascript:(async()=>{const m=p=>document.querySelector(`meta[property='${p}']`)?.content||'';const col=prompt('Coleção (ex: Vendas):','');if(col===null)return;try{const r=await fetch('http://localhost:8787/api/capture',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:location.href,caption:m('og:description'),title:m('og:title'),image:m('og:image'),collection:col,source:'bookmarklet'})});alert(r.ok?'\\u2705 Salvo no Vault':'\\u274c Erro '+r.status)}catch(e){alert('\\u274c O servidor do Vault est\\u00e1 rodando? (node server.js)')}})();";
+$('#bm').href=BM;
+$('#bm').onclick=e=>{e.preventDefault();navigator.clipboard.writeText(BM);toast('Código copiado — ou arraste o botão para a barra de favoritos')};
+$('#importBtn').onclick=async()=>{
+  const f=$('#importFile').files[0];if(!f)return toast('Selecione o saved_posts.json');
+  const content=JSON.parse(await f.text());
+  const d=await api('import',{method:'POST',body:content});
+  $('#importResult').textContent=`✅ ${d.added} posts importados (total: ${d.total}). Agora clique em "Enriquecer tudo".`;
+  load();
+};
+$('#enrichAll').onclick=async()=>{const d=await api('enrich-all',{method:'POST',body:{}});toast(`✨ ${d.queued} posts na fila`);pollProgress()};
+async function pollProgress(){
+  const d=await api('enrich-status');
+  const pct=d.total?Math.round(d.done/d.total*100):0;
+  $('#pbar').style.width=pct+'%';
+  $('#pstat').textContent=d.running?`Processando… ${d.done}/${d.total} ${d.lastError?'· último erro: '+d.lastError:''}`:'Concluído';
+  if(d.running){setTimeout(pollProgress,3000)}else load();
+}
+
+load();setInterval(()=>{if(!document.hidden)load()},20000);
+</script>
+</body>
+</html>
