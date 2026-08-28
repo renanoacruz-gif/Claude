@@ -51,3 +51,13 @@ Todas as telas — grid, comparador, ranking — se atualizam sozinhas a partir 
 
 Dados revisados em 28/08/2026. Números de população envelhecem rápido: cada análise traz a data
 de revisão e o link da fonte.
+
+## Arquivo único
+
+`node build.js` gera, a partir de `index.html` + `css/` + `js/`:
+
+- `fps-analyzer.html` — documento completo com CSS e JS embutidos. Abre offline
+  (só as fontes do Google vêm da rede; há stack de fallback).
+- `dist/artifact.html` — só o conteúdo do body, para publicar como Artifact.
+
+Edite sempre os arquivos separados e rode o build; os arquivos únicos são saída, não fonte.
