@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d1117">
+<title>FPS Analyzer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header id="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <span class="brand-mark">◎</span>
+      <div>
+        <h1>FPS<span>Analyzer</span></h1>
+        <p class="tagline">Consultor de jogos de tiro — análise crítica e comparativo lado a lado</p>
+      </div>
+    </div>
+    <nav id="nav">
+      <button class="nav-btn active" data-view="library">Biblioteca</button>
+      <button class="nav-btn" data-view="compare">Comparar</button>
+      <button class="nav-btn" data-view="ranking">Melhor FPS</button>
+      <button class="nav-btn" data-view="about">Metodologia</button>
+    </nav>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- ============ BIBLIOTECA ============ -->
+  <section id="view-library" class="view active">
+    <div class="wrap">
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Buscar jogo (ex.: CS2, Valorant, Siege)…" autocomplete="off">
+        <div id="filters" class="chips"></div>
+        <div class="sortbox">
+          <label for="sort">Ordenar</label>
+          <select id="sort">
+            <option value="nota">Nota geral</option>
+            <option value="nome">Nome</option>
+            <option value="ano">Lançamento</option>
+            <option value="competitivo">Competitivo</option>
+            <option value="monetizacao">Monetização</option>
+            <option value="performance">Performance</option>
+          </select>
+        </div>
+      </div>
+      <p id="lib-count" class="muted"></p>
+      <div id="grid" class="grid"></div>
+      <div id="not-found" class="notfound hidden">
+        <h3>Não tenho esse jogo na base</h3>
+        <p>A base é curada manualmente e cobre os FPS mais relevantes de 2026. Para um jogo fora dela,
+           gere o prompt de análise completo e cole no Claude (ou em qualquer assistente com acesso à web):</p>
+        <button id="gen-prompt" class="btn primary">Gerar prompt de análise</button>
+        <pre id="prompt-out" class="hidden"></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ANÁLISE ============ -->
+  <section id="view-game" class="view">
+    <div class="wrap" id="game-content"></div>
+  </section>
+
+  <!-- ============ COMPARAR ============ -->
+  <section id="view-compare" class="view">
+    <div class="wrap">
+      <h2 class="view-title">Comparativo direto</h2>
+      <p class="muted">Selecione de 2 a 5 jogos. Os mesmos critérios, a mesma escala, lado a lado.</p>
+      <div id="cmp-picker" class="picker"></div>
+      <div id="cmp-empty" class="notfound">Escolha pelo menos 2 jogos acima.</div>
+      <div id="cmp-result" class="hidden">
+        <div class="radar-box">
+          <canvas id="radar" width="620" height="620"></canvas>
+          <div id="radar-legend" class="legend"></div>
+        </div>
+        <div class="table-scroll">
+          <table id="cmp-table" class="cmp"></table>
+        </div>
+        <div id="cmp-verdict" class="verdict-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RANKING ============ -->
+  <section id="view-ranking" class="view">
+    <div class="wrap">
+      <h2 class="view-title">Melhor FPS — por critério</h2>
+      <p class="muted">Não existe "o melhor FPS". Existe o melhor para um critério e um perfil.
+         Os critérios abaixo são definidos antes da escolha, e o ranking é derivado das notas da base.</p>
+      <div id="rank-content"></div>
+    </div>
+  </section>
+
+  <!-- ============ SOBRE ============ -->
+  <section id="view-about" class="view">
+    <div class="wrap" id="about-content"></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Base curada — última revisão <strong id="rev-date"></strong>. Notas são avaliação editorial;
+       números de população e datas vêm das fontes citadas em cada análise e mudam com o tempo.</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/data2.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
