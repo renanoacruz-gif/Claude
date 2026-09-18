@@ -61,6 +61,43 @@ futuro, uma sincronização bidirecional com OAuth do Google Cloud (login Google
 volta) possa ser adicionada sem mudar o restante da arquitetura — isso exigirá credenciais (Client ID/Secret) que
 não existem neste ambiente.
 
+## Deploy (Fly.io)
+
+O app usa SQLite em arquivo (`better-sqlite3`), então precisa de um processo Node persistente com disco
+persistente — **não roda em serverless puro** (Vercel/Cloud Run zeram o disco a cada invocação). `Dockerfile` e
+`fly.toml` já estão prontos para isso: a imagem usa o build `standalone` do Next.js e o banco fica num volume
+montado em `/data` (variável `DB_PATH=/data/forecast.db`, já configurada no `fly.toml`).
+
+```bash
+# 1. Instalar a CLI e autenticar (abre o navegador)
+curl -L https://fly.io/install.sh | sh
+fly auth login
+
+# 2. Criar o app (nome único — ajuste também em fly.toml se mudar)
+fly apps create forecast-comercial
+
+# 3. Criar o volume persistente (mesma região do fly.toml, ex.: gru = São Paulo)
+fly volumes create forecast_data --region gru --size 1
+
+# 4. Definir o segredo da sessão (gera uma string aleatória)
+fly secrets set AUTH_SECRET="$(openssl rand -base64 32)"
+
+# 5. Deploy
+fly deploy
+```
+
+Depois disso, `fly deploy` de novo a cada atualização. Pontos importantes:
+
+- **Não escalar horizontalmente** (`min_machines_running` deve ficar em 1): o SQLite assume um único processo
+  escrevendo no arquivo; múltiplas máquinas não compartilham o volume.
+- `AUTH_SECRET` é obrigatório em produção — sem ele a sessão usa um segredo de desenvolvimento fixo (inseguro).
+- O primeiro acesso após o deploy cria e popula o banco automaticamente, com os mesmos usuários de demonstração
+  listados acima.
+- Validado localmente: `npm run build` gera `.next/standalone` com o binário nativo do `better-sqlite3` incluído,
+  e o servidor standalone roda corretamente apontando `DB_PATH` para um diretório externo (mesmo mecanismo do
+  volume do Fly). O build da imagem Docker em si não pôde ser testado neste ambiente (sem daemon Docker
+  disponível aqui) — vale rodar `docker build .` uma vez localmente antes do primeiro `fly deploy`.
+
 ## Limitações conhecidas do MVP
 
 - Recuperação de senha é simulada (não há provedor de e-mail configurado neste ambiente): a tela sempre confirma

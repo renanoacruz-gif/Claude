@@ -26,9 +26,9 @@ const DEFAULT_OPPORTUNITY_TYPES = [
 ];
 
 function openDb() {
-  const dataDir = path.join(process.cwd(), "data");
-  fs.mkdirSync(dataDir, { recursive: true });
-  const db = new Database(path.join(dataDir, "forecast.db"));
+  const dbPath = process.env.DB_PATH ?? path.join(process.cwd(), "data", "forecast.db");
+  fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+  const db = new Database(dbPath);
   db.pragma("journal_mode = WAL");
   db.pragma("foreign_keys = ON");
   return db;
