@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 Minutos de Repertório</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="repertorio/style.css">
+</head>
+<body>
+<div class="app">
+
+  <section id="screen-home" class="screen active">
+    <div class="brand">
+      <h1>10 Minutos de Repertório</h1>
+      <p>Hoje você ficará um pouco mais difícil de ser pego sem ter o que dizer.</p>
+    </div>
+    <div class="modes">
+      <button class="mode-btn selected" data-mode="geral">Sorteio geral</button>
+      <button class="mode-btn" data-mode="intelectual">Modo Intelectual</button>
+      <button class="mode-btn" data-mode="estoicismo">Modo Estoico</button>
+      <button class="mode-btn" data-mode="carater">Modo Caráter</button>
+      <button class="mode-btn" data-mode="revisao">🔁 Modo Revisão</button>
+      <button class="mode-btn" data-mode="surpreenda">Me surpreenda</button>
+    </div>
+    <button class="btn-big" id="btn-sortear">🎲 SORTEAR TEMA</button>
+    <div class="nav-links"><a id="link-repertorio">Meu Repertório</a></div>
+  </section>
+
+  <section id="screen-draw" class="screen"></section>
+  <section id="screen-study" class="screen"></section>
+  <section id="screen-prep" class="screen"></section>
+  <section id="screen-speak" class="screen"></section>
+  <section id="screen-avaliacao" class="screen"></section>
+  <section id="screen-desafio" class="screen"></section>
+  <section id="screen-conexoes" class="screen"></section>
+  <section id="screen-review-recall" class="screen"></section>
+  <section id="screen-review-compare" class="screen"></section>
+  <section id="screen-repertorio" class="screen"></section>
+
+</div>
+
+<script src="repertorio/data.js"></script>
+<script src="repertorio/app.js"></script>
+</body>
+</html>
